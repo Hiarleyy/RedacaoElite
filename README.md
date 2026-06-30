@@ -65,7 +65,7 @@ Infra local:
 
 ## Configuracao
 
-Crie os arquivos `.env` localmente a partir dos exemplos. Nao versione arquivos `.env` reais.
+Crie os arquivos `.env` apenas localmente com as variaveis abaixo. Nao versione arquivos `.env` reais.
 
 Backend: `Plataforma-Redacao/.env`
 
