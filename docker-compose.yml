@@ -77,7 +77,7 @@ services:
 
   frontend:
     build:
-      context: ./Plataforma-Redacao-front/Plataforma-Redacao-Front/ppe-front
+      context: ./Plataforma-Redacao-front
       dockerfile: Dockerfile
       args:
         - VITE_API_BASE_URL=/api
