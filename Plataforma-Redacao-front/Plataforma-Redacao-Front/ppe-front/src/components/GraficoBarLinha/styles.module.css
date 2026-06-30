@@ -1,0 +1,51 @@
+.container {
+  background: #DA9E00;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  max-width: 500px;
+  margin: 10px auto;
+  margin-top: 50px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #1f2937;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.label {
+  width: 120px;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.progressBar {
+  flex: 1;
+  height: 8px;
+  background-color: #e5e7eb;
+  border-radius: 9999px;
+  margin: 0 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.4s ease;
+}
+
+.value {
+  min-width: 100px;
+  font-size: 14px;
+  color: #4b5563;
+  text-align: right;
+}

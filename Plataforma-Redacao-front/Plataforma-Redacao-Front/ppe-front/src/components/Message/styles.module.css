@@ -1,0 +1,48 @@
+.success {
+  background-color: #4A8F4A;
+  width: 100%;
+  color: #ffffff;
+  padding: 15px;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.error {
+  background-color: #B2433F;
+  width: 100%;
+  color: #ffffff;
+  padding: 15px;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.neutral {
+  background-color: #1A1A1A;
+  width: 100%;
+  color: #ffffff;
+  padding: 15px;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .success,
+  .error,
+  .neutral {
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .success,
+  .error,
+  .neutral {
+    padding: 10px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+  }
+}

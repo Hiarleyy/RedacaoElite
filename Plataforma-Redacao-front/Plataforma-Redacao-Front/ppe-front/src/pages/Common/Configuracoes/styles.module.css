@@ -1,0 +1,393 @@
+.container {
+  width: 100%;
+  height: 100vh;
+}
+.main_content{
+  display: flex;
+  padding: 40px;
+  flex-direction: column;
+  align-items: center;
+}
+.img_container img {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.config_section {
+  display: flex;
+  align-self: center;
+  flex-direction: column;
+  border-radius: 10px;
+  gap: 20px;
+  padding: 50px;
+  width: 1500px;
+  min-height: calc(90vh - 60px);
+  background-color: #242424;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.config_section h3 {
+  font-size: 20px;
+  color: #c8c8c8;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+/* Container principal de imagens de perfil */
+.profile_image_container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+/* Estilo para o container da imagem atual */
+.current_image_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile_image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #42464d;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.current_image_container p {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #666;
+}
+
+/* Container da pré-visualização */
+.image_preview_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.imagePreview {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #4caf50;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.preview_image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.no_preview {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #242424;
+  border: 3px dashed #42464d;
+}
+
+.no_preview p {
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+  padding: 10px;
+}
+
+.image_preview_container p {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #666;
+}
+
+/* Container do formulário alinhado horizontalmente com as imagens */
+.image_upload_form_container {
+  display: flex;
+  align-items: flex-start;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.image_upload_form {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 15px;
+  width: 100%;
+  max-width: 350px; /* Reduzido para melhor centralização */
+}
+
+/* Estilização do input de arquivo */
+.file_input_container {
+  position: relative;
+  width: auto; /* Alterado de 100% para auto */
+  margin-bottom: 0; /* Removido margin bottom */
+  flex: 0 0 auto; /* Evita crescimento do item */
+}
+
+.file_input {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.file_input_label {
+  cursor: pointer;
+  background-color: #f0f0f0;
+  color: #333;
+  padding: 10px 15px;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: background-color 0.2s;
+  border: 1px solid #ddd;
+  display: inline-block;
+  width: auto; /* Alterado de 100% para auto */
+  text-align: center;
+  white-space: nowrap; /* Evita quebra de texto */
+}
+
+.file_input_label:hover {
+  background-color: #e0e0e0;
+}
+
+/* Container de botões alinhado com as imagens */
+.button_container {
+  display: flex;
+  align-items: center;
+  width: auto; /* Alterado de 100% para auto */
+  margin-left: 10px; /* Adicionado pequeno espaçamento */
+  flex: 0 0 auto; /* Evita crescimento do item */
+}
+
+.button_container_password {
+  display: flex;
+  align-items: center;
+  width: 200px;
+  margin-top: 20px;
+}
+
+
+.submit_button {
+  background-color: #da9e00;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.submit_button:hover {
+  background-color: #da9e00;
+}
+
+.submit_button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.submit_button_password {
+  margin-top: 10px;
+  background-color: #da9e00;
+  width: 300px;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.submit_butto_password:hover {
+  background-color: #da9e00;
+}
+
+.submit_button_password:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Mensagem de erro */
+.error_message {
+  color: #d32f2f;
+  margin-top: 10px;
+  padding: 8px;
+  background-color: #ffebee;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Mensagem de sucesso */
+.success_message {
+  color: #2e7d32;
+  margin-top: 10px;
+  padding: 8px;
+  background-color: #e8f5e9;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Container para configurações adicionais */
+.password_section {
+  gap: 10px;
+  border-radius: 8px;
+  margin-top: 20px;
+  min-height: 100px;
+}
+
+.form_group{
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+  gap: 10px;
+}
+
+/* Media queries para responsividade */
+@media screen and (max-width: 768px) {
+  .container {
+    margin-bottom: 100px;
+  }
+
+  .main_content {
+    padding: 1rem;
+  }
+
+  .config_section {
+    width: 100%;
+  }
+
+  .profile_image_container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .current_image_container,
+  .image_preview_container {
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .profile_image,
+  .preview_image {
+    width: 150px;
+    height: 150px;
+  }
+
+  .image_upload_form_container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .image_upload_form {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    max-width: 350px;
+  }
+
+  .file_input_container {
+    width: auto;
+    margin-bottom: 0;
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+  }
+
+  .button_container {
+    width: auto;
+    margin-left: 10px;
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+  }
+
+  .password_form {
+    width: 100%;
+  }
+
+  .form_group {
+    width: 100%;
+  }
+
+  .image_preview_container {
+    margin: 0 auto;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .container {
+    margin-bottom: 120px;  /* Increased from 100px to 120px for extra space */
+  }
+  
+  .main_content {
+    margin-bottom: 100px; /* Added margin-bottom to main_content */
+  }
+  
+  .profile_image,
+  .preview_image {
+    width: 120px;
+    height: 120px;
+  }
+
+  .form_group p {
+    font-size: 14px;
+  }
+
+  .file_input_label {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  .submit_button {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+  
+  .image_upload_form {
+    width: 100%;
+    max-width: 300px; /* Ainda mais compacto para telas muito pequenas */
+    justify-content: center;
+  }
+  
+  .file_input_container,
+  .button_container {
+    margin: 0 5px; /* Espaçamento reduzido entre os botões */
+  }
+  
+  /* Garante que o botão e o label tenham tamanhos similares em telas muito pequenas */
+  .file_input_label,
+  .submit_button {
+    font-size: 13px;
+    padding: 8px 10px;
+    min-width: 110px;
+    text-align: center;
+  }
+}

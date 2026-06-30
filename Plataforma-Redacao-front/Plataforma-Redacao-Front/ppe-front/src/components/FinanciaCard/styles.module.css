@@ -1,0 +1,89 @@
+.card {
+  background-color: #1A1A1A;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 250px; /* Adjust width as needed */
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.monthHeader {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: #a79428;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.rowResult {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px; /* Space before the result */
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+  align-items: center;
+  color: #dc3545;
+}
+
+
+.label {
+  font-weight: normal;
+  font-size: 15px;
+}
+
+.labelResult {
+    font-weight: bold;
+    font-size: 15px;
+    color: #ffffff;
+}
+
+.valuePositive {
+  color: #28a745; 
+  font-weight: bold;
+  font-size: 15px;
+}
+.ValueResult{
+  color: #a79428; /* Green color for positive values */
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+
+.valueNegative {
+  color: #dc3545; /* Red color for negative values */
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.expensesList {
+  margin-top: 15px;
+  padding-left: 15px; /* Indent the expense list */
+}
+
+.expenseItem {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.expenseLabel {
+  color: #555;
+}
+
+.expenseValue {
+  color: #555;
+}
+
+@media (max-width: 768px) {
+  .card {
+    width: 70%;
+    margin-left: 70px; /* Full width on smaller screens */
+  }
+}

@@ -1,0 +1,52 @@
+.failureOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.521);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.failureModal {
+  width: 500px;
+  height: 550px;
+  background: rgb(194, 186, 151);
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 2, 0, 0.993);
+}
+
+.failureButton {
+  margin-top: 4rem;
+  padding: 0.5rem 1rem;
+  background-color: rgb(184, 7, 1);
+  color: rgb(255, 255, 255);
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  height: 60px;
+  font-size: 20px;
+  font-weight: bold;
+}
+.failureTitle {
+  font-size: 30px;
+  color: rgb(236, 19, 19);
+  margin-top: 0px;
+}
+
+.failureMessage {
+  color: rgb(14, 13, 13);
+  font-size: 25px;
+  /* quebra de texto */
+  text-align: center;
+  margin-top: 20px;
+}
+.failureSvg {
+  width: 100px;
+  height: 100px;
+}

@@ -1,0 +1,58 @@
+.graficoBarrasEmpilhadas {
+  background-color: #1f1f1f;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  color: #ffffff;
+  margin-bottom: 40px;
+
+  /* Variáveis personalizadas */
+  --tooltip-bg: #2e2e2e;
+  --tooltip-label: #ffffff;
+  --tooltip-item: #f1f1f1;
+}
+
+.graficoBarrasEmpilhadas :global(.recharts-legend-wrapper) {
+  margin-top: 10px;
+  font-size: 15px;
+  color: #1f1f1f;
+}
+
+.graficoBarrasEmpilhadas :global(.recharts-cartesian-grid line) {
+  stroke: #fdfafa;
+  stroke-opacity: 0.3;
+}
+
+.graficoBarrasEmpilhadas :global(.recharts-x-axis .recharts-cartesian-axis-tick-value),
+.graficoBarrasEmpilhadas :global(.recharts-y-axis .recharts-cartesian-axis-tick-value) {
+  fill: #bcbcbc;
+  font-size: 13px;
+}
+
+.graficoBarrasEmpilhadas :global(.recharts-tooltip-wrapper) {
+  border-radius: 8px;
+}
+
+.graficoBarrasEmpilhadas :global(.recharts-tooltip-label) {
+  color: var(--tooltip-label);
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.graficoBarrasEmpilhadas :global(.recharts-tooltip-item) {
+  color: var(--tooltip-item);
+}
+
+.graficoBarrasEmpilhadas :global(text) {
+  font-family: 'Inter', sans-serif;
+}
+
+.graficoBarrasEmpilhadas :global(.recharts-label) {
+  font-weight: bold;
+}
+.graficoBarrasEmpilhadas :global(.recharts-active-bar) {
+  fill: transparent;
+}
+
+
+

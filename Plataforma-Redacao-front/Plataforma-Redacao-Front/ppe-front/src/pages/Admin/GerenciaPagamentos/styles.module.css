@@ -1,0 +1,103 @@
+.container {
+  width: 100%;
+  min-height: 100vh; 
+}
+
+.main_content {
+  display: flex;
+  justify-content: space-between;
+  padding: 50px;
+  max-width: 1500px;
+  min-height: calc(100vh - 70px); 
+  margin: 0 auto;
+}
+
+
+.main_content .container_pag {
+  width: 100%;
+  padding: 20px;
+  position: relative;
+  border-radius: 10px;
+  background-color: #242424;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.main_content .container_pag h1 {
+  color: #e0e0e0;
+  margin-bottom: 10px;
+}
+
+.main_content .container_pag p {
+  color: hsl(0, 0%, 61%);
+  margin-bottom: 20px;
+}
+.container_pag .CardDashs_container {
+  display: flex;
+  gap: 20px;
+}
+
+.container_pag .container_Graficos {
+  display: flex;
+}
+.container_pag .taggle {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.container_Grafico .container_GraficoGeral  {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  width: 100%;
+  flex: 1;
+  margin-top: 20px;
+
+}
+
+.container_Grafico .container_GraficoGeral .container_GraficoLinha{
+  gap: 20px;
+}
+
+.container_Grafico .container_GraficoGeral .container_GraficoBarLinhas{
+  gap: 20px;
+  flex: 1;
+  width: 100%;
+}
+.container_Grafico .container_GraficoMensal {
+  margin-top: 0px;
+  
+}
+.container_GraficoCard {
+  display: flex;
+  flex-wrap: wrap; /* permite quebra de linha */
+  gap: 20px;
+  width: 100%;
+  margin-top: 40px;
+  justify-content: flex-start; /* ou space-between/center dependendo do efeito desejado */
+}
+
+@media (max-width: 768px) {
+  .container {
+    height: fit-content;
+  }
+
+  .main_content {
+    flex-direction: column;
+    gap: 40px;
+    height: 100%;
+    padding: 20px;
+    padding-bottom: 100px;
+  }
+  .main_content .container_pag {
+    padding: 15px;
+    gap: 40px;
+  }
+  
+  .container_pag .CardDashs_container {
+    flex-direction: column;
+  }
+  .container_pag .container_Grafico .container_GraficoGeral{
+    flex-direction: column;
+  }
+  
+  }

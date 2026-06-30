@@ -1,0 +1,103 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #DA9E00;
+  border-radius: 16px;
+  padding: 24px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.header h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #412020;
+}
+strong {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #ffffff;
+  font-style: italic;
+
+
+}
+
+.closeButton {
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #000000;
+  transition: color 0.2s;
+}
+
+.closeButton:hover {
+  color: red;
+}
+
+.content div {
+  display: flex;
+  justify-content: space-between;
+  margin: 6px 0;
+  color: #444;
+}
+
+.content hr {
+  margin: 12px 0;
+  border: none;
+  border-top: 1px solid #000000;
+}
+
+.notaGeral {
+  font-weight: bold;
+  color: #111;
+}
+
+.footer {
+  margin-top: 18px;
+  text-align: right;
+}
+
+.footer button {
+  background: #000000;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.footer button:hover {
+  background: #1e40af;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

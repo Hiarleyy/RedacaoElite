@@ -1,0 +1,120 @@
+.chartContainer {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  background-color: #242424;
+  padding: 20px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  margin-top: 10px;
+  color: #ffffff; /* branco */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chartContainer h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 50px;
+  color: #ffffff; /* branco */
+}
+
+.legend {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+  color: #e5e7eb;
+  font-size: 14px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.entradaLegend,
+.saidaLegend {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  border-radius: 4px;
+}
+
+.entradaLegend {
+  background-color: #4CAF50; /* verde */
+}
+
+.saidaLegend {
+  background-color: #F44336; /* vermelho */
+}
+
+.yAxis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 300px;
+  padding-right: 10px;
+  border-right: 1px solid #eee;
+  font-size: 12px;
+  color: #666;
+  text-align: right;
+}
+
+.yAxis span {
+  height: calc(300px / 4);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.barsWrapper {
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-around;
+  align-items: flex-end;
+  padding-left: 20px;
+  height: 300px;
+}
+
+.monthColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 10px;
+  justify-content: flex-end;
+}
+
+.barGroup {
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+}
+
+.entradaBar {
+  width: 20px;
+  background-color: #4CAF50; /* verde */
+  border-radius: 3px 3px 0 0;
+  transition: height 0.3s ease-out;
+}
+
+.saidaBar {
+  width: 20px;
+  background-color: #F44336; /* vermelho */
+  border-radius: 3px 3px 0 0;
+  transition: height 0.3s ease-out;
+}
+
+.monthLabel {
+  font-size: 14px;
+  color: #ffffff;
+  margin-top: 8px;
+}

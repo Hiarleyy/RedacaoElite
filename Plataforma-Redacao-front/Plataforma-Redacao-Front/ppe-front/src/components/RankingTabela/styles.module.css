@@ -1,0 +1,131 @@
+.tabela_container {
+  max-height: 600px;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: thin;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  background-color: #121212;
+  overflow-x: auto;
+  width: 100%;
+}
+
+.tabela_container::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse; 
+  font-size: 14px;
+  color: #E0E0E0;
+}
+
+.cabecalho {
+  text-align: left;
+  padding: 12px 16px;
+  background-color: #1E1E1E;
+  color: #f1f1f1;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  border-bottom: 1px solid #333;
+}
+
+.celula {
+  text-align: left;
+  padding: 14px 16px;
+  background-color: #1A1A1A;
+  transition: background 0.2s ease;
+  border-bottom: 1px solid #2c2c2c;
+}
+
+tr:nth-child(even) .celula {
+  background-color: #181818;
+}
+
+tr:hover .celula {
+  background-color: #222;
+}
+
+/* Responsividade para Mobile */
+@media screen and (max-width: 768px) {
+  .tabela_container {
+    max-height: 350px;
+    margin-top: 10px;
+  }
+  
+  .tabela {
+    font-size: 13px;
+  }
+  
+  .cabecalho,
+  .celula {
+    padding: 10px 12px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .tabela_container {
+    max-height: 300px;
+    margin-top: 15px;
+  }
+  
+  .tabela {
+    font-size: 12px;
+    min-width: 400px; /* Garante uma largura mínima para a tabela no mobile */
+  }
+  
+  .cabecalho,
+  .celula {
+    padding: 8px 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px;
+  }
+  
+  .celula:first-child {
+    max-width: 60px;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .tabela_container {
+    max-height: 250px;
+  }
+  
+  .tabela {
+    font-size: 11px;
+    min-width: 350px;
+  }
+  
+  .cabecalho,
+  .celula {
+    padding: 6px 8px;
+    max-width: 100px;
+  }
+    .celula:first-child {
+    max-width: 50px;
+  }
+}
+
+/* Landscape mode para dispositivos móveis */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+  .tabela_container {
+    max-height: 150px;
+    margin-top: 10px;
+  }
+  
+  .tabela {
+    font-size: 11px;
+    min-width: 350px;
+  }
+  
+  .cabecalho,
+  .celula {
+    padding: 5px 6px;
+  }
+}

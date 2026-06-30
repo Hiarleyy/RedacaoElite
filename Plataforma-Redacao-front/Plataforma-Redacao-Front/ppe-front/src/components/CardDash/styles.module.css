@@ -1,0 +1,107 @@
+.card {
+  width: 480px;
+  border-radius: 16px;
+  padding: 20px;
+  color: #ffffff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  
+}
+
+/* Variações */
+.default {
+  border: none;
+}
+
+.outlined {
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.elevated {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Conteúdo do Card */
+.content {
+  display: flex;
+  flex-direction: column;
+}
+
+.titleContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.iconContainer {
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.text {
+  font-size: 1rem;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Ações (opcional) */
+.actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+@media (max-width: 768px) {
+  .card {
+    width: 100%;
+    height: auto;
+    min-height: 120px;
+    padding: 15px;
+  }
+  
+  .content {
+    padding: 0;
+  }
+
+  .titleContainer {
+    margin-bottom: 20px;
+  }
+
+  .title {
+    font-size: 1.1rem;
+  }
+
+  .text {
+    font-size: 1.8rem;
+    font-weight: bold;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 12px;
+    min-height: 100px;
+  }
+
+  .title {
+    font-size: 1rem;
+  }
+
+  .text {
+    font-size: 1.5rem;
+  }
+}

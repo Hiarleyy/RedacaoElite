@@ -1,0 +1,98 @@
+.modal_overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal_content {
+  background-color: #242424;
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #181818;
+  padding-bottom: 10px;
+}
+
+.close_button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+}
+
+.modal_body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.redacao_info {
+  background-color: #1A1A1A;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.competencias {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.texto_redacao {
+  background-color: #1A1A1A;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.feedback_container p {
+  white-space: pre-line;
+  color: #888888;
+}
+
+.nota_final{
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #DA9E00; /* Gold color for emphasis */
+    margin-top: 10px;
+}
+
+.sem_correcao {
+  color: #666;
+  margin: 10px 0;
+}
+
+.Button {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .modal_content {
+    width: 95%;
+    padding: 15px;
+  }
+  
+  .competencias {
+    grid-template-columns: 1fr;
+  }
+}

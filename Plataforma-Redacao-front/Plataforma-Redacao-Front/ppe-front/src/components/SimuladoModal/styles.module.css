@@ -1,0 +1,775 @@
+.modal_overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+
+
+.modal_content {
+  background-color: #242424;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  animation: modalFadeIn 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #3a3a3a;
+  background-color: #2a2a2a;
+  border-radius: 12px 12px 0 0;
+}
+
+.nota_info{
+  background-color: #1A1A1A;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.nota_info p{
+    color: #E0E0E0E0;
+    padding: 10px;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.nota_final{
+    margin-bottom: 20px;
+}
+
+.modal_header h2 {
+  color: #E0E0E0E0;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.nota_container h3{
+    
+  color: #E0E0E0E0;
+  margin: 0 0 20px 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-bottom: 2px solid #E0E0E0E0;
+  padding-bottom: 8px;
+}
+
+.nota_container h4{ 
+    color: #DA9E00;
+    font-weight: bold;
+    border-top: 2px solid #DA9E00;
+    padding-top: 8px;
+    margin-left: 10px;
+}
+
+.close_button {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #999;
+  padding: 4px;
+  border-radius: 4px;
+  transition: color 0.2s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.close_button:hover {
+  color: #E0E0E0E0;
+}
+
+.modal_body {
+  padding: 24px;
+  color: #e0e0e0;
+  overflow-y: auto;
+  flex: 1;
+  -webkit-overflow-scrolling: touch;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+  font-size: 1.1rem;
+}
+
+.info_section {
+  margin-bottom: 32px;
+}
+
+.info_section h3 {
+  color: #E0E0E0E0;
+  margin: 0 0 16px 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-bottom: 2px solid #E0E0E0E0;
+  padding-bottom: 8px;
+}
+
+
+
+.info_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.info_item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px;
+  background-color: #1a1a1a;
+  border-radius: 8px;
+}
+
+.label {
+  font-size: 0.9rem;
+  color: #b0b0b0;
+  font-weight: 500;
+}
+
+.value {
+  font-size: 1rem;
+  color: #e0e0e0;
+  font-weight: 600;
+}
+
+.stats_section {
+  margin-bottom: 32px;
+}
+
+.stats_section h3 {
+  color: #E0E0E0E0;
+  margin: 0 0 20px 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-bottom: 2px solid #E0E0E0E0;
+  padding-bottom: 8px;
+}
+
+.stats_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+.stat_card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #1a1a1a;
+  border-radius: 12px;
+  border: 1px solid #3a3a3a;
+  transition: transform 0.2s ease;
+}
+
+.stat_card:hover {
+  transform: translateY(-2px);
+}
+
+.stat_number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #DA9E00;
+  margin-bottom: 8px;
+}
+
+.stat_label {
+  font-size: 0.9rem;
+  color: #b0b0b0;
+  text-align: center;
+}
+
+/* Seção de notas dos alunos */
+.notas_section {
+  margin-bottom: 32px;
+}
+
+.notas_section h3 {
+  color: #E0E0E0E0;
+  margin: 0 0 20px 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-bottom: 2px solid #E0E0E0E0;
+  padding-bottom: 8px;
+}
+
+.notas_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.nota_stat_card {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 16px;
+  background-color: #1a1a1a;
+  border-radius: 12px;
+  border: 1px solid #3a3a3a;
+  transition: transform 0.2s ease;
+  gap: 12px;
+}
+
+.nota_stat_card:hover {
+  transform: translateY(-2px);
+  border-color: #DA9E00;
+}
+
+.aluno_header {
+  text-align: center;
+  border-bottom: 1px solid #3a3a3a;
+  padding-bottom: 8px;
+}
+
+.aluno_nome_card {
+  color: #e0e0e0;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.competencias_row {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.competencia_mini {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+}
+
+.mini_number {
+  font-size: 0.7rem;
+  color: #DA9E00;
+  font-weight: 600;
+}
+
+.mini_value {
+  font-size: 0.9rem;
+  color: #e0e0e0;
+  font-weight: 700;
+}
+
+.nota_geral_section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 8px;
+  border-top: 1px solid #3a3a3a;
+}
+
+/* Scrollbar personalizada para a seção de notas */
+.notas_grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notas_grid::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 3px;
+}
+
+.notas_grid::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: 3px;
+}
+
+.notas_grid::-webkit-scrollbar-thumb:hover {
+  background: #4a4a4a;
+}
+
+.participants_section,
+.turma_section {
+  margin-bottom: 24px;
+}
+
+.participants_section h3,
+.turma_section h3 {
+  color: #DA9E00;
+  margin: 0 0 16px 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-bottom: 2px solid #DA9E00;
+  padding-bottom: 8px;
+}
+
+.participants_list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.participant_item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #1a1a1a;
+  border-radius: 6px;
+}
+
+.nota_badge {
+  background-color: #DA9E00;
+  color: #000;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.more_participants,
+.more_alunos {
+  text-align: center;
+  padding: 12px;
+  color: #999;
+  font-style: italic;
+  border: 1px dashed #3a3a3a;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
+.alunos_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.aluno_item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #1a1a1a;
+  border-radius: 6px;
+  border: 1px solid #3a3a3a;
+}
+
+.aluno_nome {
+  color: #e0e0e0;
+  font-weight: 500;
+}
+
+.aluno_participou {
+  font-size: 1.2rem;
+}
+
+.modal_footer {
+  padding: 20px 24px;
+  background-color: #2a2a2a;
+  border-top: 1px solid #3a3a3a;
+  border-radius: 0 0 12px 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Responsividade - Tablet */
+@media (max-width: 1024px) {
+  .modal_content {
+    width: 95%;
+    max-height: 92vh;
+  }
+  
+  .modal_header {
+    padding: 18px 20px;
+  }
+  
+  .modal_body {
+    padding: 20px;
+  }
+  
+  .modal_footer {
+    padding: 18px 20px;
+  }
+
+  .info_grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  
+  .info_item {
+    padding: 14px;
+  }
+  
+  .stats_grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  
+  .stat_card {
+    padding: 18px 14px;
+  }
+  
+  .stat_number {
+    font-size: 1.6rem;
+    margin-bottom: 6px;
+  }
+  
+  .stat_label {
+    font-size: 0.85rem;
+  }
+  
+  .notas_grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    max-height: 450px;
+  }
+  
+  .nota_stat_card {
+    padding: 16px 14px;
+    gap: 10px;
+  }
+
+  .aluno_nome_card {
+    font-size: 0.9rem;
+  }
+
+  .competencias_row {
+    gap: 3px;
+  }
+
+  .mini_number {
+    font-size: 0.7rem;
+  }
+
+  .mini_value {
+    font-size: 0.85rem;
+  }
+}
+
+/* Responsividade - Mobile */
+@media (max-width: 768px) {
+  .modal_overlay {
+    padding: 8px;
+    align-items: flex-start;
+    padding-top: 15px;
+  }
+
+  .modal_content {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    max-height: calc(100vh - 30px);
+    border-radius: 8px;
+  }
+  
+  .modal_header {
+    padding: 14px 16px;
+    border-radius: 8px 8px 0 0;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .modal_header h2 {
+    font-size: 1.1rem;
+    line-height: 1.3;
+    word-break: break-word;
+    flex: 1;
+  }
+  
+  .close_button {
+    font-size: 22px;
+    padding: 6px;
+    min-width: 36px;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modal_body {
+    padding: 14px;
+    overflow-y: auto;
+  }
+  
+  .modal_footer {
+    padding: 14px 16px;
+    border-radius: 0 0 8px 8px;
+  }
+  
+  .info_section,
+  .stats_section,
+  .notas_section {
+    margin-bottom: 20px;
+  }
+  
+  .info_section h3,
+  .stats_section h3,
+  .notas_section h3,
+  .nota_container h3 {
+    font-size: 1rem;
+    margin-bottom: 12px;
+  }
+  
+  .info_grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .info_item {
+    padding: 12px;
+  }
+  
+  .label {
+    font-size: 0.8rem;
+  }
+  
+  .value {
+    font-size: 0.9rem;
+  }
+  
+  .stats_grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .stat_card {
+    padding: 14px 10px;
+  }
+  
+  .stat_number {
+    font-size: 1.3rem;
+  }
+  
+  .stat_label {
+    font-size: 0.75rem;
+  }
+  
+  .notas_grid {
+    max-height: 300px;
+    gap: 10px;
+  }
+  
+  .nota_stat_card {
+    padding: 12px 10px;
+    gap: 6px;
+  }
+  
+  .aluno_nome_card {
+    font-size: 0.8rem;
+  }
+
+  .competencias_row {
+    gap: 2px;
+  }
+
+  .mini_number {
+    font-size: 0.65rem;
+  }
+
+  .mini_value {
+    font-size: 0.8rem;
+  }
+  
+  .nota_basica {
+  background-color: #1e1e1e;
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 4px solid #DA9E00;
+  text-align: center;
+}
+
+.nota_basica h4 {
+  color: #16A34A;
+  margin: 0 0 12px 0;
+  font-size: 1.1rem;
+  border: none;
+  padding: 0;
+}
+
+.nota_basica p {
+  margin: 8px 0;
+  color: #e0e0e0;
+}
+
+.nota_basica strong {
+  color: #DA9E00;
+  font-size: 1.2rem;
+}
+
+.nota_basica em {
+  color: #a0a0a0;
+  font-size: 0.9rem;
+}
+
+.sem_nota {
+  background-color: #1e1e1e;
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 4px solid #666;
+  text-align: center;
+  color: #a0a0a0;
+}
+}
+
+/* Responsividade - Telas pequenas */
+@media (max-width: 480px) {
+  .modal_overlay {
+    padding: 4px;
+    padding-top: 8px;
+  }
+
+  .modal_content {
+    max-height: calc(100vh - 16px);
+    border-radius: 6px;
+  }
+  
+  .modal_header {
+    padding: 10px 12px;
+    border-radius: 6px 6px 0 0;
+  }
+  
+  .modal_header h2 {
+    font-size: 1rem;
+  }
+  
+  .close_button {
+    font-size: 20px;
+    min-width: 32px;
+    min-height: 32px;
+  }
+  
+  .modal_body {
+    padding: 10px;
+  }
+  
+  .modal_footer {
+    padding: 10px 12px;
+    border-radius: 0 0 6px 6px;
+  }
+  
+  .info_section h3,
+  .stats_section h3,
+  .notas_section h3,
+  .nota_container h3 {
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+  }
+  
+  .info_section,
+  .stats_section,
+  .notas_section {
+    margin-bottom: 16px;
+  }
+  
+  .stats_grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .stat_card {
+    padding: 12px 8px;
+  }
+  
+  .stat_number {
+    font-size: 1.1rem;
+  }
+  
+  .stat_label {
+    font-size: 0.7rem;
+  }
+  
+  .notas_grid {
+    max-height: 250px;
+    gap: 8px;
+  }
+  
+  .nota_stat_card {
+    padding: 10px 8px;
+    gap: 4px;
+  }
+  
+  .aluno_nome_card {
+    font-size: 0.75rem;
+  }
+
+  .competencias_row {
+    gap: 1px;
+  }
+
+  .mini_number {
+    font-size: 0.6rem;
+  }
+  
+  .mini_value {
+    font-size: 0.75rem;
+  }
+  
+  .competencia_mini {
+    gap: 1px;
+  }
+  
+  .aluno_item,
+  .participant_item {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+  
+  .nota_badge {
+    font-size: 0.75rem;
+    padding: 2px 6px;
+  }
+  
+  .nota_info {
+    padding: 12px;
+  }
+  
+  .nota_info p {
+    font-size: 0.85rem;
+    padding: 6px;
+  }
+  
+  .info_item {
+    padding: 10px;
+  }
+  
+  .label {
+    font-size: 0.8rem;
+  }
+  
+  .value {
+    font-size: 0.9rem;
+  }
+
+  .loading {
+    padding: 20px 10px;
+    font-size: 0.9rem;
+  }
+}

@@ -1,0 +1,76 @@
+.tabela_container {
+  max-height: 400px;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  background-color: #121212;
+  overflow-x: auto; 
+}
+
+.tabela_container::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse; 
+  font-size: 14px;
+  color: #E0E0E0;
+  min-width: 600px; 
+}
+
+.cabecalho {
+  text-align: left;
+  padding: 10px 14px;
+  background-color: #1E1E1E;
+  color: #B0B0B0;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  border-bottom: 1px solid #333;
+}
+
+.celula {
+  text-align: left;
+  color: #B0B0B0;
+  padding: 12px 14px;
+  background-color: #1A1A1A;
+  transition: background 0.2s ease;
+  border-bottom: 1px solid #2c2c2c;
+}
+
+tr:nth-child(even) .celula {
+  background-color: #181818;
+}
+
+tr:hover .celula {
+  background-color: #222;
+}
+
+@media (max-width: 768px) {
+  .tabela {
+    font-size: 13px;
+    min-width: 500px;
+  }
+
+  .celula,
+  .cabecalho {
+    padding: 10px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tabela {
+    font-size: 12px;
+    min-width: 450px;
+  }
+
+  .celula,
+  .cabecalho {
+    padding: 8px 8px;
+  }
+}
