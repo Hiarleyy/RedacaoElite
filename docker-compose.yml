@@ -1,0 +1,87 @@
+services:
+  traefik:
+    image: traefik:v3.0
+    container_name: plataforma-redacao-proxy
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080" # Dashboard Traefik
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+
+  db:
+    image: bitnamilegacy/postgresql:17.6.0-debian-12-r4
+    container_name: plataforma-redacao-db
+    ports:
+      - '5433:5432'
+    environment:
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=docker
+      - POSTGRESQL_DATABASE=BDPlataformaRedacao
+    volumes:
+      - postgres_data:/bitnami/postgresql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "BDPlataformaRedacao"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./Plataforma-Redacao
+      dockerfile: Dockerfile
+    container_name: plataforma-redacao-backend
+    environment:
+      - DATABASE_URL=postgresql://postgres:docker@db:5432/BDPlataformaRedacao?schema=public
+      - HTTP_PORT=3000
+      - HOST=0.0.0.0
+      - JWT_SENHA=senha-super-secreta
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./Plataforma-Redacao/src/uploads:/app/src/uploads
+    labels:
+      - "traefik.enable=true"
+      # Rota para endpoints da API
+      - "traefik.http.routers.backend-api.rule=Host(`localhost`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.backend-api.entrypoints=web"
+      - "traefik.http.routers.backend-api.priority=100"
+      - "traefik.http.routers.backend-api.middlewares=api-strip"
+      - "traefik.http.routers.backend-api.service=backend-service"
+      # Middleware para remover prefixo /api
+      - "traefik.http.middlewares.api-strip.stripprefix.prefixes=/api"
+      # Rota para arquivos de upload estáticos
+      - "traefik.http.routers.backend-uploads.rule=Host(`localhost`) && PathPrefix(`/uploads`)"
+      - "traefik.http.routers.backend-uploads.entrypoints=web"
+      - "traefik.http.routers.backend-uploads.priority=100"
+      - "traefik.http.routers.backend-uploads.service=backend-service"
+      # Porta do container backend
+      - "traefik.http.services.backend-service.loadbalancer.server.port=3000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./Plataforma-Redacao-front/Plataforma-Redacao-Front/ppe-front
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_BASE_URL=http://localhost/api
+    container_name: plataforma-redacao-frontend
+    depends_on:
+      - backend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`localhost`)"
+      - "traefik.http.routers.frontend.entrypoints=web"
+      - "traefik.http.routers.frontend.priority=10"
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
