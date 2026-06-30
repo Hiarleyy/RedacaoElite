@@ -64,6 +64,8 @@ services:
       - "traefik.http.routers.backend-api.entrypoints=web"
       - "traefik.http.routers.backend-api.priority=100"
       - "traefik.http.routers.backend-api.service=backend-service"
+      - "traefik.http.routers.backend-api.middlewares=backend-stripprefix"
+      - "traefik.http.middlewares.backend-stripprefix.stripprefix.prefixes=/api"
 
       # Uploads
       - "traefik.http.routers.backend-uploads.rule=Host(`localhost`) && PathPrefix(`/uploads`)"
