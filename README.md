@@ -63,31 +63,6 @@ Infra local:
 - Traefik como proxy/reverse proxy
 - Nginx para servir o build do frontend
 
-## Configuracao
-
-Crie os arquivos `.env` apenas localmente com as variaveis abaixo. Nao versione arquivos `.env` reais.
-
-Backend: `Plataforma-Redacao/.env`
-
-```env
-DATABASE_URL="postgresql://USUARIO:SENHA@HOST:PORTA/NOME_DO_BANCO?schema=public"
-HTTP_PORT=3000
-HOST=0.0.0.0
-JWT_SENHA="troque-por-um-segredo-forte"
-```
-
-Frontend: `Plataforma-Redacao-front/.env`
-
-```env
-VITE_API_BASE_URL="http://localhost/api"
-```
-
-Observacoes:
-
-- Variaveis iniciadas com `VITE_` ficam embutidas no build do frontend; nao coloque segredos nelas.
-- Senhas, tokens, chaves privadas e URLs sensiveis devem ficar apenas em `.env` local, secrets do provedor de deploy ou variaveis de ambiente do servidor.
-- O backend tambem pode usar certificados HTTPS em ambiente de producao, quando os arquivos esperados estiverem disponiveis no servidor.
-
 ## Executando Com Docker
 
 Na raiz do projeto:
