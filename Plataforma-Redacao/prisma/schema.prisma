@@ -1,0 +1,150 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id              String          @id @db.Char(36)
+  nome            String          @db.VarChar(200)
+  email           String          @unique @db.VarChar(200)
+  tipoUsuario     Cargo           @default(STANDARD)
+  dataCriacao     DateTime        @default(now())
+  dataAtualizacao DateTime        @updatedAt
+  turmaId         String?         @db.VarChar(36)
+  password        String          @db.VarChar(200)
+  caminho         String?         @db.VarChar(100)
+  frequencias     Frequencia[]
+  notasSimulado   NotasSimulado[]
+  redacoes        Redacao[]
+  turma           Turma?          @relation(fields: [turmaId], references: [id])
+}
+
+model Turma {
+  id          String       @id @db.Char(36)
+  nome        String       @unique @db.VarChar(100)
+  dataCriacao DateTime     @default(now())
+  frequencias Frequencia[]
+  simulado    Simulado[]
+  usuarios    Usuario[]
+}
+
+model Frequencia {
+  id            String           @id @db.Char(36)
+  usuarioId     String           @db.VarChar(36)
+  turmaId       String           @db.VarChar(36)
+  justificativa String?
+  data          DateTime         @default(now())
+  status        StatusFrequencia
+  turma         Turma            @relation(fields: [turmaId], references: [id], onDelete: Cascade)
+  usuario       Usuario          @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+}
+
+model Pagamento {
+  id            String          @id @db.Char(36)
+  dataPagamento DateTime        @default(now())
+  valor         Float
+  status        StatusPagamento
+  tipoDespensa  String          @db.VarChar(100)
+}
+
+model Redacao {
+  id        String        @id @db.Char(36)
+  titulo    String        @db.VarChar(200)
+  caminho   String?       @db.VarChar(100)
+  data      DateTime      @default(now())
+  usuarioId String        @db.VarChar(36)
+  status    StatusRedacao @default(PENDENTE)
+  correcao  Correcao?
+  usuario   Usuario       @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+}
+
+model Correcao {
+  id            String   @id @db.Char(36)
+  caminho       String?  @db.VarChar(100)
+  data          DateTime @default(now())
+  feedback      String?
+  redacaoId     String   @unique @db.VarChar(36)
+  competencia01 Int?
+  competencia02 Int?
+  competencia03 Int?
+  competencia04 Int?
+  competencia05 Int?
+  nota          Int?
+  redacao       Redacao  @relation(fields: [redacaoId], references: [id], onDelete: Cascade)
+}
+
+model Proposta {
+  id      String   @id @db.VarChar(36)
+  tema    String   @db.VarChar(200)
+  caminho String   @db.VarChar(100)
+  data    DateTime @default(now())
+}
+
+model Modulo {
+  id          String   @id @db.Char(36)
+  nome        String   @db.VarChar(100)
+  descricao   String?
+  playlistUrl String   @db.VarChar(255)
+  dataCriacao DateTime @default(now())
+  videos      Video[]
+}
+
+model Video {
+  id        String @id @db.Char(36)
+  titulo    String @db.VarChar(200)
+  url       String @db.VarChar(255)
+  ordem     Int
+  moduloId  String @db.VarChar(36)
+  thumbnail String @db.VarChar(255)
+  modulo    Modulo @relation(fields: [moduloId], references: [id], onDelete: Cascade)
+}
+
+model Simulado {
+  id            String          @id @db.Char(36)
+  data          DateTime        @default(now())
+  turmaId       String          @db.VarChar(36)
+  titulo        String          @db.VarChar(200)
+  notasSimulado NotasSimulado[]
+  turma         Turma           @relation(fields: [turmaId], references: [id], onDelete: Cascade)
+}
+
+model NotasSimulado {
+  id            String   @id @default(uuid()) @db.Char(36)
+  simuladoId    String   @db.Char(36)
+  usuarioId     String   @db.Char(36)
+  competencia01 Int?
+  competencia02 Int?
+  competencia03 Int?
+  competencia04 Int?
+  competencia05 Int?
+  notaGeral     Int?
+  simulado      Simulado @relation(fields: [simuladoId], references: [id], onDelete: Cascade)
+  usuario       Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@unique([simuladoId, usuarioId])
+}
+
+enum Cargo {
+  ADMIN
+  STANDARD
+}
+
+enum StatusFrequencia {
+  PRESENTE
+  FALTOU
+  JUSTIFICADO
+}
+
+enum StatusPagamento {
+  ENTRADA
+  SAIDA   @map("SAÍDA")
+}
+
+enum StatusRedacao {
+  PENDENTE
+  CORRIGIDA
+}
