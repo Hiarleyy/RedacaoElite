@@ -137,9 +137,7 @@ const router = createBrowserRouter([
       { path: "Simulados", element: <Simulados /> },
       { path: "Simulados/:simulado_id", element: <NotasSimulados /> },
       { path: 'gerenciar-notas/:aluno_id', element: <GerenciarNotas /> },
-      { path: "calendario", element: <CalendarioAcademico /> }
-      { path: "Simulados", element: <Simulados /> },
-      { path: "Simulados/:simulado_id", element: <NotasSimulados /> },
+      { path: "calendario", element: <CalendarioAcademico /> },
       { path: "FrequenciaAlunos", element: <FrequenciaAlunos /> },
     ],
   },
