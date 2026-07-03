@@ -35,7 +35,7 @@ const Login = () => {
     } catch (error) {
       setFormMessage({ 
         type: "error", 
-        text: error.response.data.error
+        text: error.response?.data?.error || "Erro de conexão com o servidor. Verifique se o backend está ativo."
       })
     } finally {
       setIsLoading(false)

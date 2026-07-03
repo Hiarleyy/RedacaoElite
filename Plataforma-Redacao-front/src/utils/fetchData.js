@@ -154,6 +154,51 @@ const fetchData = () => {
     return response.data
   }
 
+  const getEventos = async () => {
+    const response = await axios.get(`${baseURL}/calendario`, { headers: getHeaders() })
+    return response.data.data
+  }
+
+  const getEventoById = async (id) => {
+    const response = await axios.get(`${baseURL}/calendario/${id}`, { headers: getHeaders() })
+    return response.data.data
+  }
+
+  const createEvento = async (eventoData) => {
+    const response = await axios.post(`${baseURL}/calendario`, eventoData, { headers: getHeaders() })
+    return response.data
+  }
+
+  const updateEvento = async (id, eventoData) => {
+    const response = await axios.put(`${baseURL}/calendario/${id}`, eventoData, { headers: getHeaders() })
+    return response.data
+  }
+
+  const deleteEvento = async (id) => {
+    const response = await axios.delete(`${baseURL}/calendario/${id}`, { headers: getHeaders() })
+    return response.data
+  }
+
+  const getTiposEvento = async () => {
+    const response = await axios.get(`${baseURL}/tipoEvento`, { headers: getHeaders() })
+    return response.data.data
+  }
+
+  const createTipoEvento = async (data) => {
+    const response = await axios.post(`${baseURL}/tipoEvento`, data, { headers: getHeaders() })
+    return response.data.data
+  }
+
+  const updateTipoEvento = async (id, data) => {
+    const response = await axios.put(`${baseURL}/tipoEvento/${id}`, data, { headers: getHeaders() })
+    return response.data.data
+  }
+
+  const deleteTipoEvento = async (id) => {
+    const response = await axios.delete(`${baseURL}/tipoEvento/${id}`, { headers: getHeaders() })
+    return response.data
+  }
+
   return { 
     getTurmas, 
     getTurmaById, 
@@ -176,7 +221,16 @@ const fetchData = () => {
     getNotaSimulados,
     getCorrecoes,
     getPagamentos,
-    createSimulado
+    createSimulado,
+    getEventos,
+    getEventoById,
+    createEvento,
+    updateEvento,
+    deleteEvento,
+    getTiposEvento,
+    createTipoEvento,
+    updateTipoEvento,
+    deleteTipoEvento,
   }
 }
 

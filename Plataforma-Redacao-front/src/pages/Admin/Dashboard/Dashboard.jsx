@@ -33,6 +33,7 @@ const Dashboard = () => {
   const [alunosTurma, setAlunosTurma] = useState(0);
   const [taggle, setTaggle] = useState("Análise Mensal");
   const [temDados, setTemDados] = useState(true);
+  const [eventosProximos, setEventosProximos] = useState([]);
 
   useEffect(() => {
     const loadInitialData = async () => {
@@ -41,6 +42,7 @@ const Dashboard = () => {
         getSimulados,
         getAlunos,
         getRedacoesCorrigidas,
+        getEventos,
       } = fetchData();
 
       const turmasData = await getTurmas();
@@ -60,6 +62,24 @@ const Dashboard = () => {
 
       if (turmasFormatadas.length > 0) {
         setIdTurma(turmasFormatadas[0].id);
+      }
+
+      // Carregar eventos próximos (próximos 30 dias)
+      try {
+        const eventosData = await getEventos();
+        const agora = new Date();
+        const limite = new Date();
+        limite.setDate(limite.getDate() + 30);
+        const proximos = (eventosData || [])
+          .filter((ev) => {
+            const inicio = new Date(ev.dataInicio);
+            return inicio >= agora && inicio <= limite;
+          })
+          .sort((a, b) => new Date(a.dataInicio) - new Date(b.dataInicio))
+          .slice(0, 6);
+        setEventosProximos(proximos);
+      } catch (e) {
+        setEventosProximos([]);
       }
     };
 
@@ -303,6 +323,31 @@ const Dashboard = () => {
     <div className={styles.container}>
       <Title title="Dashboard" />
       <div className={styles.container_desenpenho}>
+      {/* ── Banner de Eventos Próximos ── */}
+        {eventosProximos.length > 0 && (
+          <div className={styles.eventos_strip}>
+            <div className={styles.eventos_strip_label}>
+              <i className="fa-solid fa-calendar-days"></i>
+              <span>Próximos</span>
+            </div>
+            <div className={styles.eventos_strip_list}>
+              {eventosProximos.map((ev) => {
+                const cor = ev.tipoEvento?.cor || ev.cor || "#da9e00";
+                const dataInicio = new Date(ev.dataInicio);
+                const dia = String(dataInicio.getDate()).padStart(2, "0");
+                const mes = dataInicio.toLocaleString("pt-BR", { month: "short" }).replace(".", "");
+                return (
+                  <div key={ev.id} className={styles.evento_chip} style={{ "--ev-cor": cor }}>
+                    <span className={styles.evento_chip_dot} style={{ backgroundColor: cor }} />
+                    <span className={styles.evento_chip_date}>{dia}/{mes}</span>
+                    <span className={styles.evento_chip_title}>{ev.titulo}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         <div className={styles.CardDashs_container}>
           <CardDash title="Total de alunos" content={alunosTurma} color="#1A1A1A" />
           <CardDash title="Total de turmas" content={turmas.length} color="#1A1A1A" />
