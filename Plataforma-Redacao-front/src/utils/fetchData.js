@@ -46,8 +46,8 @@ const fetchData = () => {
     return response.data.data
   }
 
-  const getRanking = async () => {
-    const response = await axios.get(`${baseURL}/ranking`, { headers: getHeaders() })
+  const getRanking = async (turmaId = "", tipo = "redacoes_media", scope = "alunos") => {
+    const response = await axios.get(`${baseURL}/ranking?turmaId=${turmaId}&tipo=${tipo}&scope=${scope}`, { headers: getHeaders() })
     return response.data.data
   }
 

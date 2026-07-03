@@ -40,7 +40,7 @@ router.post("/usuarios/:id", authMiddleware, uploadImagens.single('file'), usuar
 router.get("/usuarios/:id/profile-image", usuariosController.getProfileImage)
 
 // Rotas relacionadas a turmas (OK)
-router.get("/turmas", authMiddleware, adminMiddleware, turmaController.index)
+router.get("/turmas", authMiddleware, turmaController.index)
 router.get("/turmas/:id", authMiddleware, adminMiddleware, turmaController.show)
 router.post("/turmas", authMiddleware, adminMiddleware, turmaController.create)
 router.put("/turmas/:id", authMiddleware, adminMiddleware, turmaController.update)
