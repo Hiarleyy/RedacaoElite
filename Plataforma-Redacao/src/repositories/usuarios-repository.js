@@ -11,7 +11,8 @@ const usuariosRepository = {
         nome: true,
         email: true,
         caminho: true,
-        tipoUsuario: true
+        tipoUsuario: true,
+        turmaId: true
       },
       orderBy: { nome: 'asc' }
     })

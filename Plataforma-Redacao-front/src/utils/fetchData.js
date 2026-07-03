@@ -5,15 +5,15 @@ const { getHeaders } = useUseful()
 
 const baseURL = import.meta.env.VITE_API_BASE_URL
 
-const fetchData = () => {  
+const fetchData = () => {
   const getTurmas = async () => {
     const response = await axios.get(`${baseURL}/turmas`, { headers: getHeaders() })
-    
+
     return response.data.data
   }
 
   const getTurmaById = async (id) => {
-    const response = await axios.get(`${baseURL}/turmas/${id}`, {headers: getHeaders() })
+    const response = await axios.get(`${baseURL}/turmas/${id}`, { headers: getHeaders() })
     return response.data.data
   }
   const getAlunos = async (filter) => {
@@ -50,9 +50,9 @@ const fetchData = () => {
     const response = await axios.get(`${baseURL}/ranking`, { headers: getHeaders() })
     return response.data.data
   }
-  
-  const getPropostas = async() =>{
-    const response = await axios.get (`${baseURL}/propostas`, { headers: getHeaders() })
+
+  const getPropostas = async () => {
+    const response = await axios.get(`${baseURL}/propostas`, { headers: getHeaders() })
     return response.data.data
   }
   const getRedacoes = async (usuarioId = false, corrigidas = false, pendentes = false) => {
@@ -87,7 +87,8 @@ const fetchData = () => {
     }
     // Buscando todas as redações
     const response = await axios.get(`${baseURL}/redacoes`, { headers: getHeaders() })
-    return response.data.data  }
+    return response.data.data
+  }
   const getRedacaoById = async (id) => {
     const response = await axios.get(`${baseURL}/redacoes/${id}`, { headers: getHeaders() })
     return response.data.data
@@ -98,7 +99,7 @@ const fetchData = () => {
     return response.data.data
   }
   const getNotasbySimuladoId = async (id) => {
-    const response = await axios.get(`${baseURL}/notaSimulado/simuladoId/${id}`,{ headers: getHeaders() })
+    const response = await axios.get(`${baseURL}/notaSimulado/simuladoId/${id}`, { headers: getHeaders() })
     return response.data.data
   }
   const getSimuladoByIdTurma = async (id) => {
@@ -114,27 +115,27 @@ const fetchData = () => {
     const response = await axios.get(`${baseURL}/redacoes`, { headers: getHeaders() })
     return response.data.data
   }
-   
-  const getCorrecoes= async () => {
+
+  const getCorrecoes = async () => {
     const response = await axios.get(`${baseURL}/correcoes`, { headers: getHeaders() })
     return response.data.data
   }
-  
+
   const getNotaSimulados = async () => {
     const response = await axios.get(`${baseURL}/notaSimulado`, { headers: getHeaders() })
     return response.data.data
-  } 
+  }
   const getNotasByUsuarioId = async (usuarioId) => {
-      const response = await axios.get(`${baseURL}/notaSimulado/usuarioId/${usuarioId}`, { headers: getHeaders() })
-      return response.data.data
-    }
-    const getSimuladoById = async (id) => {
+    const response = await axios.get(`${baseURL}/notaSimulado/usuarioId/${usuarioId}`, { headers: getHeaders() })
+    return response.data.data
+  }
+  const getSimuladoById = async (id) => {
     const response = await axios.get(`${baseURL}/simulados/${id}`, { headers: getHeaders() })
     return response.data.data
   }
 
 
-    const getRedacoesCorrigidas = async (id) => {
+  const getRedacoesCorrigidas = async (id) => {
     if (id) {
       const response = await axios.get(`${baseURL}/redacoes/${id}?corrigidas=true`, { headers: getHeaders() })
       return response.data.data
@@ -145,7 +146,7 @@ const fetchData = () => {
   }
 
   const getPagamentos = async () => {
-    const response = await axios.get(`${baseURL}/pagamentos`,  { headers: getHeaders() })
+    const response = await axios.get(`${baseURL}/pagamentos`, { headers: getHeaders() })
     return response.data.data
   }
 
@@ -153,6 +154,21 @@ const fetchData = () => {
     const response = await axios.post(`${baseURL}/simulados`, simuladoData, { headers: getHeaders() })
     return response.data
   }
+  const getFrequencias = async () => {
+    const response = await axios.get(`${baseURL}/frequencias`, { headers: getHeaders() })
+    return response.data.data
+  }
+
+  const createFrequencia = async (frequenciaData) => {
+    const response = await axios.post(`${baseURL}/frequencias`, frequenciaData, { headers: getHeaders() })
+    return response.data
+  }
+
+  const updateFrequencia = async (id, frequenciaData) => {
+    const response = await axios.put(`${baseURL}/frequencias/${id}`, frequenciaData, { headers: getHeaders() })
+    return response.data
+  }
+
 
   const getEventos = async () => {
     const response = await axios.get(`${baseURL}/calendario`, { headers: getHeaders() })
@@ -199,10 +215,10 @@ const fetchData = () => {
     return response.data
   }
 
-  return { 
-    getTurmas, 
-    getTurmaById, 
-    getAlunos, 
+  return {
+    getTurmas,
+    getTurmaById,
+    getAlunos,
     getAlunoById,
     getModulos,
     getModuloById,
@@ -231,6 +247,9 @@ const fetchData = () => {
     createTipoEvento,
     updateTipoEvento,
     deleteTipoEvento,
+    getFrequencias,
+    createFrequencia,
+    updateFrequencia
   }
 }
 
