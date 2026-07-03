@@ -7,6 +7,10 @@ class Frequencia {
     this.turmaId = frequencia.turmaId;
     this.status = frequencia.status;
     this.justificativa = frequencia.justificativa;
+    // Usa a data enviada pelo front-end (data local do Brasil) ou a data atual
+    if (frequencia.data) {
+      this.data = new Date(frequencia.data);
+    }
   }
 }
 

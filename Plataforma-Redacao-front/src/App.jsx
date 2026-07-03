@@ -19,6 +19,7 @@ import DesenpenhoAluno from "./pages/Aluno/DesenpenhoAluno/DesenpenhoAluno"
 import SimuladosAluno from "./pages/Aluno/Simulados/Simulados"
 
 // Admin Pages
+import FrequenciaAlunos from "./pages/Admin/FrequenciaAlunos/FrequenciaAlunos"
 import DashboardAdmin from "./pages/Admin/Dashboard/Dashboard"
 import NovaProposta from "./pages/Admin/NovaProposta/NovaProposta"
 import GerenciarTurmas from "./pages/Admin/GerenciarTurmas/GerenciarTurmas"
@@ -109,8 +110,8 @@ const router = createBrowserRouter([
       { path: "cursos", element: <Cursos /> },
       { path: "cursos/:video_id", element: <VideoPage /> },
       { path: "configuracoes", element: <Configuracoes /> },
-      { path: "ControleDesempenho", element:<DesenpenhoAluno />},
-      { path: "SimuladosAluno", element:<SimuladosAluno />},
+      { path: "ControleDesempenho", element: <DesenpenhoAluno /> },
+      { path: "SimuladosAluno", element: <SimuladosAluno /> },
     ],
   },
 
@@ -130,13 +131,16 @@ const router = createBrowserRouter([
       { path: "cursos/:video_id", element: <VideoPage /> },
       { path: "correcao", element: <Correcao /> },
       { path: "correcao/:redacao_id", element: <CorrigirRedacao /> },
-      { path: "pagamentos", element: <Pagamentos />},
+      { path: "pagamentos", element: <Pagamentos /> },
       { path: "gerenciar-pagamentos", element: <GerenciaPagamentos /> },
       { path: "configuracoes", element: <Configuracoes /> },
-      { path: "Simulados", element:<Simulados />},
-      { path: "Simulados/:simulado_id", element: <NotasSimulados />},
-      { path: 'gerenciar-notas/:aluno_id', element: <GerenciarNotas />},
+      { path: "Simulados", element: <Simulados /> },
+      { path: "Simulados/:simulado_id", element: <NotasSimulados /> },
+      { path: 'gerenciar-notas/:aluno_id', element: <GerenciarNotas /> },
       { path: "calendario", element: <CalendarioAcademico /> }
+      { path: "Simulados", element: <Simulados /> },
+      { path: "Simulados/:simulado_id", element: <NotasSimulados /> },
+      { path: "FrequenciaAlunos", element: <FrequenciaAlunos /> },
     ],
   },
 ]);

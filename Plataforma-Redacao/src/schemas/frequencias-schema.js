@@ -5,6 +5,7 @@ const criarFrequenciaSchema = z.object({
     turmaId: z.string().uuid(),
     status: z.enum(["PRESENTE", "FALTOU", "JUSTIFICADO"]),
     justificativa: z.string().optional(),
+    data: z.string().optional(),
 
 }).strict()
 
