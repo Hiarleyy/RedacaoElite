@@ -17,6 +17,8 @@ const notasSimuladoController = require("./controllers/notasSimulado-Controller"
 const uploadImagens = require('./middlewares/upload-imagens')
 const adminMiddleware = require("./middlewares/admin-middleware")
 const authMiddleware = require("./middlewares/auth-middleware")
+const calendarioController = require("./controllers/calendario-controller")
+const tipoEventoController = require("./controllers/tipoEvento-controller")
 
 const router = express.Router()
 
@@ -109,5 +111,19 @@ router.get("/notaSimulado/:id", authMiddleware, notasSimuladoController.show)
 router.delete("/notaSimulado/:id", authMiddleware, adminMiddleware, notasSimuladoController.delete)
 // buscar notas de um simulado especifico
 router.get("/notaSimulado/simuladoId/:id", authMiddleware, notasSimuladoController.showBySimulado)
+
+// Rotas relacionadas ao calendário acadêmico
+router.get("/calendario", authMiddleware, calendarioController.index)
+router.get("/calendario/:id", authMiddleware, calendarioController.show)
+router.post("/calendario", authMiddleware, adminMiddleware, calendarioController.create)
+router.put("/calendario/:id", authMiddleware, adminMiddleware, calendarioController.update)
+router.delete("/calendario/:id", authMiddleware, adminMiddleware, calendarioController.delete)
+
+// Rotas relacionadas aos tipos de evento do calendário
+router.get("/tipoEvento", authMiddleware, tipoEventoController.index)
+router.get("/tipoEvento/:id", authMiddleware, tipoEventoController.show)
+router.post("/tipoEvento", authMiddleware, adminMiddleware, tipoEventoController.create)
+router.put("/tipoEvento/:id", authMiddleware, adminMiddleware, tipoEventoController.update)
+router.delete("/tipoEvento/:id", authMiddleware, adminMiddleware, tipoEventoController.delete)
 
 module.exports = router

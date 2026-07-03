@@ -18,6 +18,7 @@ const links = [
   { name: "Ranking", icon: "fa-solid fa-ranking-star", path: "ranking" },
   { name: "Cursos", icon: "fa-solid fa-tv", path: "cursos" },
   { name: "Simulados", icon: "fa-solid fa-bullseye", path: "Simulados" },
+  { name: "Calendário acadêmico", icon: "fa-solid fa-calendar-days", path: "calendario" },
   { name: "Configuracoes", icon: "fa-solid fa-gear", path: "configuracoes" },
 ]
 
