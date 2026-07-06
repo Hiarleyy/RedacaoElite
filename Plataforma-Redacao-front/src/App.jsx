@@ -35,6 +35,7 @@ import NotasSimulados from "./pages/Admin/NotasSimulados/NotasSimulados"
 import GerenciaPagamentos from "./pages/Admin/GerenciaPagamentos/GerenciaPagamentos"
 import GerenciarNotas from "./pages/Admin/GerenciarNotas/GerenciarNotas"
 import CalendarioAcademico from "./pages/Admin/CalendarioAcademico/CalendarioAcademico"
+import MatriculaAluno from "./pages/Admin/MatriculaAluno/MatriculaAluno"
 
 const isAuthenticated = () => {
   return localStorage.getItem("user_access_data") !== null
@@ -139,6 +140,7 @@ const router = createBrowserRouter([
       { path: 'gerenciar-notas/:aluno_id', element: <GerenciarNotas /> },
       { path: "calendario", element: <CalendarioAcademico /> },
       { path: "FrequenciaAlunos", element: <FrequenciaAlunos /> },
+      { path: "MatriculaAluno", element: <MatriculaAluno /> },
     ],
   },
 ]);

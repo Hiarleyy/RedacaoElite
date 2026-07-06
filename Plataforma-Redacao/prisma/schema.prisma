@@ -20,7 +20,28 @@ model Usuario {
   frequencias     Frequencia[]
   notasSimulado   NotasSimulado[]
   redacoes        Redacao[]
+  matricula       Matricula?
   turma           Turma?          @relation(fields: [turmaId], references: [id])
+}
+
+model Matricula {
+  id                   String   @id @db.Char(36)
+  usuarioId            String   @unique @db.Char(36)
+  cpf                  String   @db.VarChar(14)
+  dataNascimento       DateTime?
+  genero               String?  @db.VarChar(50)
+  telefone             String   @db.VarChar(20)
+  endereco             String?  @db.VarChar(200)
+  bairro               String?  @db.VarChar(100)
+  cidade               String?  @db.VarChar(100)
+  nomeResponsavel      String?  @db.VarChar(200)
+  vinculoResponsavel   String?  @db.VarChar(50)
+  telefoneResponsavel  String?  @db.VarChar(20)
+  dataInicio           DateTime
+  comoConheceu         String?  @db.VarChar(100)
+  observacoes          String?  @db.Text
+  dataCriacao          DateTime @default(now())
+  usuario              Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 }
 
 model Turma {
