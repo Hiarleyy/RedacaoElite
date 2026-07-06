@@ -19,6 +19,7 @@ const adminMiddleware = require("./middlewares/admin-middleware")
 const authMiddleware = require("./middlewares/auth-middleware")
 const calendarioController = require("./controllers/calendario-controller")
 const tipoEventoController = require("./controllers/tipoEvento-controller")
+const matriculasController = require("./controllers/matriculas-controller")
 
 const router = express.Router()
 
@@ -125,5 +126,11 @@ router.get("/tipoEvento/:id", authMiddleware, tipoEventoController.show)
 router.post("/tipoEvento", authMiddleware, adminMiddleware, tipoEventoController.create)
 router.put("/tipoEvento/:id", authMiddleware, adminMiddleware, tipoEventoController.update)
 router.delete("/tipoEvento/:id", authMiddleware, adminMiddleware, tipoEventoController.delete)
+
+// Rotas relacionadas a matrículas
+router.post("/matriculas", authMiddleware, adminMiddleware, matriculasController.create)
+router.get("/matriculas", authMiddleware, adminMiddleware, matriculasController.index)
+router.get("/matriculas/:id", authMiddleware, adminMiddleware, matriculasController.show)
+router.get("/matriculas/usuario/:usuarioId", authMiddleware, adminMiddleware, matriculasController.showByUsuario)
 
 module.exports = router

@@ -169,6 +169,22 @@ const fetchData = () => {
     return response.data
   }
 
+  // ── Matrículas ───────────────────────────────────────────────────────────
+  const createMatricula = async (matriculaData) => {
+    const response = await axios.post(`${baseURL}/matriculas`, matriculaData, { headers: getHeaders() })
+    return response.data
+  }
+
+  const getMatriculas = async () => {
+    const response = await axios.get(`${baseURL}/matriculas`, { headers: getHeaders() })
+    return response.data.data
+  }
+
+  const getMatriculaByUsuarioId = async (usuarioId) => {
+    const response = await axios.get(`${baseURL}/matriculas/usuario/${usuarioId}`, { headers: getHeaders() })
+    return response.data.data
+  }
+
 
   const getEventos = async () => {
     const response = await axios.get(`${baseURL}/calendario`, { headers: getHeaders() })
@@ -249,7 +265,10 @@ const fetchData = () => {
     deleteTipoEvento,
     getFrequencias,
     createFrequencia,
-    updateFrequencia
+    updateFrequencia,
+    createMatricula,
+    getMatriculas,
+    getMatriculaByUsuarioId
   }
 }
 

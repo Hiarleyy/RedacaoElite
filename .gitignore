@@ -9,3 +9,4 @@
 **/src/uploads/
 *.log
 *.local
+*.txt
