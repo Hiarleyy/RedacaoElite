@@ -23,7 +23,9 @@ const matriculasRepository = {
         telefoneResponsavel: true,
         dataInicio:          true,
         comoConheceu:        true,
-        observacoes:         true,
+        condicaoMedica:      true,
+        deficiencia:         true,
+        necessidadeEducacional: true,
         dataCriacao:         true,
         usuario: {
           select: { id: true, nome: true, email: true, turmaId: true }

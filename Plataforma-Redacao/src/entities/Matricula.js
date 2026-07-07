@@ -15,8 +15,10 @@ class Matricula {
     this.vinculoResponsavel  = data.vinculoResponsavel  ?? null
     this.telefoneResponsavel = data.telefoneResponsavel ?? null
     this.dataInicio          = new Date(data.dataInicio)
-    this.comoConheceu        = data.comoConheceu  ?? null
-    this.observacoes         = data.observacoes   ?? null
+    this.comoConheceu           = data.comoConheceu  ?? null
+    this.condicaoMedica         = data.condicaoMedica ?? null
+    this.deficiencia            = data.deficiencia ?? null
+    this.necessidadeEducacional = data.necessidadeEducacional ?? null
   }
 }
 

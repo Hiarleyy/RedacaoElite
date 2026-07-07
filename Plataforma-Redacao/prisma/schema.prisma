@@ -38,10 +38,12 @@ model Matricula {
   vinculoResponsavel   String?  @db.VarChar(50)
   telefoneResponsavel  String?  @db.VarChar(20)
   dataInicio           DateTime
-  comoConheceu         String?  @db.VarChar(100)
-  observacoes          String?  @db.Text
-  dataCriacao          DateTime @default(now())
-  usuario              Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  comoConheceu           String?  @db.VarChar(100)
+  condicaoMedica         String?  @db.Text
+  deficiencia            String?  @db.Text
+  necessidadeEducacional String?  @db.Text
+  dataCriacao            DateTime @default(now())
+  usuario                Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 }
 
 model Turma {
