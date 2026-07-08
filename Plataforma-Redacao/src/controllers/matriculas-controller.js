@@ -45,6 +45,21 @@ const matriculasController = {
     } catch (error) {
       next(error)
     }
+  },
+
+  // PUT /matriculas/usuario/:usuarioId
+  updateByUsuario: async (req, res, next) => {
+    try {
+      const { usuarioId } = req.params
+      const corpo = req.body
+      const matricula = await matriculasModel.atualizarMatriculaPorUsuarioId(usuarioId, corpo)
+      res.status(200).json({
+        message: "Matrícula salva com sucesso.",
+        data: matricula
+      })
+    } catch (error) {
+      next(error)
+    }
   }
 }
 

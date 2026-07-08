@@ -9,22 +9,22 @@ const matriculasRepository = {
     const novaMatricula = await prisma.matricula.create({
       data: matricula,
       select: {
-        id:                  true,
-        usuarioId:           true,
-        cpf:                 true,
-        dataNascimento:      true,
-        genero:              true,
-        telefone:            true,
-        endereco:            true,
-        bairro:              true,
-        cidade:              true,
-        nomeResponsavel:     true,
-        vinculoResponsavel:  true,
+        id: true,
+        usuarioId: true,
+        cpf: true,
+        dataNascimento: true,
+        genero: true,
+        telefone: true,
+        endereco: true,
+        bairro: true,
+        cidade: true,
+        nomeResponsavel: true,
+        vinculoResponsavel: true,
         telefoneResponsavel: true,
-        dataInicio:          true,
-        comoConheceu:        true,
-        observacoes:         true,
-        dataCriacao:         true,
+        dataInicio: true,
+        comoConheceu: true,
+        observacoes: true,
+        dataCriacao: true,
         usuario: {
           select: { id: true, nome: true, email: true, turmaId: true }
         }
@@ -36,7 +36,7 @@ const matriculasRepository = {
 
   // Retorna todas as matrículas (com dados do usuário)
   retorneTodasAsMatriculas: async () => {
-    return await prisma.matricula.findMany({
+    const matriculas = await prisma.matricula.findMany({
       include: {
         usuario: {
           select: { id: true, nome: true, email: true, turmaId: true, turma: { select: { nome: true } } }
@@ -44,11 +44,13 @@ const matriculasRepository = {
       },
       orderBy: { dataCriacao: "desc" }
     })
+
+    return matriculas.map(decryptAndMaskMatricula)
   },
 
   // Retorna uma matrícula pelo usuarioId
   retorneMatriculaPorUsuarioId: async (usuarioId) => {
-    return await prisma.matricula.findUnique({
+    const matricula = await prisma.matricula.findUnique({
       where: { usuarioId },
       include: {
         usuario: {
@@ -56,11 +58,13 @@ const matriculasRepository = {
         }
       }
     })
+
+    return decryptMatricula(matricula)
   },
 
   // Retorna uma matrícula pelo id
   retorneMatriculaPorId: async (id) => {
-    return await prisma.matricula.findUnique({
+    const matricula = await prisma.matricula.findUnique({
       where: { id },
       include: {
         usuario: {
@@ -72,3 +76,4 @@ const matriculasRepository = {
 }
 
 module.exports = matriculasRepository
+

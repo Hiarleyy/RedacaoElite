@@ -3,7 +3,7 @@ const usuariosRepository   = require("../repositories/usuarios-repository")
 const usuariosModel        = require("./usuarios-model")
 const HttpError            = require("../error/http-error")
 const bcrypt               = require("bcrypt")
-const { criarMatriculaSchema } = require("../schemas/matricula-schema")
+const { criarMatriculaSchema, atualizarMatriculaSchema } = require("../schemas/matricula-schema")
 
 const matriculasModel = {
   /**
@@ -83,6 +83,23 @@ const matriculasModel = {
   retornarMatriculaPorId: async (id) => {
     const matricula = await matriculasRepository.retorneMatriculaPorId(id)
     if (!matricula) throw new HttpError(404, "Matrícula não encontrada.")
+    return matricula
+  },
+
+  // Atualiza ou cria uma matrícula vinculada a um usuário existente
+  atualizarMatriculaPorUsuarioId: async (usuarioId, data) => {
+    // 1. Valida com o schema Zod
+    const corpo = atualizarMatriculaSchema.safeParse(data)
+    if (!corpo.success) {
+      throw new HttpError(400, "Erro de validação: Verifique se os dados enviados estão corretos.")
+    }
+
+    // Verifica se o usuário existe
+    const usuarioExiste = await usuariosRepository.retorneUmUsuarioPeloId(usuarioId)
+    if (!usuarioExiste) throw new HttpError(404, "Usuário não encontrado.")
+
+    // 2. Faz o upsert da matrícula
+    const matricula = await matriculasRepository.upsertMatriculaPorUsuarioId(usuarioId, corpo.data)
     return matricula
   }
 }

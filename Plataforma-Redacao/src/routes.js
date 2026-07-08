@@ -35,8 +35,8 @@ router.get("/usuarios/:id", authMiddleware, usuariosController.show)
 router.post("/usuarios", authMiddleware, adminMiddleware, usuariosController.create)
 router.put("/usuarios/:id", authMiddleware, adminMiddleware, usuariosController.update)
 router.delete("/usuarios/:id", authMiddleware, adminMiddleware, usuariosController.delete)
-router.post("/usuarios/:id/trocar-senha", authMiddleware, usuariosController.updatePassword) 
-router.patch("/usuarios/:id/resetar-senha", authMiddleware, usuariosController.resetPassword) 
+router.post("/usuarios/:id/trocar-senha", authMiddleware, usuariosController.updatePassword)
+router.patch("/usuarios/:id/resetar-senha", authMiddleware, usuariosController.resetPassword)
 router.post("/usuarios/:id", authMiddleware, uploadImagens.single('file'), usuariosController.profileUpload)
 router.get("/usuarios/:id/profile-image", usuariosController.getProfileImage)
 
@@ -48,11 +48,11 @@ router.put("/turmas/:id", authMiddleware, adminMiddleware, turmaController.updat
 router.delete("/turmas/:id", authMiddleware, adminMiddleware, turmaController.delete)
 
 // Rotas relacionadas a pagamentos
-router.get("/pagamentos", authMiddleware, adminMiddleware, pagamentosController.index ) 
+router.get("/pagamentos", authMiddleware, adminMiddleware, pagamentosController.index)
 router.post('/pagamentos', authMiddleware, adminMiddleware, pagamentosController.create)
 router.put('/pagamentos/:id', authMiddleware, adminMiddleware, pagamentosController.update)
 router.delete('/pagamentos/:id', authMiddleware, adminMiddleware, pagamentosController.delete)
-router.get("/pagamentos/:id", authMiddleware, adminMiddleware, pagamentosController.show) 
+router.get("/pagamentos/:id", authMiddleware, adminMiddleware, pagamentosController.show)
 
 // Rotas relacionadas a modulos
 router.get("/modulos", authMiddleware, modulosController.index)
@@ -62,11 +62,11 @@ router.delete("/modulos/:id", authMiddleware, adminMiddleware, modulosController
 router.put("/modulos/:id", authMiddleware, adminMiddleware, modulosController.update)
 
 // Rotas relacionadas a redações
-router.get("/redacoes", authMiddleware,redacoesController.index)
-router.get("/redacoes/:id", authMiddleware,redacoesController.show)
+router.get("/redacoes", authMiddleware, redacoesController.index)
+router.get("/redacoes/:id", authMiddleware, redacoesController.show)
 router.post("/redacoes/:usuarioId/upload", uploadRedacoes.single("file"), redacoesController.create)
-router.get("/redacoes/download/:id",redacoesController.download)
-router.delete("/redacoes/:id", authMiddleware,redacoesController.delete)
+router.get("/redacoes/download/:id", redacoesController.download)
+router.delete("/redacoes/:id", authMiddleware, redacoesController.delete)
 
 //Rotas relacionadas a propostas
 router.post("/propostas", authMiddleware, adminMiddleware, uploadPropostas.single("file"), propostasController.create)
@@ -79,18 +79,18 @@ router.delete("/propostas/:id", authMiddleware, adminMiddleware, propostasContro
 router.get("/correcoes", correcoesController.index)
 router.post("/correcoes/:usuarioId/upload", uploadCorrecoes.single("file"), correcoesController.create)
 router.get("/correcoes/download/:id", correcoesController.download)
-router.put("/correcoes/:id",authMiddleware,  correcoesController.update)
+router.put("/correcoes/:id", authMiddleware, correcoesController.update)
 
 // Rotas relacionadas a frequencia
-router.get("/frequencias", authMiddleware, adminMiddleware, frequenciasController.index) 
+router.get("/frequencias", authMiddleware, adminMiddleware, frequenciasController.index)
 router.post("/frequencias", authMiddleware, adminMiddleware, frequenciasController.create)
 router.get("/frequencias/:id", authMiddleware, adminMiddleware, frequenciasController.show)
-router.put ("/frequencias/:id", authMiddleware, adminMiddleware, frequenciasController.update)
+router.put("/frequencias/:id", authMiddleware, adminMiddleware, frequenciasController.update)
 router.delete("/frequencias/:id", authMiddleware, adminMiddleware, frequenciasController.delete)
-router.get("/frequencias/aluno/:id", authMiddleware, adminMiddleware, frequenciasController.showByAluno) 
+router.get("/frequencias/aluno/:id", authMiddleware, adminMiddleware, frequenciasController.showByAluno)
 
 // Rota que retorna o ranking de alunos
-router.get("/ranking",authMiddleware, rankingController.index)
+router.get("/ranking", authMiddleware, rankingController.index)
 
 // Rota que retorna um vídeo
 router.get("/videos/:id", authMiddleware, videosController.show)
@@ -106,7 +106,7 @@ router.get("/simulados/turmaId/:id", authMiddleware, adminMiddleware, simuladoCo
 router.delete("/simulados/:id", authMiddleware, adminMiddleware, simuladoController.delete)
 
 // rotas das notas de simulado
-router.post ("/notaSimulado", authMiddleware, adminMiddleware, notasSimuladoController.create)
+router.post("/notaSimulado", authMiddleware, adminMiddleware, notasSimuladoController.create)
 router.get("/notaSimulado", authMiddleware, notasSimuladoController.index)
 router.get("/notaSimulado/:id", authMiddleware, notasSimuladoController.show)
 router.delete("/notaSimulado/:id", authMiddleware, adminMiddleware, notasSimuladoController.delete)

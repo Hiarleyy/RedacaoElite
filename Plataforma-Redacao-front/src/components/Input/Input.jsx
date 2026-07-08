@@ -8,12 +8,13 @@ const Input = ({
   onKeyDown = undefined, 
   color = "#2E3238", 
   icon = null,
+  required = true,
   children }) => {
   return (
     <div className={styles.input_card} style={{ backgroundColor: color }}>
       {icon && <span className={styles.icon}>{icon}</span>}
       {children}
-      <input type={type} placeholder={placeholder} value={value} onChange={onChange} onKeyDown={onKeyDown} required />
+      <input type={type} placeholder={placeholder} value={value} onChange={onChange} onKeyDown={onKeyDown} required={required} />
     </div>
   )
 }

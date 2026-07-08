@@ -1,15 +1,10 @@
 import styles from "./styles.module.css"
 import Title from "../../../components/Title/Title"
-import Input from "../../../components/Input/Input"
-import Button from "../../../components/Button/Button"
 import Message from "../../../components/Message/Message"
-import Pagination from "../../../components/Pagination/Pagination"
-import InputSelect from "../../../components/InputSelect/InputSelect"
 import { useState, useEffect } from "react"
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import fetchData from "../../../utils/fetchData"
-import InfoCard from "../../../components/InfoCard/InfoCard"
 import Loading from "../../../components/Loading/Loading"
 import defaultProfilePicture from '../../../images/Defalult_profile_picture.jpg';
 import useUseful from "../../../utils/useUseful"
@@ -18,121 +13,157 @@ import DeleteModal from "../../../components/DeleteModal/DeleteModal"
 const baseURL = import.meta.env.VITE_API_BASE_URL
 
 const GerenciarAlunos = () => {
-  const [formMessage, setFormMessage] = useState(null)
-  const [nome, setNome] = useState("")
-  const [email, setEmail] = useState("")
-  const [tipoUsuario, setTipoUsuario] = useState("")
-  const [turma, setTurma] = useState("")
-  const [turmas, setTurmas] = useState([])
-  const [alunos, setAlunos] = useState([])
-  const [search, setSearch] = useState("")
-
-  const [isLoading, setIsLoading] = useState(false)            
-  const [isLoadingData, setIsLoadingData] = useState(false)    
-  const [modalIsClicked, setModalIsClicked] = useState(false)
-  const [currentAlunoId, setCurrentAlunoId] = useState("")
-
-  const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 5
-  
-  const indexOfLastItem = currentPage * itemsPerPage
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const currentAlunos = alunos.slice(indexOfFirstItem, indexOfLastItem)
-
   const navigate = useNavigate()
   const { getHeaders } = useUseful()
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setIsLoading(true)
+  // ── Estados Principais ────────────────────────────────────────────────────
+  const [alunos, setAlunos] = useState([])
+  const [turmas, setTurmas] = useState([])
+  const [search, setSearch] = useState("")
+  
+  // ── Painel de Filtros ─────────────────────────────────────────────────────
+  const [showFilters, setShowFilters] = useState(false)
+  const [selectedTurma, setSelectedTurma] = useState("")
+  const [dateStart, setDateStart] = useState("")
+  const [dateEnd, setDateEnd] = useState("")
 
-    try {
-      const response = await axios.post(
-        `${baseURL}/usuarios`, 
-        { 
-          nome,
-          email,
-          tipoUsuario,
-          turmaId: turma 
-        }, 
-        { headers: getHeaders() }
-      )
+  // Filtros aplicados efetivamente
+  const [appliedTurma, setAppliedTurma] = useState("")
+  const [appliedDateStart, setAppliedDateStart] = useState("")
+  const [appliedDateEnd, setAppliedDateEnd] = useState("")
 
-      setFormMessage({ 
-        type: "success", 
-        text: `Usuário(a) ${response.data.data.nome} criado(a) com sucesso.` 
-      })
+  // ── Estados de UI ─────────────────────────────────────────────────────────
+  const [isLoadingData, setIsLoadingData] = useState(false)    
+  const [modalIsClicked, setModalIsClicked] = useState(false)
+  const [currentAlunoId, setCurrentAlunoId] = useState("")
+  const [activeMenuId, setActiveMenuId] = useState(null)
 
-      setNome("")
-      setEmail("")
-      setTipoUsuario("")
-      setTurma("")
+  // ── Paginação ─────────────────────────────────────────────────────────────
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(10)
 
-      await getAlunos()
-    } catch (error) {
-      setFormMessage({
-        type: "error",
-        text: error.response.data.error
-      });
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  // ── Fechar menu de ações ao clicar fora ────────────────────────────────────
+  useEffect(() => {
+    const handleCloseMenu = () => setActiveMenuId(null)
+    window.addEventListener("click", handleCloseMenu)
+    return () => window.removeEventListener("click", handleCloseMenu)
+  }, [])
 
-  const getAlunos = async (busca) => {
+  // ── Carregar Dados ────────────────────────────────────────────────────────
+  const loadInitialData = async () => {
     setIsLoadingData(true)
     try {
-      const { getAlunos } = fetchData() 
-      const response = await getAlunos(busca)
-      setAlunos(response)
+      const { getAlunos, getTurmas } = fetchData() 
+      const alunosResponse = await getAlunos()
+      const turmasResponse = await getTurmas()
+      setAlunos(alunosResponse || [])
+      setTurmas(turmasResponse || [])
     } catch (error) {
-      console.error("Erro ao buscar alunos:", error)
-      setAlunos([])
+      console.error("Erro ao carregar dados iniciais:", error)
     } finally {
       setIsLoadingData(false)
     }
   }
 
+  useEffect(() => {
+    loadInitialData()
+  }, [])
+
   const deleteAluno = async (id) => {
     await axios.delete(`${baseURL}/usuarios/${id}`, { headers: getHeaders() })
-    await getAlunos()
+    await loadInitialData()
   }
 
-  // Debounce para a pesquisa - aguarda 500ms após parar de digitar
-  useEffect(() => {
+  // ── Ações de Filtros ──────────────────────────────────────────────────────
+  const handleApplyFilters = () => {
+    setAppliedTurma(selectedTurma)
+    setAppliedDateStart(dateStart)
+    setAppliedDateEnd(dateEnd)
     setCurrentPage(1)
-    
-    const timeoutId = setTimeout(() => {
-      getAlunos(search)
-    }, 500) // 500ms de delay
-    
-    return () => clearTimeout(timeoutId)
-  }, [search])
+  }
 
-  useEffect(() => {
-    const getData = async () => {
-      setIsLoadingData(true)
-      try {
-        const { getTurmas, getAlunos } = fetchData() 
-        const turmasResponse = await getTurmas()
-        const alunosResponse = await getAlunos()
+  const handleClearFilters = () => {
+    setSearch("")
+    setSelectedTurma("")
+    setDateStart("")
+    setDateEnd("")
+    setAppliedTurma("")
+    setAppliedDateStart("")
+    setAppliedDateEnd("")
+    setCurrentPage(1)
+  }
 
-        const options = turmasResponse.map(item => ({
-          value: item.id,       
-          label: item.nome
-        }))
+  // ── Filtragem dos Alunos ──────────────────────────────────────────────────
+  const filteredAlunos = alunos.filter((aluno) => {
+    const matchesSearch =
+      search === "" ||
+      aluno.nome.toLowerCase().includes(search.toLowerCase()) ||
+      aluno.email.toLowerCase().includes(search.toLowerCase())
 
-        setTurmas(options)
-        setAlunos(alunosResponse)
-      } catch (error) {
-        console.error("Erro ao carregar dados iniciais:", error)
-      } finally {
-        setIsLoadingData(false)
+    const matchesTurma = appliedTurma === "" || aluno.turmaId === appliedTurma
+
+    let matchesDate = true
+    if (appliedDateStart || appliedDateEnd) {
+      const createdDate = new Date(aluno.dataCriacao)
+      if (appliedDateStart) {
+        const start = new Date(appliedDateStart + "T00:00:00")
+        if (createdDate < start) matchesDate = false
+      }
+      if (appliedDateEnd) {
+        const end = new Date(appliedDateEnd + "T23:59:59")
+        if (createdDate > end) matchesDate = false
       }
     }
 
-    getData()
-  }, [])
+    return matchesSearch && matchesTurma && matchesDate
+  })
+
+  // ── Paginação Lógica ──────────────────────────────────────────────────────
+  const indexOfLastItem = currentPage * itemsPerPage
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage
+  const currentAlunos = filteredAlunos.slice(indexOfFirstItem, indexOfLastItem)
+  const totalPages = Math.ceil(filteredAlunos.length / itemsPerPage)
+
+  const getPageNumbers = (current, total) => {
+    const pages = []
+    if (total <= 5) {
+      for (let i = 1; i <= total; i++) pages.push(i)
+    } else {
+      if (current <= 3) {
+        pages.push(1, 2, 3, "...", total)
+      } else if (current >= total - 2) {
+        pages.push(1, "...", total - 2, total - 1, total)
+      } else {
+        pages.push(1, "...", current, "...", total)
+      }
+    }
+    return pages
+  }
+
+  // ── Formatação de Datas e Badges ──────────────────────────────────────────
+  const formatLocalDate = (dateString) => {
+    if (!dateString) return "—"
+    const date = new Date(dateString)
+    return date.toLocaleDateString("pt-BR")
+  }
+
+  const getTurmaBadgeStyle = (turmaName) => {
+    if (!turmaName) return { backgroundColor: "#3a3a3a", color: "#ccc", border: "1px solid #444" }
+    const name = turmaName.toLowerCase()
+    if (name.includes("turma a") || name.includes("veterano")) {
+      return { backgroundColor: "rgba(107, 70, 193, 0.2)", color: "#B794F4", border: "1px solid rgba(107, 70, 193, 0.4)" }
+    } else if (name.includes("turma b") || name.includes("extensivo")) {
+      return { backgroundColor: "rgba(49, 130, 206, 0.2)", color: "#63B3ED", border: "1px solid rgba(49, 130, 206, 0.4)" }
+    } else if (name.includes("turma c") || name.includes("intensivo")) {
+      return { backgroundColor: "rgba(49, 151, 149, 0.2)", color: "#4FD1C5", border: "1px solid rgba(49, 151, 149, 0.4)" }
+    }
+    return { backgroundColor: "rgba(221, 107, 32, 0.2)", color: "#F6AD55", border: "1px solid rgba(221, 107, 32, 0.4)" }
+  }
+
+  // Contador de filtros aplicados
+  let activeFiltersCount = 0
+  if (appliedTurma) activeFiltersCount++
+  if (appliedDateStart || appliedDateEnd) activeFiltersCount++
 
   return (
     <div className={styles.container}>
@@ -149,115 +180,268 @@ const GerenciarAlunos = () => {
       <Title title="Gerenciar alunos" />
 
       <div className={styles.main_content}>
-        <div className={styles.bg_left}>
-          {isLoadingData ? (
-            <div className={styles.loading}><Loading /></div>
-          ) : (
-            <>
-              <Input 
-                type="text" 
-                placeholder="Pesquise por um aluno" 
-                color="#1A1A1A" 
+        <div className={styles.card_wrapper}>
+          
+          {/* ── BARRA DE FERRAMENTAS PRINCIPAL ──────────────────────────────── */}
+          <div className={styles.toolbar}>
+            <div className={styles.search_wrapper}>
+              <i className="fa-solid fa-magnifying-glass" />
+              <input
+                type="text"
+                placeholder="Buscar por nome ou email..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
+              />
+              <span className={styles.shortcut}>⌘ K</span>
+            </div>
+
+            <div className={styles.toolbar_actions}>
+              <button
+                type="button"
+                className={`${styles.btn_filter} ${activeFiltersCount > 0 ? styles.btn_filter_active : ""}`}
+                onClick={() => setShowFilters(!showFilters)}
               >
-                <i className="fa-solid fa-magnifying-glass"></i>
-              </Input>
+                <i className="fa-solid fa-filter" />
+                Filtros
+                {activeFiltersCount > 0 && (
+                  <span className={styles.filter_badge}>{activeFiltersCount}</span>
+                )}
+              </button>
 
-              {alunos.length === 0 ? (
-                <Message 
-                  text="Nenhum aluno cadastrado." 
-                  text_color="#E0E0E0"
-                  marginTop="30px"
-                />
-              ) : (
-                <>
-                  <div className={styles.alunos_container}>
-                    {currentAlunos.map((aluno) => (
-                      <InfoCard 
-                        key={aluno.id}
-                        img={aluno.caminho ? `${baseURL}/usuarios/${aluno.id}/profile-image` : defaultProfilePicture}
-                        title={aluno.nome} 
-                        subtitle={aluno.email} 
-                        link={aluno.id}
-                        onClick={() => {
-                          setCurrentAlunoId(aluno.id)
-                          setModalIsClicked(true)
-                        }}
-                      />
+              <button
+                type="button"
+                className={styles.btn_add_aluno}
+                onClick={() => navigate("/admin/MatriculaAluno")}
+              >
+                <i className="fa-solid fa-circle-plus" />
+                Adicionar aluno
+              </button>
+            </div>
+          </div>
+
+          {/* ── PAINEL DE FILTROS EXPANSÍVEL ────────────────────────────────── */}
+          {showFilters && (
+            <div className={styles.filter_panel}>
+              <div className={styles.filter_grid}>
+                <div className={styles.filter_item}>
+                  <label>Turma</label>
+                  <select
+                    value={selectedTurma}
+                    onChange={(e) => setSelectedTurma(e.target.value)}
+                  >
+                    <option value="">Todas as turmas</option>
+                    {turmas.map((t) => (
+                      <option key={t.id} value={t.id}>
+                        {t.nome}
+                      </option>
                     ))}
-                  </div>
+                  </select>
+                </div>
 
-                  <div className={styles.pagination}>
-                    <Pagination
-                      currentPage={currentPage}
-                      totalItems={alunos.length}
-                      itemsPerPage={itemsPerPage}
-                      setCurrentPage={setCurrentPage}
-                    />
-                  </div>
-                </>
-              )}
-            </>
+                <div className={styles.filter_item}>
+                  <label>Cadastro (De)</label>
+                  <input
+                    type="date"
+                    value={dateStart}
+                    onChange={(e) => setDateStart(e.target.value)}
+                  />
+                </div>
+
+                <div className={styles.filter_item}>
+                  <label>Cadastro (Até)</label>
+                  <input
+                    type="date"
+                    value={dateEnd}
+                    onChange={(e) => setDateEnd(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.filter_panel_actions}>
+                <button
+                  type="button"
+                  className={styles.btn_clear_filters}
+                  onClick={handleClearFilters}
+                >
+                  Limpar filtros
+                </button>
+                <button
+                  type="button"
+                  className={styles.btn_apply_filters}
+                  onClick={handleApplyFilters}
+                >
+                  Aplicar filtros
+                </button>
+              </div>
+            </div>
           )}
-        </div>
 
-        <div className={styles.bg_right}>
-          <p className={styles.form_title}>Cadastre um novo aluno</p>
-
-          <form onSubmit={handleSubmit}>
-            <Input
-              type="text"
-              placeholder="Nome"
-              color="#1A1A1A"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-            >
-              <i className="fa-solid fa-user"></i>
-            </Input>
-            <Input
-              type="text"
-              placeholder="Email"
-              color="#1A1A1A"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            >
-              <i className="fa-solid fa-envelope"></i>
-            </Input>
-
-            <InputSelect 
-              color="#1A1A1A"
-              text="Selecione o tipo de usuário"
-              value={tipoUsuario}
-              onChange={(e) => setTipoUsuario(e.target.value)}
-              options={[
-                { value: "STANDARD", label: "STANDARD" },
-                { value: "ADMIN", label: "ADMIN" }
-              ]}
+          {/* ── TABELA DE ALUNOS ────────────────────────────────────────────── */}
+          {isLoadingData ? (
+            <div className={styles.loading_box}>
+              <Loading />
+            </div>
+          ) : filteredAlunos.length === 0 ? (
+            <Message
+              text="Nenhum aluno encontrado."
+              text_color="#E0E0E0"
+              marginTop="40px"
             />
+          ) : (
+            <div className={styles.table_container}>
+              <table className={styles.custom_table}>
+                <thead>
+                  <tr>
+                    <th>ALUNO</th>
+                    <th>TURMA</th>
+                    <th>CADASTRO</th>
+                    <th style={{ textAlign: "center" }}>AÇÕES</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentAlunos.map((aluno) => (
+                    <tr
+                      key={aluno.id}
+                      onClick={() => navigate(`/admin/gerenciar-alunos/${aluno.id}`)}
+                    >
+                      <td>
+                        <div className={styles.aluno_info_cell}>
+                          <img
+                            src={aluno.caminho ? `${baseURL}/usuarios/${aluno.id}/profile-image` : defaultProfilePicture}
+                            alt={aluno.nome}
+                            className={styles.aluno_avatar}
+                            onError={(e) => { e.target.src = defaultProfilePicture }}
+                          />
+                          <div>
+                            <p className={styles.aluno_name}>{aluno.nome}</p>
+                            <p className={styles.aluno_email}>{aluno.email}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <span
+                          className={styles.turma_badge}
+                          style={getTurmaBadgeStyle(aluno.turma?.nome)}
+                        >
+                          {aluno.turma?.nome || "Sem Turma"}
+                        </span>
+                      </td>
+                      <td>
+                        <span className={styles.cadastro_date}>
+                          {formatLocalDate(aluno.dataCriacao)}
+                        </span>
+                      </td>
+                      <td style={{ textAlign: "center" }} onClick={(e) => e.stopPropagation()}>
+                        <div className={styles.action_menu_wrapper}>
+                          <button
+                            type="button"
+                            className={styles.btn_action_menu}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setActiveMenuId(activeMenuId === aluno.id ? null : aluno.id)
+                            }}
+                          >
+                            <i className="fa-solid fa-ellipsis-vertical" />
+                          </button>
 
-            <InputSelect 
-              color="#1A1A1A"
-              text="Selecione a turma"
-              value={turma}
-              onChange={(e) => setTurma(e.target.value)}
-              options={turmas}
-            />
+                          {activeMenuId === aluno.id && (
+                            <div className={styles.action_dropdown}>
+                              <button
+                                type="button"
+                                onClick={() => navigate(`/admin/gerenciar-alunos/${aluno.id}`)}
+                              >
+                                <i className="fa-solid fa-eye" /> Ver Detalhes
+                              </button>
+                              <button
+                                type="button"
+                                className={styles.delete_action}
+                                onClick={() => {
+                                  setCurrentAlunoId(aluno.id)
+                                  setModalIsClicked(true)
+                                  setActiveMenuId(null)
+                                }}
+                              >
+                                <i className="fa-solid fa-trash" /> Excluir
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
 
-            <Message 
-              text={formMessage ? formMessage.text : ""} 
-              type={formMessage ? formMessage.type : ""} 
-            />
+          {/* ── PAGINAÇÃO INTEGRADA DO RODAPÉ ───────────────────────────────── */}
+          {!isLoadingData && filteredAlunos.length > 0 && (
+            <div className={styles.footer_pagination}>
+              <div className={styles.showing_count}>
+                Mostrando {indexOfFirstItem + 1} a {Math.min(indexOfLastItem, filteredAlunos.length)} de {filteredAlunos.length} alunos
+              </div>
 
-            <Button 
-              text_size="20px" 
-              padding_sz="10px" 
-              bg_color="#DA9E00"
-              isLoading={isLoading}
-            >
-              CADASTRAR
-            </Button>
-          </form>
+              <div className={styles.pagination_controls}>
+                <button
+                  type="button"
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(1)}
+                >
+                  «
+                </button>
+                <button
+                  type="button"
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(currentPage - 1)}
+                >
+                  ‹
+                </button>
+
+                {getPageNumbers(currentPage, totalPages).map((num, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    className={currentPage === num ? styles.active_page : ""}
+                    disabled={num === "..."}
+                    onClick={() => num !== "..." && setCurrentPage(num)}
+                  >
+                    {num}
+                  </button>
+                ))}
+
+                <button
+                  type="button"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage(currentPage + 1)}
+                >
+                  ›
+                </button>
+                <button
+                  type="button"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage(totalPages)}
+                >
+                  »
+                </button>
+              </div>
+
+              <div className={styles.per_page_selector}>
+                <select
+                  value={itemsPerPage}
+                  onChange={(e) => {
+                    setItemsPerPage(Number(e.target.value))
+                    setCurrentPage(1)
+                  }}
+                >
+                  <option value={5}>5 por página</option>
+                  <option value={10}>10 por página</option>
+                  <option value={15}>15 por página</option>
+                  <option value={20}>20 por página</option>
+                </select>
+              </div>
+            </div>
+          )}
+
         </div>
       </div>
     </div>
