@@ -14,6 +14,7 @@ const links = [
   { name: "Ranking", icon: "fa-solid fa-ranking-star", path: "ranking" },
   { name: "Cursos", icon: "fa-solid fa-tv", path: "cursos" },
   { name: "Simulados", icon: "fa-solid fa-bullseye", path: "SimuladosAluno" },
+  { name: "Pagamentos", icon: "fa-solid fa-credit-card", path: "pagamentos" },
   { name: "Configurações", icon: "fa-solid fa-gear", path: "configuracoes" },
 ]
 

@@ -16,12 +16,15 @@ model Usuario {
   dataAtualizacao DateTime        @updatedAt
   turmaId         String?         @db.VarChar(36)
   password        String          @db.VarChar(200)
-  caminho         String?         @db.VarChar(100)
-  frequencias     Frequencia[]
+  caminho                String?         @db.VarChar(100)
+  diaVencimentoPadrao    Int?
+  valorMensalidadePadrao Float?
+  frequencias            Frequencia[]
   notasSimulado   NotasSimulado[]
   redacoes        Redacao[]
   matricula       Matricula?
   turma           Turma?          @relation(fields: [turmaId], references: [id])
+  pagamentos      Pagamento[]
 }
 
 model Matricula {
@@ -40,6 +43,9 @@ model Matricula {
   dataInicio           String   @db.VarChar(255)
   comoConheceu         String?  @db.VarChar(255)
   observacoes          String?  @db.Text
+  condicaoMedica       String?  @db.Text
+  deficiencia          String?  @db.Text
+  necessidadeEducacional String?  @db.Text
   dataCriacao          DateTime @default(now())
   usuario              Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 }
@@ -65,11 +71,14 @@ model Frequencia {
 }
 
 model Pagamento {
-  id            String          @id @db.Char(36)
-  dataPagamento DateTime        @default(now())
-  valor         Float
-  status        StatusPagamento
-  tipoDespensa  String          @db.VarChar(100)
+  id             String          @id @db.Char(36)
+  dataPagamento  DateTime?
+  dataVencimento DateTime?
+  valor          Float
+  status         StatusPagamento
+  tipoDespensa   String          @db.VarChar(100)
+  usuarioId      String?         @db.Char(36)
+  usuario        Usuario?        @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 }
 
 model Redacao {

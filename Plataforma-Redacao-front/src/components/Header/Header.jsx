@@ -1,7 +1,6 @@
 import styles from "./styles.module.css"
 import { Link } from "react-router-dom"
 import logo from "../../images/logo02.png"
-import SuporteCard from "../SuporteCard/SuporteCard"
 
 const Header = ({ options = [] }) => {
   return (
@@ -18,10 +17,6 @@ const Header = ({ options = [] }) => {
           </Link>
         ))}
       </nav>
-
-      <div className={styles.suporte_container}>
-        <SuporteCard />
-      </div>
     </header>
   )
 }

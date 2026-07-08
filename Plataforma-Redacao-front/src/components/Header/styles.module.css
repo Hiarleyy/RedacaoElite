@@ -28,7 +28,7 @@
   padding: 10px;
   margin-top: 20px;
   overflow-y: auto;
-  max-height: calc(100vh - 70px - 140px); /* 70px logo + 140px suporte card */
+  max-height: calc(100vh - 70px);
   scrollbar-width: thin;
   scrollbar-color: #c4c4c44d transparent;
 }
@@ -54,9 +54,4 @@
 
 .header .menu_options .link:hover {
   filter: brightness(0.85);
-}
-
-.header .suporte_container {
-  position: absolute;
-  bottom: 30px;
 }

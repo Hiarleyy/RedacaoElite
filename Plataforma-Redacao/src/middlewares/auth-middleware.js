@@ -17,7 +17,7 @@ const authMiddleware = async (req, res, next) => {
   try {
     const { userId } = jwt.verify(token, tokenSecretKey)
 
-    const user = await prisma.usuario.findUnique({ where: { id: userId }, select: { tipoUsuario: true } })
+    const user = await prisma.usuario.findUnique({ where: { id: userId }, select: { id: true, tipoUsuario: true } })
 
     if (!user) return res.status(401).json({ message: "Token de usuário inválido." })
 

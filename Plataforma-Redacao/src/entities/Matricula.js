@@ -1,3 +1,4 @@
+const { encrypt } = require("../utils/crypto")
 const { v4: uuid } = require("uuid")
 
 class Matricula {
@@ -17,6 +18,9 @@ class Matricula {
     this.dataInicio = encrypt(String(data.dataInicio))
     this.comoConheceu = data.comoConheceu ? encrypt(data.comoConheceu) : null
     this.observacoes = data.observacoes ?? null
+    this.condicaoMedica = data.condicaoMedica ? encrypt(data.condicaoMedica) : null
+    this.deficiencia = data.deficiencia ? encrypt(data.deficiencia) : null
+    this.necessidadeEducacional = data.necessidadeEducacional ? encrypt(data.necessidadeEducacional) : null
   }
 }
 

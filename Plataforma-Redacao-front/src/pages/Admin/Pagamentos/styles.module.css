@@ -422,3 +422,291 @@
     padding: 8px 12px !important;
   }
 }
+
+/* Abas de Navegação */
+.tab_buttons {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #333333;
+  padding-bottom: 12px;
+}
+
+.tab_button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: #888888;
+  padding: 10px 18px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 6px;
+}
+
+.tab_button:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.active_tab {
+  color: #DA9E00;
+  font-weight: 600;
+  background-color: rgba(218, 158, 0, 0.08);
+}
+
+/* Container de filtros de alunos */
+.filters_container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(8px);
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  align-items: flex-end;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.filter_group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 180px;
+}
+
+.filter_group label {
+  font-size: 13px;
+  color: #bbbbbb;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.select_input, .date_input {
+  background-color: #1A1A1A;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s ease;
+  height: 44px;
+  box-sizing: border-box;
+}
+
+.select_input:focus, .date_input:focus {
+  border-color: #DA9E00;
+  box-shadow: 0 0 0 2px rgba(218, 158, 0, 0.15);
+}
+
+/* Nova tabela responsiva */
+.table_responsive {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 15px;
+  border-radius: 8px;
+  border: 1px solid #333333;
+}
+
+.payment_table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  background-color: #242424;
+}
+
+.payment_table th {
+  background-color: #1A1A1A;
+  color: #aaaaaa;
+  padding: 14px 18px;
+  font-weight: 500;
+  font-size: 14px;
+  border-bottom: 1px solid #333333;
+}
+
+.payment_table td {
+  padding: 14px 18px;
+  color: #dddddd;
+  font-size: 14px;
+  border-bottom: 1px solid #333333;
+}
+
+.payment_table tr:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Badges de Status */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge.pago {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.badge.pendente {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+
+.badge.atrasado {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+/* Cartões de resumo específicos de alunos */
+.student_summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.card_summary {
+  background-color: #1A1A1A;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  border-left: 4px solid #444;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.card_summary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card_summary.success {
+  border-left-color: #10b981;
+}
+
+.card_summary.warning {
+  border-left-color: #f59e0b;
+}
+
+.card_summary.danger {
+  border-left-color: #ef4444;
+}
+
+.card_info h4 {
+  color: #888888;
+  font-size: 14px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.card_info p {
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.card_icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card_summary.success .card_icon {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.card_summary.warning .card_icon {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+
+.card_summary.danger .card_icon {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.checkbox_group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  cursor: pointer;
+  user-select: none;
+  background-color: #1A1A1A;
+  border: 1px solid #333333;
+  padding: 0 16px;
+  border-radius: 8px;
+  min-width: 200px;
+  box-sizing: border-box;
+}
+
+.checkbox_input {
+  width: 18px;
+  height: 18px;
+  accent-color: #DA9E00;
+  cursor: pointer;
+}
+
+.checkbox_label {
+  font-size: 14px;
+  color: #dddddd;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.action_btn {
+  background: transparent;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action_btn.confirm {
+  color: #10b981;
+  background-color: rgba(16, 185, 129, 0.1);
+}
+
+.action_btn.confirm:hover {
+  background-color: rgba(16, 185, 129, 0.2);
+  transform: scale(1.05);
+}
+
+.action_btn.register {
+  color: #DA9E00;
+  background-color: rgba(218, 158, 0, 0.1);
+}
+
+.action_btn.register:hover {
+  background-color: rgba(218, 158, 0, 0.2);
+  transform: scale(1.05);
+}
+
+
