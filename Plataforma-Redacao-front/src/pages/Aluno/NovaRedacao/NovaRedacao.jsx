@@ -18,18 +18,19 @@ import DeleteModal from "../../../components/DeleteModal/DeleteModal";
 import useUseful from "../../../utils/useUseful";
 const baseURL = import.meta.env.VITE_API_BASE_URL
 
-const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum arquivo enviado");
+const Novaredacao = () => {
+  const [fileName, setFilesName] = useState("Nenhum arquivo enviado");
 
 
   const [tema, setTema] = useState("");
   const [formMessage, setFormMessage] = useState(null);
-  const [fileBlob, setFileBlob] = useState(null); 
+  const [fileBlob, setFileBlob] = useState(null);
   const [redacao, setRedacao] = useState([])
-  
+
   // Estados para controlar o envio
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cooldown, setCooldown] = useState(false);
-  
+
   // Ref para evitar múltiplos cliques
   const isSubmittingRef = useRef(false);
   const cooldownRef = useRef(false);
@@ -53,22 +54,22 @@ const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum a
   const { getHeaders } = useUseful();
 
   const getAlunoId = useCallback(() => {
-      try {
-        const aluno = localStorage.getItem('user_access_data')
-        if (!aluno) {
-          console.error('Dados do usuário não encontrados no localStorage');
-          return null;
-        }
-        const userData = JSON.parse(aluno)
-        if (!userData || !userData.id) {
-          console.error('ID do usuário não encontrado nos dados:', userData);
-          return null;
-        }
-        return userData.id;
-      } catch (error) {
-        console.error('Erro ao obter ID do aluno:', error);
+    try {
+      const aluno = localStorage.getItem('user_access_data')
+      if (!aluno) {
+        console.error('Dados do usuário não encontrados no localStorage');
         return null;
       }
+      const userData = JSON.parse(aluno)
+      if (!userData || !userData.id) {
+        console.error('ID do usuário não encontrado nos dados:', userData);
+        return null;
+      }
+      return userData.id;
+    } catch (error) {
+      console.error('Erro ao obter ID do aluno:', error);
+      return null;
+    }
   }, []);
 
   // Função para cancelar evento se necessário
@@ -104,7 +105,7 @@ const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum a
       });
       return;
     }
-    
+
     // Verificar tamanho do arquivo (limite de 10MB)
     const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB em bytes
     if (fileBlob.size > MAX_FILE_SIZE) {
@@ -118,7 +119,7 @@ const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum a
     const alunoId = getAlunoId();
     console.log("AlunoId:", alunoId);
     console.log("BaseURL:", baseURL);
-    
+
     if (!alunoId) {
       setFormMessage({
         type: "error",
@@ -143,41 +144,41 @@ const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum a
         formData.append("titulo", tema);
         formData.append("file", fileBlob, fileName.endsWith(".pdf") ? fileName : `${fileName}.pdf`);
         formData.append("usuarioId", alunoId);
-        
+
         const response = await axios.post(uploadURL, formData, {
-           headers: getHeaders(),
-        });   
-        
+          headers: getHeaders(),
+        });
+
         console.log("Redação enviada com sucesso!");
         setFormMessage({
           type: "success",
           text: `Redação enviada com sucesso!`,
         });
-        
+
         // Limpar formulário
         setTema("");
         setFilesName("Nenhum arquivo enviado");
         setFileBlob(null);
-        
+
         // Iniciar cooldown de 5 segundos
         cooldownRef.current = true;
         setCooldown(true);
-        
+
         // Limpar timeout anterior se existir
         if (cooldownTimeoutRef.current) {
           clearTimeout(cooldownTimeoutRef.current);
         }
-        
+
         cooldownTimeoutRef.current = setTimeout(() => {
           cooldownRef.current = false;
           setCooldown(false);
           cooldownTimeoutRef.current = null;
           console.log("Cooldown finalizado");
         }, 5000);
-        
+
         resolve(response);
       } catch (error) {
-        console.error("Erro ao enviar redação:", error);   
+        console.error("Erro ao enviar redação:", error);
         let errorMessage = "Erro ao enviar redação.";
 
         setFormMessage({
@@ -196,19 +197,19 @@ const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum a
 
     // Armazenar a promise de controle
     submissionInProgressRef.current = submissionPromise;
-    
+
     return submissionPromise;
   }, [tema, fileBlob, fileName, isSubmitting, cooldown, getAlunoId, getHeaders]);
 
   // Função para verificar se pode submeter
   const canSubmit = useCallback(() => {
-    return !isSubmittingRef.current && 
-           !cooldownRef.current && 
-           !submissionInProgressRef.current &&
-           !isSubmitting && 
-           !cooldown &&
-           fileBlob && 
-           tema.trim();
+    return !isSubmittingRef.current &&
+      !cooldownRef.current &&
+      !submissionInProgressRef.current &&
+      !isSubmitting &&
+      !cooldown &&
+      fileBlob &&
+      tema.trim();
   }, [isSubmitting, cooldown, fileBlob, tema]);
 
   // Função com debounce e controle rigoroso
@@ -228,7 +229,7 @@ const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum a
 
     const now = Date.now();
     const timeSinceLastClick = now - lastClickTimeRef.current;
-    
+
     // Debounce de 2 segundos entre cliques (aumentado)
     if (timeSinceLastClick < 2000) {
       console.log("Clique muito rápido - ignorado");
@@ -236,27 +237,27 @@ const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum a
       event.stopPropagation();
       return;
     }
-    
+
     lastClickTimeRef.current = now;
     await handleSubmit();
   }, [handleSubmit, preventMultipleClicks, canSubmit]);
-  
+
   const navigate = useNavigate()
-  
+
   const itemsPerPage = 5
   const [currentPage, setCurrentPage] = useState(1)
-  
+
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  
+
   const currentredacaos = redacao.slice(indexOfFirstItem, indexOfLastItem)
-  
+
   const [usuario, setUsuario] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
   // Estado para o modal de redação
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedRedacao, setSelectedRedacao] = useState(null);
-  
+
   // Estados para o modal de delete
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [redacaoToDelete, setRedacaoToDelete] = useState(null);
@@ -316,7 +317,7 @@ const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum a
 
   const formatarData = (data) => {
     if (!data) return "-";
-    return new Date(data).toLocaleDateString("pt-BR",{
+    return new Date(data).toLocaleDateString("pt-BR", {
       timeZone: "America/Sao_Paulo",
       day: "2-digit",
       month: "2-digit",
@@ -324,9 +325,9 @@ const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum a
       hour: "2-digit",
       minute: "2-digit",
     });
-  };  useEffect(()=>{
-    const getData = async() =>{
-      try {        
+  }; useEffect(() => {
+    const getData = async () => {
+      try {
         const alunoId = getAlunoId();
         const { getRedacoesUser } = fetchData();
         const redacoesData = await getRedacoesUser(alunoId);
@@ -355,11 +356,12 @@ const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum a
               };
             })
           ).then(result => result.sort((a, b) => new Date(b.data) - new Date(a.data))); // Ordena por data decrescente
-            setRedacao(options);
+          setRedacao(options);
         } else {
           console.error('Nenhuma redação encontrada');
           setRedacao([]);
-        }      } catch (error) {
+        }
+      } catch (error) {
         console.error('Erro ao buscar redações:', error.message);
         setRedacao([]);
       }
@@ -367,14 +369,14 @@ const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum a
     getData()
   }, [formMessage]) // Atualizar quando enviar uma nova redação
   useEffect(() => {
-    const getData  = async () => {
-      const {getAlunoById} = fetchData()
+    const getData = async () => {
+      const { getAlunoById } = fetchData()
       const alunoId = getAlunoId();
       const response = await getAlunoById(alunoId)
       setUsuario(response)
     }
     getData()
-  },[])
+  }, [])
 
   // Função para abrir o modal com a redação selecionada
   const handleRedacaoClick = (redacao) => {
@@ -397,17 +399,17 @@ const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum a
   // Função para confirmar o delete da redação
   const confirmDeleteRedacao = async () => {
     if (!redacaoToDelete) return;
-    
+
     try {
       await axios.delete(`${baseURL}/redacoes/${redacaoToDelete.id}`, {
         headers: getHeaders()
       });
-      
+
       setFormMessage({
         type: "success",
         text: "Redação deletada com sucesso!"
       });
-      
+
       // Atualizar a lista de redações
       const alunoId = getAlunoId();
       const { getRedacoesUser } = fetchData();
@@ -436,7 +438,7 @@ const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum a
         ).then(result => result.sort((a, b) => new Date(b.data) - new Date(a.data)));
         setRedacao(options);
       }
-      
+
     } catch (error) {
       console.error("Erro ao deletar redação:", error);
       setFormMessage({
@@ -475,40 +477,40 @@ const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum a
           <Title title="Nova Redação" />
           <div className={styles.main_content}>
             <div className={styles.bg_left}>              {redacao.length === 0 ? <div className={styles.loading}><Loading /></div> :
-                <> 
-                  <p className={styles.form_title}>Redações enviadas</p>
-                  <div className={styles.redacao_container}>
-                    {currentredacaos.map((redacao) => (
-                      <div key={redacao.id} className={styles.card_wrapper}>
-                        <InfoCard
-                          img="https://static.vecteezy.com/system/resources/previews/028/049/250/non_2x/terms-icon-design-vector.jpg"
-                          title={redacao.titulo}
-                          subtitle={formatarData(redacao.data)}
-                          link="#"
-                          button={true}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            handleDeleteRedacao(redacao);
-                          }}
-                          infoCardOnClick={(e) => {
-                            e.preventDefault();
-                            handleRedacaoClick(redacao);
-                          }}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  <div className={styles.pagination}>
-                    <Pagination
-                      currentPage={currentPage}
-                      totalItems={redacao.length}
-                      itemsPerPage={itemsPerPage}
-                      setCurrentPage={setCurrentPage}
-                    />
-                  </div>
-                </>
-              }
+              <>
+                <p className={styles.form_title}>Redações enviadas</p>
+                <div className={styles.redacao_container}>
+                  {currentredacaos.map((redacao) => (
+                    <div key={redacao.id} className={styles.card_wrapper}>
+                      <InfoCard
+                        img="https://static.vecteezy.com/system/resources/previews/028/049/250/non_2x/terms-icon-design-vector.jpg"
+                        title={redacao.titulo}
+                        subtitle={formatarData(redacao.data)}
+                        link="#"
+                        button={true}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleDeleteRedacao(redacao);
+                        }}
+                        infoCardOnClick={(e) => {
+                          e.preventDefault();
+                          handleRedacaoClick(redacao);
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className={styles.pagination}>
+                  <Pagination
+                    currentPage={currentPage}
+                    totalItems={redacao.length}
+                    itemsPerPage={itemsPerPage}
+                    setCurrentPage={setCurrentPage}
+                  />
+                </div>
+              </>
+            }
             </div>
             <div className={styles.bg_right}>
               <p className={styles.form_title}>Upload Da Nova Redação</p>
@@ -538,13 +540,13 @@ const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum a
                     (PDF, JPG ou PNG)
                   </p>
                 </div>
-                
+
                 {/* Exibir arquivo selecionado com estilo igual ao mobile */}
                 {fileBlob && (
                   <div className={styles.desktop_file_selected}>
                     <i className={`fa-solid fa-file-pdf ${styles.desktop_file_icon}`}></i>
                     <span className={styles.desktop_file_name}>{fileName}</span>
-                    <i 
+                    <i
                       className={`fa-solid fa-times ${styles.desktop_file_remove}`}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -554,16 +556,16 @@ const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum a
                     ></i>
                   </div>
                 )}
-                
+
                 <div className={styles.info_container}>
-                  <Message 
-                    text={formMessage ? formMessage.text : ""} 
-                    type={formMessage ? formMessage.type : ""} 
+                  <Message
+                    text={formMessage ? formMessage.text : ""}
+                    type={formMessage ? formMessage.type : ""}
                   />
                 </div>
-                
+
                 <div className={styles.submit_button}>
-                  <button 
+                  <button
                     className={`${styles.desktop_button} ${(isSubmitting || cooldown) ? styles.disabled : ''}`}
                     onClick={handleSubmitWithDebounce}
                     disabled={!fileBlob || !tema.trim() || isSubmitting || cooldown}
@@ -595,11 +597,11 @@ const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum a
         <div className={styles.mobile_container}>
           {/* Substituindo o header customizado pelo componente Title */}
           <Title title="Nova Redação" />
-          
+
           <div className={styles.mobile_content}>
             <div className={styles.mobile_form}>
               <h2 className={styles.mobile_form_title}>Envie sua redação</h2>
-              
+
               <div className={styles.mobile_input_container}>
                 <Input
                   type="text"
@@ -611,7 +613,7 @@ const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum a
                   <i className="fa-solid fa-pen"></i>
                 </Input>
               </div>
-              
+
               <div {...getRootProps()} className={styles.mobile_upload_area}>
                 <input {...getInputProps()} />
                 <svg className={styles.mobile_upload_icon} viewBox="0 0 309 197">
@@ -627,12 +629,12 @@ const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum a
                   (PDF, JPG ou PNG)
                 </p>
               </div>
-              
+
               {fileBlob && (
                 <div className={styles.mobile_file_selected}>
                   <i className={`fa-solid fa-file-pdf ${styles.mobile_file_icon}`}></i>
                   <span className={styles.mobile_file_name}>{fileName}</span>
-                  <i 
+                  <i
                     className={`fa-solid fa-times ${styles.mobile_file_remove}`}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -642,7 +644,7 @@ const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum a
                   ></i>
                 </div>
               )}
-              
+
               <div className={styles.mobile_message_container}>
                 {formMessage && (
                   <div className={formMessage.type === "success" ? styles.mobile_success : styles.mobile_error}>
@@ -651,9 +653,9 @@ const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum a
                   </div>
                 )}
               </div>
-              
+
               <div className={styles.mobile_submit_button}>
-                <button 
+                <button
                   className={`${styles.mobile_button} ${(isSubmitting || cooldown) ? styles.disabled : ''}`}
                   onClick={handleSubmitWithDebounce}
                   disabled={!fileBlob || !tema.trim() || isSubmitting || cooldown}
@@ -682,7 +684,7 @@ const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum a
       )}
 
       {/* Modal para confirmação de delete */}
-      <DeleteModal 
+      <DeleteModal
         message="Você tem certeza que deseja excluir esta redação?"
         modalIsClicked={deleteModalOpen}
         deleteOnClick={confirmDeleteRedacao}
@@ -690,7 +692,7 @@ const Novaredacao = () => {  const [fileName, setFilesName] = useState("Nenhum a
       />
 
       {/* Modal para visualização da redação */}
-      <RedacaoModal 
+      <RedacaoModal
         redacao={selectedRedacao}
         isOpen={modalOpen}
         onClose={closeModal}

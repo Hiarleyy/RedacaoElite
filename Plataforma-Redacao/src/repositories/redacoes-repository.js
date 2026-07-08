@@ -18,13 +18,13 @@ const redacoesRepository = {
     // Retorna todas as redações de um usuário específico
     redacoes = await prisma.redacao.findMany({
       where: { usuarioId },
-      include: includeBody 
+      include: includeBody
     });
 
-    quantidadeRedacoes = await prisma.redacao.count({ 
+    quantidadeRedacoes = await prisma.redacao.count({
       where: { usuarioId }
     })
-  
+
     return { redacoes, quantidadeRedacoes }
   },
 
@@ -35,7 +35,7 @@ const redacoesRepository = {
     const includeBody = { correcao: true, usuario: true }
 
     if (!usuarioId) {
-      redacoes = await prisma.redacao.findMany({ 
+      redacoes = await prisma.redacao.findMany({
         where: { status: "CORRIGIDA" },
         include: includeBody
       })
@@ -47,7 +47,7 @@ const redacoesRepository = {
       return { redacoes, quantidadeRedacoes }
     }
 
-    redacoes = await prisma.redacao.findMany({ 
+    redacoes = await prisma.redacao.findMany({
       where: { usuarioId, status: "CORRIGIDA" },
       include: includeBody
     })
@@ -66,7 +66,7 @@ const redacoesRepository = {
     const includeBody = { usuario: true }
 
     if (!usuarioId) {
-      redacoes = await prisma.redacao.findMany({ 
+      redacoes = await prisma.redacao.findMany({
         where: { status: "PENDENTE" },
         include: includeBody
       })
@@ -78,7 +78,7 @@ const redacoesRepository = {
       return { redacoes, quantidadeRedacoes }
     }
 
-    redacoes = await prisma.redacao.findMany({ 
+    redacoes = await prisma.redacao.findMany({
       where: { usuarioId, status: "PENDENTE" },
       include: includeBody
     })
@@ -99,38 +99,38 @@ const redacoesRepository = {
   // Retorna a redação mais antiga de um usário
   retorneRedacaoMaisAntiga: async (usuarioId, corrigidas = false) => {
     if (corrigidas) {
-      const redacao = await prisma.redacao.findFirst({ 
-        where: { usuarioId, status: "CORRIGIDA" }, 
-        orderBy: { data: "asc" }, 
-        include: { correcao: true } 
+      const redacao = await prisma.redacao.findFirst({
+        where: { usuarioId, status: "CORRIGIDA" },
+        orderBy: { data: "asc" },
+        include: { correcao: true }
       })
 
       return redacao
     }
-    
+
     return await prisma.redacao.findFirst({ where: { usuarioId }, orderBy: { data: "asc" } })
   },
 
   // Mudar status de uma redação para CORRIGIDA
   marcarRedacaoComoCorrigida: async (id) => {
-    const redacaoCorrigida = await prisma.redacao.update({ 
-      data: { status: "CORRIGIDA" }, where: { id } 
+    const redacaoCorrigida = await prisma.redacao.update({
+      data: { status: "CORRIGIDA" }, where: { id }
     })
-    
+
     return redacaoCorrigida
   },
-    
+
   // Cria uma nova redação
   crieNovaRedacao: async (data) => {
     const redacao = new Redacao(data)
-    const novaRedacao = await prisma.redacao.create({data: redacao})
+    const novaRedacao = await prisma.redacao.create({ data: redacao })
     return novaRedacao;
   },
 
   // Deleatar uma redação
   deletarUmaRedacao: async (id) => {
-    const redacaoDeletada = await prisma.redacao.delete({ 
-      where: { id }, select: { id: true, titulo: true } 
+    const redacaoDeletada = await prisma.redacao.delete({
+      where: { id }, select: { id: true, titulo: true }
     })
 
     return redacaoDeletada

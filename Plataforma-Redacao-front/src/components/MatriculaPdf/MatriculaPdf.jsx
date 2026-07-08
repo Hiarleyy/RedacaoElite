@@ -1,5 +1,6 @@
 import jsPDF from "jspdf"
 import html2canvas from "html2canvas"
+import logoImg from "../../images/logo01.png"
 
 /**
  * Gera e faz download de um PDF de matrícula com layout branded da Redação Elite.
@@ -17,7 +18,9 @@ import html2canvas from "html2canvas"
  * @param {string} dados.turma
  * @param {string} dados.dataInicio
  * @param {string} dados.comoConheceu
- * @param {string} dados.observacoes
+ * @param {string} dados.condicaoMedica
+ * @param {string} dados.deficiencia
+ * @param {string} dados.necessidadeEducacional
  * @param {string} dados.nomeResponsavel
  * @param {string} dados.vinculoResponsavel
  * @param {string} dados.telefoneResponsavel
@@ -73,23 +76,15 @@ export const gerarMatriculaPdf = async (dados, fileName = "matricula-redacao-eli
 
         /* ── Cabeçalho principal ── */
         .header {
-          background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
-          padding: 36px 48px 28px;
+          background: #ffffff;
+          padding: 24px 48px 16px;
           position: relative;
           overflow: hidden;
         }
 
         .header::before {
           content: '';
-          position: absolute;
-          top: 0; left: 0; right: 0; bottom: 0;
-          background: repeating-linear-gradient(
-            45deg,
-            transparent,
-            transparent 20px,
-            rgba(218,158,0,0.03) 20px,
-            rgba(218,158,0,0.03) 40px
-          );
+          display: none;
         }
 
         .header-inner {
@@ -115,14 +110,14 @@ export const gerarMatriculaPdf = async (dados, fileName = "matricula-redacao-eli
         }
 
         .brand-name em {
-          color: #ffffff;
+          color: #1a1a1a;
           font-style: normal;
         }
 
         .brand-tagline {
           font-size: 10px;
           font-weight: 500;
-          color: #888;
+          color: #666;
           letter-spacing: 3px;
           text-transform: uppercase;
           margin-top: 5px;
@@ -135,7 +130,7 @@ export const gerarMatriculaPdf = async (dados, fileName = "matricula-redacao-eli
         .doc-type {
           font-size: 12px;
           font-weight: 700;
-          color: #DA9E00;
+          color: #1a1a1a;
           text-transform: uppercase;
           letter-spacing: 1.5px;
         }
@@ -144,6 +139,35 @@ export const gerarMatriculaPdf = async (dados, fileName = "matricula-redacao-eli
           font-size: 10px;
           color: #888;
           margin-top: 4px;
+        }
+
+        /* ── Espaço para Foto ── */
+        .photo-box {
+          width: 75px;
+          height: 100px;
+          border: 1px solid #ccc;
+          background: #f9f9f9;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          margin-left: 24px;
+          flex-shrink: 0;
+        }
+
+        .photo-box-avatar {
+          width: 36px;
+          height: 36px;
+          border: 2px dashed #ccc;
+          border-radius: 50%;
+          margin-bottom: 6px;
+        }
+
+        .photo-box span {
+          font-size: 10px;
+          font-weight: 700;
+          color: #aaa;
+          text-transform: uppercase;
         }
 
         /* ── Faixa dourada ── */
@@ -155,7 +179,7 @@ export const gerarMatriculaPdf = async (dados, fileName = "matricula-redacao-eli
         /* ── Título da seção hero ── */
         .hero {
           background: #f8f6f0;
-          padding: 20px 48px;
+          padding: 12px 48px;
           border-bottom: 1px solid #ebebeb;
           display: flex;
           align-items: center;
@@ -209,19 +233,20 @@ export const gerarMatriculaPdf = async (dados, fileName = "matricula-redacao-eli
 
         /* ── Corpo ── */
         .body {
-          padding: 28px 48px;
+          padding: 16px 48px;
         }
 
         /* ── Card de seção ── */
         .section-card {
-          margin-bottom: 20px;
+          margin-bottom: 12px;
           border: 1px solid #ebebeb;
           border-radius: 10px;
           overflow: hidden;
         }
 
         .section-header {
-          background: linear-gradient(90deg, #1a1a1a, #2d2d2d);
+          background: #f8f6f0;
+          border-bottom: 1px solid #ebebeb;
           padding: 10px 18px;
           display: flex;
           align-items: center;
@@ -239,16 +264,16 @@ export const gerarMatriculaPdf = async (dados, fileName = "matricula-redacao-eli
         .section-header h2 {
           font-size: 10px;
           font-weight: 800;
-          color: #DA9E00;
+          color: #1a1a1a;
           text-transform: uppercase;
           letter-spacing: 1.8px;
         }
 
         .section-body {
-          padding: 16px 18px;
+          padding: 10px 18px;
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 12px 24px;
+          gap: 8px 24px;
           background: #ffffff;
         }
 
@@ -290,9 +315,10 @@ export const gerarMatriculaPdf = async (dados, fileName = "matricula-redacao-eli
         /* ── Turma destaque ── */
         .turma-highlight {
           grid-column: 1 / -1;
-          background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+          background: #fdfaf2;
+          border: 1px solid #f0e6cc;
           border-radius: 8px;
-          padding: 14px 18px;
+          padding: 10px 18px;
           display: flex;
           justify-content: space-between;
           align-items: center;
@@ -300,13 +326,13 @@ export const gerarMatriculaPdf = async (dados, fileName = "matricula-redacao-eli
         }
 
         .turma-highlight .field-label {
-          color: #DA9E00;
+          color: #666;
         }
 
         .turma-highlight .field-value {
           font-size: 14px;
           font-weight: 800;
-          color: #ffffff;
+          color: #1a1a1a;
         }
 
         .turma-badge {
@@ -325,7 +351,7 @@ export const gerarMatriculaPdf = async (dados, fileName = "matricula-redacao-eli
           background: #fafafa;
           border: 1px dashed #ddd;
           border-radius: 8px;
-          padding: 12px 16px;
+          padding: 10px 14px;
           margin-top: 4px;
         }
 
@@ -337,12 +363,13 @@ export const gerarMatriculaPdf = async (dados, fileName = "matricula-redacao-eli
 
         /* ── Rodapé ── */
         .footer {
-          background: #1a1a1a;
-          padding: 18px 48px;
+          background: #ffffff;
+          border-top: 1px solid #ebebeb;
+          padding: 12px 48px;
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-top: 12px;
+          margin-top: 0px;
         }
 
         .footer-left {
@@ -354,7 +381,7 @@ export const gerarMatriculaPdf = async (dados, fileName = "matricula-redacao-eli
         .footer-brand {
           font-size: 11px;
           font-weight: 700;
-          color: #DA9E00;
+          color: #1a1a1a;
           letter-spacing: 1px;
         }
 
@@ -409,13 +436,22 @@ export const gerarMatriculaPdf = async (dados, fileName = "matricula-redacao-eli
       <!-- Cabeçalho -->
       <div class="header">
         <div class="header-inner">
-          <div class="brand">
-            <div class="brand-name"><em>Redação</em> Elite</div>
-            <div class="brand-tagline">Centro de Preparação para o ENEM</div>
+          <div class="brand" style="flex-direction: row; align-items: center; gap: 16px;">
+            <img src="${logoImg}" style="height: 50px; width: auto;" alt="Logo Redação Elite" />
+            <div>
+              <div class="brand-name"><em>Redação</em> Elite</div>
+              <div class="brand-tagline">Centro de Preparação para o ENEM</div>
+            </div>
           </div>
-          <div class="doc-info">
-            <div class="doc-type">Ficha de Matrícula</div>
-            <div class="doc-date">Emitido em ${dataEmissao} às ${horaEmissao}</div>
+          <div style="display: flex; align-items: flex-start;">
+            <div class="doc-info" style="margin-top: 8px;">
+              <div class="doc-type">Ficha de Matrícula</div>
+              <div class="doc-date">Emitido em ${dataEmissao}<br/>às ${horaEmissao}</div>
+            </div>
+            <div class="photo-box">
+              <div class="photo-box-avatar"></div>
+              <span>Foto 3x4</span>
+            </div>
           </div>
         </div>
       </div>
@@ -505,15 +541,27 @@ export const gerarMatriculaPdf = async (dados, fileName = "matricula-redacao-eli
           </div>
         </div>
 
-        ${dados.observacoes ? `
-        <!-- Observações -->
+        <!-- Formulário de Saúde -->
         <div class="section-card">
           <div class="section-header">
             <div class="section-header-dot"></div>
-            <h2>Observações</h2>
+            <h2>Formulário de Saúde</h2>
+          </div>
+          <div class="section-body">
+            ${field("Deficiência", dados.deficiencia)}
+            ${field("Necessidade Educacional", dados.necessidadeEducacional)}
+          </div>
+        </div>
+
+        ${dados.condicaoMedica ? `
+        <!-- Condição Médica -->
+        <div class="section-card">
+          <div class="section-header">
+            <div class="section-header-dot"></div>
+            <h2>Alergia ou Condição Médica</h2>
           </div>
           <div class="section-body one-col">
-            <div class="obs-box"><p>${dados.observacoes}</p></div>
+            <div class="obs-box"><p>${dados.condicaoMedica}</p></div>
           </div>
         </div>
         ` : ""}
@@ -521,6 +569,18 @@ export const gerarMatriculaPdf = async (dados, fileName = "matricula-redacao-eli
       </div>
 
       <div class="watermark">ELITE</div>
+
+      <!-- Assinaturas -->
+      <div style="margin-top: 30px; display: flex; justify-content: space-between; padding: 0 48px; margin-bottom: 20px;">
+        <div style="text-align: center; width: 45%;">
+          <div style="width: 100%; border-bottom: 1px solid #1a1a1a; margin-bottom: 6px;"></div>
+          <span style="font-size: 11px; font-weight: 600; color: #1a1a1a;">Assinatura do responsável</span>
+        </div>
+        <div style="text-align: center; width: 45%;">
+          <div style="width: 100%; border-bottom: 1px solid #1a1a1a; margin-bottom: 6px;"></div>
+          <span style="font-size: 11px; font-weight: 600; color: #1a1a1a;">Assinatura do diretor do Curso</span>
+        </div>
+      </div>
 
       <!-- Rodapé -->
       <div class="footer">
@@ -569,12 +629,26 @@ export const gerarMatriculaPdf = async (dados, fileName = "matricula-redacao-eli
   const imgData = canvas.toDataURL("image/png", 1.0)
   const pdf = new jsPDF({
     orientation: "portrait",
-    unit: "px",
-    format: [794, canvas.height / 2],
+    unit: "mm",
+    format: "a4",
     compress: true,
   })
 
-  pdf.addImage(imgData, "PNG", 0, 0, 794, canvas.height / 2, "", "FAST")
+  const pdfWidth = pdf.internal.pageSize.getWidth()
+  const pageHeight = pdf.internal.pageSize.getHeight()
+  let pdfHeight = (canvas.height * pdfWidth) / canvas.width
+
+  // Evita cortar o PDF ajustando a escala caso fique maior que 1 página
+  if (pdfHeight > pageHeight) {
+    const ratio = pageHeight / pdfHeight
+    pdfHeight = pageHeight
+    const scaledWidth = pdfWidth * ratio
+    const xOffset = (pdfWidth - scaledWidth) / 2
+    pdf.addImage(imgData, "PNG", xOffset, 0, scaledWidth, pdfHeight, "", "FAST")
+  } else {
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight, "", "FAST")
+  }
+
   pdf.save(`${fileName}.pdf`)
 }
 

@@ -6,7 +6,7 @@ class Redacao {
     this.titulo = redacao.titulo;
     this.caminho = redacao.caminho;
     this.status = redacao.status?.toUpperCase() ?? "PENDENTE";
-    this.usuarioId = redacao.usuarioId; 
+    this.usuarioId = redacao.usuarioId;
   }
 }
 

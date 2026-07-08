@@ -37,6 +37,8 @@ router.put("/usuarios/:id", authMiddleware, adminMiddleware, usuariosController.
 router.delete("/usuarios/:id", authMiddleware, adminMiddleware, usuariosController.delete)
 router.post("/usuarios/:id/trocar-senha", authMiddleware, usuariosController.updatePassword)
 router.patch("/usuarios/:id/resetar-senha", authMiddleware, usuariosController.resetPassword)
+router.post("/usuarios/:id/trocar-senha", authMiddleware, usuariosController.updatePassword)
+router.patch("/usuarios/:id/resetar-senha", authMiddleware, usuariosController.resetPassword)
 router.post("/usuarios/:id", authMiddleware, uploadImagens.single('file'), usuariosController.profileUpload)
 router.get("/usuarios/:id/profile-image", usuariosController.getProfileImage)
 
@@ -49,9 +51,11 @@ router.delete("/turmas/:id", authMiddleware, adminMiddleware, turmaController.de
 
 // Rotas relacionadas a pagamentos
 router.get("/pagamentos", authMiddleware, adminMiddleware, pagamentosController.index)
+router.get("/pagamentos", authMiddleware, adminMiddleware, pagamentosController.index)
 router.post('/pagamentos', authMiddleware, adminMiddleware, pagamentosController.create)
 router.put('/pagamentos/:id', authMiddleware, adminMiddleware, pagamentosController.update)
 router.delete('/pagamentos/:id', authMiddleware, adminMiddleware, pagamentosController.delete)
+router.get("/pagamentos/:id", authMiddleware, adminMiddleware, pagamentosController.show)
 router.get("/pagamentos/:id", authMiddleware, adminMiddleware, pagamentosController.show)
 
 // Rotas relacionadas a modulos
@@ -63,9 +67,9 @@ router.put("/modulos/:id", authMiddleware, adminMiddleware, modulosController.up
 
 // Rotas relacionadas a redações
 router.get("/redacoes", authMiddleware, redacoesController.index)
-router.get("/redacoes/:id", authMiddleware, redacoesController.show)
-router.post("/redacoes/:usuarioId/upload", uploadRedacoes.single("file"), redacoesController.create)
+router.get("/redacoes/download-zip", authMiddleware, adminMiddleware, redacoesController.downloadZip)
 router.get("/redacoes/download/:id", redacoesController.download)
+router.get("/redacoes/:id", authMiddleware, redacoesController.show)
 router.delete("/redacoes/:id", authMiddleware, redacoesController.delete)
 
 //Rotas relacionadas a propostas

@@ -8,29 +8,27 @@ import fetchData from "../../../utils/fetchData"
 const MatriculaAluno = () => {
   const navigate = useNavigate()
 
-  // ── Dados pessoais ────────────────────────────────────────────────────────
   const [nomeCompleto, setNomeCompleto]     = useState("")
   const [dataNascimento, setDataNascimento] = useState("")
   const [cpf, setCpf]                       = useState("")
   const [genero, setGenero]                 = useState("")
 
-  // ── Contato ───────────────────────────────────────────────────────────────
   const [email, setEmail]       = useState("")
   const [telefone, setTelefone] = useState("")
   const [endereco, setEndereco] = useState("")
   const [bairro, setBairro]     = useState("")
   const [cidade, setCidade]     = useState("")
 
-  // ── Responsável ───────────────────────────────────────────────────────────
   const [nomeResponsavel,     setNomeResponsavel]     = useState("")
   const [vinculoResponsavel,  setVinculoResponsavel]  = useState("")
   const [telefoneResponsavel, setTelefoneResponsavel] = useState("")
 
-  // ── Acadêmico ─────────────────────────────────────────────────────────────
   const [turma,       setTurma]       = useState("")
   const [dataInicio,  setDataInicio]  = useState("")
   const [comoConheceu, setComoConheceu] = useState("")
-  const [observacoes,  setObservacoes]  = useState("")
+  const [condicaoMedica,  setCondicaoMedica]  = useState("")
+  const [deficiencia, setDeficiencia] = useState("")
+  const [necessidadeEducacional, setNecessidadeEducacional] = useState("")
   const [turmasDisponiveis, setTurmasDisponiveis] = useState([])
 
   useEffect(() => {
@@ -46,7 +44,6 @@ const MatriculaAluno = () => {
     carregarTurmas()
   }, [])
 
-  // ── UI ────────────────────────────────────────────────────────────────────
   const [charCount,        setCharCount]        = useState(0)
   const [showModal,        setShowModal]        = useState(false)
   const [isSubmitting,     setIsSubmitting]     = useState(false)
@@ -54,7 +51,6 @@ const MatriculaAluno = () => {
   const [submitted,        setSubmitted]        = useState(false)
   const [submitError,      setSubmitError]      = useState(null)
 
-  // ── Máscaras ──────────────────────────────────────────────────────────────
   const maskCpf = (v) => {
     const d = v.replace(/\D/g, "").slice(0, 11)
     return d
@@ -69,13 +65,11 @@ const MatriculaAluno = () => {
     return d.replace(/(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3")
   }
 
-  // ── Abrir modal de confirmação ────────────────────────────────────────────
   const handleSubmit = (e) => {
     e.preventDefault()
     setShowModal(true)
   }
 
-  // ── Confirmar e salvar matrícula ──────────────────────────────────────────────
   const handleConfirmar = async () => {
     setIsSubmitting(true)
     setSubmitError(null)
@@ -102,7 +96,9 @@ const MatriculaAluno = () => {
         // ─ acadêmico ─
         dataInicio,
         comoConheceu: comoConheceu || null,
-        observacoes:  observacoes  || null
+        condicaoMedica:  condicaoMedica  || null,
+        deficiencia: deficiencia || null,
+        necessidadeEducacional: necessidadeEducacional || null
       })
       setSubmitted(true)
     } catch (error) {
@@ -115,7 +111,6 @@ const MatriculaAluno = () => {
     }
   }
 
-  // ── Gerar PDF ─────────────────────────────────────────────────────────────
   const handleGerarPdf = async () => {
     setIsGeneratingPdf(true)
     try {
@@ -136,7 +131,9 @@ const MatriculaAluno = () => {
           turma: turmasDisponiveis.find(t => t.id === turma)?.nome || turma,
           dataInicio,
           comoConheceu,
-          observacoes,
+          condicaoMedica,
+          deficiencia,
+          necessidadeEducacional,
         },
         `matricula-${nomeCompleto.replace(/\s+/g, "-").toLowerCase()}`
       )
@@ -145,16 +142,15 @@ const MatriculaAluno = () => {
     }
   }
 
-  // ── Limpar formulário ─────────────────────────────────────────────────────
   const handleClear = () => {
     setNomeCompleto(""); setDataNascimento(""); setCpf(""); setGenero("")
     setEmail(""); setTelefone(""); setEndereco(""); setBairro(""); setCidade("")
     setNomeResponsavel(""); setVinculoResponsavel(""); setTelefoneResponsavel("")
-    setTurma(""); setDataInicio(""); setComoConheceu(""); setObservacoes("")
+    setTurma(""); setDataInicio(""); setComoConheceu(""); setCondicaoMedica("")
+    setDeficiencia(""); setNecessidadeEducacional("")
     setCharCount(0); setShowModal(false); setSubmitted(false)
   }
 
-  // ── Helper formatação ─────────────────────────────────────────────────────
   const obterNomeTurma = (id) => {
     const t = turmasDisponiveis.find(t => t.id === id)
     return t ? t.nome : id
@@ -168,13 +164,11 @@ const MatriculaAluno = () => {
     <div className={styles.container}>
       <Title title="Matrículas" />
 
-      {/* ══ MODAL DE CONFIRMAÇÃO ══════════════════════════════════════════ */}
       {showModal && (
         <div className={styles.modal_overlay} onClick={() => !isSubmitting && !submitted && setShowModal(false)}>
           <div className={styles.modal_box} onClick={(e) => e.stopPropagation()}>
 
             {submitted ? (
-              /* ── Estado: matrícula confirmada ── */
               <div className={styles.modal_success_state}>
                 <div className={styles.modal_success_icon}>
                   <i className="fa-solid fa-circle-check" />
@@ -205,7 +199,7 @@ const MatriculaAluno = () => {
                 </div>
               </div>
             ) : (
-              /* ── Estado: revisão dos dados ── */
+       
               <>
                 <div className={styles.modal_header}>
                   <div className={styles.modal_header_icon}>
@@ -226,7 +220,6 @@ const MatriculaAluno = () => {
 
                 <div className={styles.modal_body}>
 
-                  {/* — Dados pessoais — */}
                   <div className={styles.modal_section}>
                     <h4 className={styles.modal_section_title}>
                       <i className="fa-solid fa-user" /> Dados Pessoais
@@ -318,10 +311,26 @@ const MatriculaAluno = () => {
                     </div>
                   </div>
 
-                  {observacoes && (
+                  <div className={styles.modal_section}>
+                    <h4 className={styles.modal_section_title}>
+                      <i className="fa-solid fa-notes-medical" /> Formulário de Saúde
+                    </h4>
+                    <div className={styles.modal_grid}>
+                      <div className={`${styles.modal_field} ${styles.modal_field_full}`}>
+                        <span className={styles.modal_label}>Deficiência</span>
+                        <span className={styles.modal_value}>{fmt(deficiencia)}</span>
+                      </div>
+                      <div className={`${styles.modal_field} ${styles.modal_field_full}`}>
+                        <span className={styles.modal_label}>Necessidade Educacional</span>
+                        <span className={styles.modal_value}>{fmt(necessidadeEducacional)}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {condicaoMedica && (
                     <div className={styles.modal_obs}>
-                      <span className={styles.modal_label}>Observações</span>
-                      <p className={styles.modal_obs_text}>{observacoes}</p>
+                      <span className={styles.modal_label}>Alergia ou Condição Médica</span>
+                      <p className={styles.modal_obs_text}>{condicaoMedica}</p>
                     </div>
                   )}
                 </div>
@@ -361,8 +370,6 @@ const MatriculaAluno = () => {
       )}
 
       <div className={styles.page_wrapper}>
-
-        {/* ══ CABEÇALHO DA PÁGINA ══════════════════════════════════════════ */}
         <div className={styles.page_header}>
           <div className={styles.page_header_left}>
             <h2 className={styles.page_title}>
@@ -379,13 +386,8 @@ const MatriculaAluno = () => {
             </div>
           </div>
         </div>
-
-        {/* ══ FORMULÁRIO ══════════════════════════════════════════════════ */}
         <form onSubmit={handleSubmit} className={styles.form_card}>
-
           <div className={styles.form_grid}>
-
-            {/* ── COLUNA ESQUERDA ── */}
             <div className={styles.col_left}>
 
               {/* DADOS PESSOAIS */}
@@ -459,7 +461,6 @@ const MatriculaAluno = () => {
                 </div>
               </section>
 
-              {/* CONTATO */}
               <section className={styles.form_section}>
                 <h3 className={styles.section_title}>
                   <i className="fa-solid fa-address-book" />
@@ -542,7 +543,6 @@ const MatriculaAluno = () => {
                 </div>
               </section>
 
-              {/* DADOS DO RESPONSÁVEL */}
               <section className={styles.form_section}>
                 <h3 className={styles.section_title}>
                   <i className="fa-solid fa-user-shield" />
@@ -648,12 +648,58 @@ const MatriculaAluno = () => {
                 </div>
               </section>
 
-              {/* INFORMAÇÕES ADICIONAIS */}
+              
               <section className={styles.form_section}>
                 <h3 className={styles.section_title}>
-                  <i className="fa-solid fa-circle-info" />
-                  INFORMAÇÕES ADICIONAIS
+                  <i className="fa-solid fa-notes-medical" />
+                  FORMULÁRIO DE SAÚDE E ADICIONAIS
                 </h3>
+
+                <div className={styles.row_1}>
+                  <div className={styles.field_group}>
+                    <label className={styles.label}>Possui algum tipo de deficiência:</label>
+                    <input
+                      className={styles.input}
+                      type="text"
+                      placeholder="Ex: Visual, Auditiva, Motora, etc. (se houver)"
+                      value={deficiencia}
+                      onChange={(e) => setDeficiencia(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className={styles.row_1}>
+                  <div className={styles.field_group}>
+                    <label className={styles.label}>Possui algum tipo de necessidade de atendimento educacional:</label>
+                    <input
+                      className={styles.input}
+                      type="text"
+                      placeholder="Ex: TDAH, Autismo, Dislexia, etc. (se houver)"
+                      value={necessidadeEducacional}
+                      onChange={(e) => setNecessidadeEducacional(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className={styles.row_1}>
+                  <div className={styles.field_group}>
+                    <label className={styles.label}>Alguma alergia ou condição médica (opcional)</label>
+                    <div className={styles.textarea_wrap}>
+                      <textarea
+                        className={styles.textarea}
+                        placeholder="Ex: Alergia a amendoim, asma, etc."
+                        maxLength={200}
+                        rows={3}
+                        value={condicaoMedica}
+                        onChange={(e) => {
+                          setCondicaoMedica(e.target.value)
+                          setCharCount(e.target.value.length)
+                        }}
+                      />
+                      <span className={styles.char_count}>{charCount}/200</span>
+                    </div>
+                  </div>
+                </div>
 
                 <div className={styles.row_1}>
                   <div className={styles.field_group}>
@@ -672,29 +718,8 @@ const MatriculaAluno = () => {
                     </select>
                   </div>
                 </div>
-
-                <div className={styles.row_1}>
-                  <div className={styles.field_group}>
-                    <label className={styles.label}>Observações (opcional)</label>
-                    <div className={styles.textarea_wrap}>
-                      <textarea
-                        className={styles.textarea}
-                        placeholder="Aluno interessado em áreas de exatas..."
-                        maxLength={200}
-                        rows={5}
-                        value={observacoes}
-                        onChange={(e) => {
-                          setObservacoes(e.target.value)
-                          setCharCount(e.target.value.length)
-                        }}
-                      />
-                      <span className={styles.char_count}>{charCount}/200</span>
-                    </div>
-                  </div>
-                </div>
               </section>
 
-              {/* CARD INFORMATIVO */}
               <div className={styles.info_card}>
                 <div className={styles.info_card_icon}>
                   <i className="fa-solid fa-lightbulb" />
@@ -706,7 +731,6 @@ const MatriculaAluno = () => {
             </div>
           </div>
 
-          {/* ── Rodapé do formulário ── */}
           <div className={styles.form_footer}>
             <button
               type="button"

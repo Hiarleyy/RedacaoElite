@@ -1,6 +1,7 @@
 const redacoesModel = require("../models/redacoes-model")
 const path = require("path")
 const fs = require("fs")
+const archiver = require("archiver")
 
 const redacoesController = {
   // GET /redacoes
@@ -81,6 +82,69 @@ const redacoesController = {
     }
   },
 
+  // GET /redacoes/download-zip
+  downloadZip: async (req, res, next) => {
+    try {
+      const { turmaId, busca, titulo } = req.query
+
+      // Busca todas as redações corrigidas
+      const resultado = await redacoesModel.retornarRedacoes(false, true)
+      let redacoes = resultado.redacoes || resultado
+
+      // Filtro por turma
+      if (turmaId) {
+        redacoes = redacoes.filter((r) => r.usuario?.turmaId === turmaId)
+      }
+
+      // Filtro por tema/título exato
+      if (titulo) {
+        redacoes = redacoes.filter((r) => r.titulo === titulo)
+      }
+
+      // Filtro por texto livre (título ou nome do aluno)
+      if (busca) {
+        const texto = busca.toLowerCase()
+        redacoes = redacoes.filter(
+          (r) =>
+            r.titulo?.toLowerCase().includes(texto) ||
+            r.usuario?.nome?.toLowerCase().includes(texto)
+        )
+      }
+
+      // Remove redações sem arquivo físico
+      const redacoesComArquivo = redacoes.filter((r) => {
+        if (!r.caminho || !r.usuarioId) return false
+        const filePath = path.join(__dirname, "..", "uploads", "redacoes", r.usuarioId, r.caminho)
+        return fs.existsSync(filePath)
+      })
+
+      if (redacoesComArquivo.length === 0) {
+        return res.status(404).json({ message: "Nenhuma redação corrigida encontrada para os filtros aplicados." })
+      }
+
+      res.setHeader("Content-Type", "application/zip")
+      res.setHeader("Content-Disposition", `attachment; filename="redacoes_corrigidas.zip"`)
+
+      const archive = archiver("zip", { zlib: { level: 6 } })
+      archive.pipe(res)
+
+      redacoesComArquivo.forEach((r) => {
+        const filePath = path.join(__dirname, "..", "uploads", "redacoes", r.usuarioId, r.caminho)
+        const nomeSeguro = `${r.usuario?.nome || "aluno"}_${r.titulo}`
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^\w.-]/g, "_")
+          .replace(/_+/g, "_")
+          .slice(0, 100)
+        archive.file(filePath, { name: `${nomeSeguro}.pdf` })
+      })
+
+      archive.finalize()
+    } catch (error) {
+      next(error)
+    }
+  },
+
   // GET /redacoes/download/:id
   download: async (req, res, next) => {
     try {
@@ -102,7 +166,7 @@ const redacoesController = {
       next(error)
     }
   },
-  
+
   // DELETE /redacoes/:id
   delete: async (req, res, next) => {
     try {
@@ -114,5 +178,7 @@ const redacoesController = {
     }
   }
 }
+
+module.exports = redacoesController
 
 module.exports = redacoesController

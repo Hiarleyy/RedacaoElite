@@ -13,7 +13,7 @@ const links = [
   { name: "Nova redação", icon: "fa-solid fa-pen", path: "nova-redacao" },
   { name: "Ranking", icon: "fa-solid fa-ranking-star", path: "ranking" },
   { name: "Cursos", icon: "fa-solid fa-tv", path: "cursos" },
-  { name: "Simulados", icon: "fa-solid fa-bullseye", path: "SimuladosAluno"},
+  { name: "Simulados", icon: "fa-solid fa-bullseye", path: "SimuladosAluno" },
   { name: "Configurações", icon: "fa-solid fa-gear", path: "configuracoes" },
 ]
 
@@ -50,9 +50,9 @@ const AlunoLayout = () => {
       <div className={`${modalIsClicked ? styles.modal_container : styles.modal_container_closed}`}>
         <div className={styles.modal}>
           <p className={styles.modal_text}>Sua sessão expirou, faça login novamente para acessar nossos serviços.</p>
-          <Button 
-            text_size="16px" 
-            padding_sz="15px" 
+          <Button
+            text_size="16px"
+            padding_sz="15px"
             bg_color="#1A1A1A"
             onClick={() => {
               localStorage.removeItem('user_access_data')
@@ -77,7 +77,7 @@ const AlunoLayout = () => {
               </div>
             </Link>
           ))}
-          
+
           <Link className={styles.link_box}>
             <div className={styles.link}>
               <i class="fa-brands fa-whatsapp"></i>
