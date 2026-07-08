@@ -12,7 +12,13 @@ const usuariosRepository = {
         email: true,
         caminho: true,
         tipoUsuario: true,
-        turmaId: true
+        turmaId: true,
+        turma: {
+          select: {
+            id: true,
+            nome: true
+          }
+        }
       },
       orderBy: { nome: 'asc' }
     })
@@ -31,7 +37,9 @@ const usuariosRepository = {
         tipoUsuario: true,
         dataCriacao: true,
         dataAtualizacao: true,
-        turmaId: true
+        turmaId: true,
+        diaVencimentoPadrao: true,
+        valorMensalidadePadrao: true
       }
     })
     return usuario

@@ -17,6 +17,7 @@ import Perfil from "./pages/Aluno/Perfil/Perfil"
 import NovaRedacao from "./pages/Aluno/NovaRedacao/NovaRedacao"
 import DesenpenhoAluno from "./pages/Aluno/DesenpenhoAluno/DesenpenhoAluno"
 import SimuladosAluno from "./pages/Aluno/Simulados/Simulados"
+import AlunoPagamentos from "./pages/Aluno/Pagamentos/Pagamentos"
 
 // Admin Pages
 import FrequenciaAlunos from "./pages/Admin/FrequenciaAlunos/FrequenciaAlunos"
@@ -113,6 +114,7 @@ const router = createBrowserRouter([
       { path: "configuracoes", element: <Configuracoes /> },
       { path: "ControleDesempenho", element: <DesenpenhoAluno /> },
       { path: "SimuladosAluno", element: <SimuladosAluno /> },
+      { path: "pagamentos", element: <AlunoPagamentos /> },
     ],
   },
 

@@ -150,6 +150,11 @@ const fetchData = () => {
     return response.data.data
   }
 
+  const getPagamentosByUsuarioId = async (usuarioId) => {
+    const response = await axios.get(`${baseURL}/pagamentos/${usuarioId}`, { headers: getHeaders() })
+    return response.data.data
+  }
+
   const createSimulado = async (simuladoData) => {
     const response = await axios.post(`${baseURL}/simulados`, simuladoData, { headers: getHeaders() })
     return response.data
@@ -253,6 +258,7 @@ const fetchData = () => {
     getNotaSimulados,
     getCorrecoes,
     getPagamentos,
+    getPagamentosByUsuarioId,
     createSimulado,
     getEventos,
     getEventoById,

@@ -4,7 +4,15 @@ const Pagamento = require("../entities/Pagamento")
 const pagamentosRepository = {
   // Retorna todos os pagamentos do bando de dados
   retorneTodosOsPagamentos: async () => {
-    const pagamentos = await prisma.pagamento.findMany()
+    const pagamentos = await prisma.pagamento.findMany({
+      include: {
+        usuario: {
+          include: {
+            turma: true
+          }
+        }
+      }
+    })
     return pagamentos
   },
 

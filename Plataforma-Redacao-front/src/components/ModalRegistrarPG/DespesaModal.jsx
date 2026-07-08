@@ -1,17 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./styles.module.css";
 import axios from "axios";
 import Message from "../Message/Message";
-import useUseful from "../../utils/useUseful"
+import useUseful from "../../utils/useUseful";
+import fetchData from "../../utils/fetchData";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
-const RegistrarDespesaModal = ({ isOpen, onClose }) => {
+const RegistrarDespesaModal = ({ isOpen, onClose, initialAlunoId }) => {
   const [status, setStatus] = useState("");
   const [valor, setValor] = useState("");
   const [tipoDespensa, settipoDespensa] = useState("");
+  const [alunos, setAlunos] = useState([]);
+  const [alunoId, setAlunoId] = useState("");
+  const [dataVencimento, setDataVencimento] = useState("");
+  const [dataPagamento, setDataPagamento] = useState("");
   const [formMessage, setFormMessage] = useState(null);
-  const { getHeaders } = useUseful()
+  const { getHeaders } = useUseful();
+
+  useEffect(() => {
+    if (isOpen) {
+      const loadAlunos = async () => {
+        try {
+          const { getAlunos } = fetchData();
+          const data = await getAlunos();
+          const filtered = (data || []).filter(
+            (u) => u.tipoUsuario === "STANDARD" || u.tipoUsuario === "standard"
+          );
+          filtered.sort((a, b) => a.nome.localeCompare(b.nome));
+          setAlunos(filtered);
+        } catch (error) {
+          console.error("Erro ao carregar alunos:", error);
+        }
+      };
+      loadAlunos();
+
+      if (initialAlunoId) {
+        setAlunoId(initialAlunoId);
+        setStatus("ENTRADA");
+      } else {
+        setAlunoId("");
+        setStatus("");
+      }
+      setValor("");
+      settipoDespensa("");
+      setDataVencimento("");
+      setDataPagamento("");
+      setFormMessage(null);
+    }
+  }, [isOpen, initialAlunoId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,6 +62,9 @@ const RegistrarDespesaModal = ({ isOpen, onClose }) => {
       status,
       valor: parseFloat(valor),
       tipoDespensa,
+      usuarioId: status === "ENTRADA" && alunoId ? alunoId : null,
+      dataVencimento: dataVencimento || null,
+      dataPagamento: dataPagamento || null,
     };
 
     try {
@@ -45,6 +85,9 @@ const RegistrarDespesaModal = ({ isOpen, onClose }) => {
       setStatus("");
       setValor("");
       settipoDespensa("");
+      setAlunoId("");
+      setDataVencimento("");
+      setDataPagamento("");
     } catch (error) {
       console.error("Erro na requisição:", error.response || error.message);
 
@@ -64,7 +107,7 @@ const RegistrarDespesaModal = ({ isOpen, onClose }) => {
           &times;
         </button>
 
-        <h2 className={styles.title}>Registrar Despesa</h2>
+        <h2 className={styles.title}>Registrar Movimentação Financeira</h2>
 
         <form className={styles.form} onSubmit={handleSubmit}>
           <label>
@@ -75,10 +118,27 @@ const RegistrarDespesaModal = ({ isOpen, onClose }) => {
               required
             >
               <option value="">Selecione</option>
-              <option value="ENTRADA">ENTRADA</option>
-              <option value="SAÍDA">SAÍDA</option>
+              <option value="ENTRADA">ENTRADA (Receita)</option>
+              <option value="SAÍDA">SAÍDA (Despesa)</option>
             </select>
           </label>
+
+          {status === "ENTRADA" && (
+            <label>
+              Aluno (Opcional):
+              <select
+                value={alunoId}
+                onChange={(e) => setAlunoId(e.target.value)}
+              >
+                <option value="">Nenhum (Receita Geral)</option>
+                {alunos.map((aluno) => (
+                  <option key={aluno.id} value={aluno.id}>
+                    {aluno.nome}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
 
           <label>
             Valor (R$):
@@ -92,12 +152,30 @@ const RegistrarDespesaModal = ({ isOpen, onClose }) => {
           </label>
 
           <label>
-            Tipo de Despesa:
+            Descrição / Tipo:
             <input
               type="text"
               value={tipoDespensa}
               onChange={(e) => settipoDespensa(e.target.value)}
               required
+            />
+          </label>
+
+          <label>
+            Data de Vencimento (Opcional):
+            <input
+              type="date"
+              value={dataVencimento}
+              onChange={(e) => setDataVencimento(e.target.value)}
+            />
+          </label>
+
+          <label>
+            Data de Pagamento (Opcional - Deixe em branco se pendente):
+            <input
+              type="date"
+              value={dataPagamento}
+              onChange={(e) => setDataPagamento(e.target.value)}
             />
           </label>
 

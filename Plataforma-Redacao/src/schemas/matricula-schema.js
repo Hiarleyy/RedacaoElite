@@ -26,6 +26,9 @@ const criarMatriculaSchema = z.object({
   dataInicio: z.string(),
   comoConheceu: z.string().optional().nullable(),
   observacoes: z.string().max(200).optional().nullable(),
+  condicaoMedica: z.string().max(200).optional().nullable(),
+  deficiencia: z.string().max(200).optional().nullable(),
+  necessidadeEducacional: z.string().max(200).optional().nullable(),
 })
 
 const atualizarMatriculaSchema = z.object({
@@ -41,6 +44,7 @@ const atualizarMatriculaSchema = z.object({
   telefoneResponsavel: z.string().optional().nullable(),
   dataInicio: z.string(),
   comoConheceu: z.string().optional().nullable(),
+  observacoes: z.string().max(200).optional().nullable(),
   condicaoMedica: z.string().max(200).optional().nullable(),
   deficiencia: z.string().max(200).optional().nullable(),
   necessidadeEducacional: z.string().max(200).optional().nullable(),

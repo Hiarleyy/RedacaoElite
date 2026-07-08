@@ -51,12 +51,10 @@ router.delete("/turmas/:id", authMiddleware, adminMiddleware, turmaController.de
 
 // Rotas relacionadas a pagamentos
 router.get("/pagamentos", authMiddleware, adminMiddleware, pagamentosController.index)
-router.get("/pagamentos", authMiddleware, adminMiddleware, pagamentosController.index)
 router.post('/pagamentos', authMiddleware, adminMiddleware, pagamentosController.create)
 router.put('/pagamentos/:id', authMiddleware, adminMiddleware, pagamentosController.update)
 router.delete('/pagamentos/:id', authMiddleware, adminMiddleware, pagamentosController.delete)
-router.get("/pagamentos/:id", authMiddleware, adminMiddleware, pagamentosController.show)
-router.get("/pagamentos/:id", authMiddleware, adminMiddleware, pagamentosController.show)
+router.get("/pagamentos/:id", authMiddleware, pagamentosController.show)
 
 // Rotas relacionadas a modulos
 router.get("/modulos", authMiddleware, modulosController.index)

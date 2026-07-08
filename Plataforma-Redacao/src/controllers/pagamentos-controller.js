@@ -50,6 +50,11 @@ const pagamentosController = {
   show: async (req, res, next) =>{
     try {
       const {id} = req.params
+      const user = req.authenticatedUser
+
+      if (user.tipoUsuario !== "ADMIN" && user.id !== id) {
+        return res.status(403).json({ message: "Acesso negado." })
+      }
 
       const resposta = await pagamentosModel.retornarPagamentosUsuario(id)
       res.status(200).json({data: resposta})
