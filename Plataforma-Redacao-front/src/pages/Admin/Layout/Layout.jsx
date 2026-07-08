@@ -57,9 +57,9 @@ const AdminLayout = () => {
       <div className={`${modalIsClicked ? styles.modal_container : styles.modal_container_closed}`}>
         <div className={styles.modal}>
           <p className={styles.modal_text}>Sua sessão expirou, faça login novamente para acessar nossos serviços.</p>
-          <Button 
-            text_size="16px" 
-            padding_sz="15px" 
+          <Button
+            text_size="16px"
+            padding_sz="15px"
             bg_color="#1A1A1A"
             onClick={() => {
               localStorage.removeItem('user_access_data')
