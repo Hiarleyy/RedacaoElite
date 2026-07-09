@@ -40,7 +40,9 @@ const Pagamentos = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [modalAlunoId, setModalAlunoId] = useState("");
   const [activeSubTab, setActiveSubTab] = useState("alunos"); // Padrão: alunos
-  
+  const UserAccessData = localStorage.getItem("user_access_data");
+  const userRole = UserAccessData ? JSON.parse(UserAccessData).role?.toUpperCase() : null;
+
   // Limite de itens por página
   const itemsPerPage = 10;
 
@@ -335,22 +337,24 @@ const Pagamentos = () => {
           <p>Acompanhe pagamentos, receitas, despesas e mensalidades dos alunos</p>
           
           {/* Abas */}
-          <div className={styles.tab_buttons}>
-            <button
-              className={`${styles.tab_button} ${activeSubTab === "alunos" ? styles.active_tab : ""}`}
-              onClick={() => setActiveSubTab("alunos")}
-            >
-              <i className="fa-solid fa-graduation-cap"></i>
-              Acompanhamento de Alunos
-            </button>
-            <button
-              className={`${styles.tab_button} ${activeSubTab === "geral" ? styles.active_tab : ""}`}
-              onClick={() => setActiveSubTab("geral")}
-            >
-              <i className="fa-solid fa-cash-register"></i>
-              Fluxo de Caixa Geral
-            </button>
-          </div>
+          {userRole === "ADMIN" && (
+            <div className={styles.tab_buttons}>
+              <button
+                className={`${styles.tab_button} ${activeSubTab === "alunos" ? styles.active_tab : ""}`}
+                onClick={() => setActiveSubTab("alunos")}
+              >
+                <i className="fa-solid fa-graduation-cap"></i>
+                Acompanhamento de Alunos
+              </button>
+              <button
+                className={`${styles.tab_button} ${activeSubTab === "geral" ? styles.active_tab : ""}`}
+                onClick={() => setActiveSubTab("geral")}
+              >
+                <i className="fa-solid fa-cash-register"></i>
+                Fluxo de Caixa Geral
+              </button>
+            </div>
+          )}
 
           {activeSubTab === "geral" ? (
             <>
@@ -635,13 +639,15 @@ const Pagamentos = () => {
                       <th>Data de Pagamento</th>
                       <th>Status Período</th>
                       <th>Status Geral</th>
+                      {userRole === "ADMIN" && (
                       <th style={{ textAlign: "center" }}>Ações</th>
+                    )}
                     </tr>
                   </thead>
                   <tbody>
                     {paginatedAlunos.length === 0 ? (
                       <tr>
-                        <td colSpan="8" style={{ textAlign: "center", padding: "30px", color: "#888" }}>
+                        <td colSpan={userRole === "ADMIN" ? "8" : "7"} style={{ textAlign: "center", padding: "30px", color: "#888" }}>
                           Nenhum aluno encontrado para os filtros aplicados.
                         </td>
                       </tr>
@@ -689,29 +695,31 @@ const Pagamentos = () => {
                                 <i className={generalStatusIcon}></i> {generalStatusText}
                               </span>
                             </td>
-                            <td style={{ textAlign: "center" }}>
-                              {aluno.periodStatus === "Sem Cobrança" ? (
-                                <button
-                                  className={`${styles.action_btn} ${styles.register}`}
-                                  title="Lançar/Registrar Pagamento"
-                                  onClick={() => handleOpenRegisterModal(aluno.id)}
-                                >
-                                  <i className="fa-solid fa-plus"></i> Registrar
-                                </button>
-                              ) : (aluno.periodStatus === "Pendente" || aluno.periodStatus === "Atrasado") ? (
-                                <button
-                                  className={`${styles.action_btn} ${styles.confirm}`}
-                                  title="Confirmar Recebimento"
-                                  onClick={() => handleConfirmPayment(aluno.periodPayment.id)}
-                                >
-                                  <i className="fa-solid fa-check"></i> Confirmar
-                                </button>
-                              ) : (
-                                <span style={{ color: "#10b981", fontSize: "14px", fontWeight: 500 }}>
-                                  <i className="fa-solid fa-circle-check"></i> Recebido
-                                </span>
+                            {userRole === "ADMIN" && (
+                              <td style={{ textAlign: "center" }}>
+                                {aluno.periodStatus === "Sem Cobrança" ? (
+                                  <button
+                                    className={`${styles.action_btn} ${styles.register}`}
+                                    title="Lançar/Registrar Pagamento"
+                                    onClick={() => handleOpenRegisterModal(aluno.id)}
+                                  >
+                                    <i className="fa-solid fa-plus"></i> Registrar
+                                  </button>
+                                ) : (aluno.periodStatus === "Pendente" || aluno.periodStatus === "Atrasado") ? (
+                                  <button
+                                    className={`${styles.action_btn} ${styles.confirm}`}
+                                    title="Confirmar Recebimento"
+                                    onClick={() => handleConfirmPayment(aluno.periodPayment.id)}
+                                  >
+                                    <i className="fa-solid fa-check"></i> Confirmar
+                                  </button>
+                                ) : (
+                                  <span style={{ color: "#10b981", fontSize: "14px", fontWeight: 500 }}>
+                                    <i className="fa-solid fa-circle-check"></i> Recebido
+                                  </span>
+                                )}
+                              </td>
                               )}
-                            </td>
                           </tr>
                         );
                       })

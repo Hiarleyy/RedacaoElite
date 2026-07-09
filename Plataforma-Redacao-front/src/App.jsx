@@ -58,7 +58,7 @@ const getUserRole = () => {
 const definePath = () => {
   const role = getUserRole()?.toUpperCase()
 
-  if (role === "ADMIN") {
+  if (role === "ADMIN" || role === "PEDAGOGO") {
     return "/admin"
   } else if (role === "STANDARD") {
     return "/aluno"
@@ -84,7 +84,7 @@ const ProtectedHomeAdminRoutes = ({ element }) => {
     return <Navigate to="/" replace />
   }
 
-  if (getUserRole()?.toUpperCase() !== "ADMIN") {
+  if (getUserRole()?.toUpperCase() !== "ADMIN" && getUserRole()?.toUpperCase() !== "PEDAGOGO") {
     return <Navigate to="/" replace />
   }
 

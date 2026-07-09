@@ -33,8 +33,11 @@ const usuariosModel = {
       throw new HttpError(400, "Erro de validação: Verifique se os dados enviados estão corretos.")
     } 
 
-    // Verificando se a turma existe
-    await turmaModel.retornarTurma(corpo.data.turmaId)
+    // Verificando se a turma existe (apenas se for informada)
+    if (corpo.data.turmaId) {
+      await turmaModel.retornarTurma(corpo.data.turmaId)
+    }
+
 
     // Verificando se o email já foi cadastrado
     const emailExiste = await usuariosRepository.retorneUmUsuarioPeloEmail(corpo.data.email)
@@ -50,8 +53,9 @@ const usuariosModel = {
       email: corpo.data.email,
       password: hashedPassword,
       tipoUsuario: corpo.data.tipoUsuario,
-      turmaId: corpo.data.turmaId
+      turmaId: corpo.data.turmaId || null // Passa null se não existir
     })
+
 
     return usuario
   },
