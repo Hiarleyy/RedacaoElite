@@ -2,15 +2,23 @@ const pagamentosModel = require("../models/pagamentos-model");
 const { show } = require("./usuarios-controller");
 
 const pagamentosController = {
-  // GET /pagamentos 
   index: async (req, res, next) => {
-    try {
-      const resposta = await pagamentosModel.retornarPagamentos()
+    try{
+      const user = req.authenticatedUser;
+      let resposta = await pagamentosModel.retornarPagamentos();
+      
+      if (user.tipoUsuario === 'PEDAGOGO') {
+        resposta = resposta.filter(p => p.status === "ENTRADA");
+      }
+
       res.status(200).json({ data: resposta })
-    } catch (erro) {
-      next(erro);
+
+    }catch(error){
+      console.log(error)
+      next(error)
     }
-  }, 
+
+  },
 
   // POST /pagamentos
   create: async (req, res, next) => {
@@ -47,12 +55,13 @@ const pagamentosController = {
       next(error)
     }
   },
+
   show: async (req, res, next) =>{
     try {
       const {id} = req.params
       const user = req.authenticatedUser
 
-      if (user.tipoUsuario !== "ADMIN" && user.id !== id) {
+      if (user.tipoUsuario !== "ADMIN" && user.tipoUsuario !== "PEDAGOGO" && user.id !== id) {
         return res.status(403).json({ message: "Acesso negado." })
       }
 

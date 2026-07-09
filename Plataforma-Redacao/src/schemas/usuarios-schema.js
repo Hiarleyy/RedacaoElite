@@ -4,8 +4,8 @@ const criarUsuarioSchema = z.object({
   nome: z.string(),
   email:z.string().email(),
   password: z.string().optional(),
-  tipoUsuario: z.enum(["ADMIN", "STANDARD"]).default("STANDARD"),
-  turmaId: z.string().uuid()
+  tipoUsuario: z.enum(["ADMIN", "STANDARD", "PEDAGOGO"]).default("STANDARD"),
+  turmaId: z.string().uuid().optional().nullable()
 }).strict()
 
 const atualizarUsuarioSchema = z.object({

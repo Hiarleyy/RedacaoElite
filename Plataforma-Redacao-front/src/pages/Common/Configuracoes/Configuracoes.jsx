@@ -25,6 +25,9 @@ function configuracoes() {
     nova: false,
     confirmar: false,
   });
+  const [colaboradorNome, setColaboradorNome] = useState("");
+  const [colaboradorEmail, setColaboradorEmail] = useState("");
+  const [colaboradorCargo, setColaboradorCargo] = useState("PEDAGOGO");
   const { getHeaders } = useUseful();
 
   const getAlunoId = () => {
@@ -269,6 +272,46 @@ function configuracoes() {
     }
   };
 
+  const handleCadastrarColaborador = async (e) => {
+    e.preventDefault();
+    if (!colaboradorNome || !colaboradorEmail) {
+      alert("Por favor, preencha o nome e o e-mail.");
+      return;
+    }
+    
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${baseURL}/usuarios`, {
+        method: "POST",
+        headers: {
+          ...getHeaders(),
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          nome: colaboradorNome,
+          email: colaboradorEmail,
+          tipoUsuario: colaboradorCargo,
+          turmaId: null
+        })
+      });
+
+      const resData = await response.json();
+      if (!response.ok) {
+        throw new Error(resData.message || "Erro ao cadastrar colaborador.");
+      }
+
+      alert(`Colaborador cadastrado com sucesso! A senha padrão é o prefixo do e-mail (ex: ${colaboradorEmail.split("@")[0]}).`);
+      setColaboradorNome("");
+      setColaboradorEmail("");
+      setColaboradorCargo("PEDAGOGO");
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Erro ao cadastrar colaborador.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const togglePasswordVisibility = (field) => {
     setShowPassword((prev) => ({
       ...prev,
@@ -431,6 +474,70 @@ function configuracoes() {
               </div>
             </form>
           </div>
+
+          {/* Seção de cadastro de colaborador */}
+          {usuario.tipoUsuario === "ADMIN" && (
+            <div className={styles.password_section} style={{ marginTop: "40px", borderTop: "1px solid #444", paddingTop: "30px" }}>
+              <h3>Cadastrar Novo Colaborador</h3>
+              <form
+                onSubmit={handleCadastrarColaborador}
+                className={styles.password_form}
+              >
+                <div className={styles.form_group}>
+                  <p>Nome Completo</p>
+                  <Input
+                    type="text"
+                    placeholder="Nome completo do colaborador"
+                    value={colaboradorNome}
+                    onChange={(e) => setColaboradorNome(e.target.value)}
+                    color="#1A1A1A"
+                  />
+                </div>
+                <div className={styles.form_group}>
+                  <p>E-mail (deve ser @gmail.com)</p>
+                  <Input
+                    type="email"
+                    placeholder="exemplo@gmail.com"
+                    value={colaboradorEmail}
+                    onChange={(e) => setColaboradorEmail(e.target.value)}
+                    color="#1A1A1A"
+                  />
+                </div>
+                <div className={styles.form_group}>
+                  <p>Cargo</p>
+                  <select
+                    value={colaboradorCargo}
+                    onChange={(e) => setColaboradorCargo(e.target.value)}
+                    style={{
+                      width: "100%",
+                      padding: "12px",
+                      borderRadius: "5px",
+                      backgroundColor: "#1A1A1A",
+                      color: "#FFFFFF",
+                      border: "1px solid #444",
+                      outline: "none",
+                      fontSize: "14px"
+                    }}
+                  >
+                    <option value="PEDAGOGO">Pedagogo</option>
+                    <option value="ADMIN">Administrador</option>
+                  </select>
+                </div>
+                <div className={styles.button_container_password}>
+                  <Button
+                    text_size="14px"
+                    text_color="#E0E0E0"
+                    padding_sz="10px 20px"
+                    bg_color="#DA9E00"
+                    isLoading={isLoading}
+                    type="submit"
+                  >
+                    Cadastrar Colaborador
+                  </Button>
+                </div>
+              </form>
+            </div>
+          )}
         </div>
       </div>
     </div>

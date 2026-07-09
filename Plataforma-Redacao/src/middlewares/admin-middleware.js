@@ -1,11 +1,21 @@
-const adminMiddleware = (req, res, next) => {
-  const user = req.authenticatedUser;
 
-  if (user.tipoUsuario !== "ADMIN") {
-    return res.status(401).json({ message: "Acesso negado, rota exclusiva para admins." })
-  }
+const adminMiddleware = (cargosPermitidos) => {
+  return (req, res, next) => {
+    const user = req.authenticatedUser;
 
-  next()
-}
+    if (!user){
+      return res.status(401).json({ message: "Usuário Não autorizado. Faça login novamente." });
+    };
 
-module.exports = adminMiddleware
+    if (!cargosPermitidos.includes(user.tipoUsuario)){
+      return res.status(403).json({ message: "Você não tem permissão para realizar essa ação." });
+    }
+    
+    next();
+  };
+};
+
+module.exports = adminMiddleware;
+
+
+  

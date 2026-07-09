@@ -161,6 +161,7 @@ model NotasSimulado {
 enum Cargo {
   ADMIN
   STANDARD
+  PEDAGOGO
 }
 
 enum StatusFrequencia {
