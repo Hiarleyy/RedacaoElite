@@ -114,7 +114,7 @@ const DetalhesAluno = () => {
     setMatriculaMessage(null)
 
     try {
-      await axios.put(
+      const response = await axios.put(
         `${baseURL}/matriculas/usuario/${aluno_id}`,
         {
           cpf,
@@ -134,6 +134,7 @@ const DetalhesAluno = () => {
         { headers: getHeaders() }
       )
 
+      setMatriculaData(response.data.data)
       setMatriculaMessage({ type: "success", text: "Matrícula salva com sucesso." })
     } catch (error) {
       setMatriculaMessage({
@@ -454,13 +455,15 @@ const DetalhesAluno = () => {
             <>
               {isLoadingMatricula ? (
                 <div className={styles.matricula_loading}><Loading /></div>
-              ) : !matriculaData ? (
-                <div className={styles.matricula_empty}>
-                  <i className="fa-solid fa-circle-info" />
-                  <p>Este aluno ainda não possui matrícula cadastrada.</p>
-                </div>
               ) : (
-                <form onSubmit={handleSaveMatricula} className={styles.matricula_form}>
+                <>
+                  {!matriculaData && (
+                    <div className={styles.matricula_empty} style={{ minHeight: "auto", paddingBottom: "20px" }}>
+                      <i className="fa-solid fa-circle-info" />
+                      <p style={{ maxWidth: "100%" }}>Este aluno ainda não possui matrícula cadastrada. Preencha os campos abaixo para cadastrá-la.</p>
+                    </div>
+                  )}
+                  <form onSubmit={handleSaveMatricula} className={styles.matricula_form}>
                   {/* DADOS PESSOAIS */}
                   <div className={styles.section_header}>
                     <i className="fa-solid fa-user" />
@@ -654,10 +657,11 @@ const DetalhesAluno = () => {
                     bg_color="#DA9E00"
                     isLoading={isSavingMatricula}
                   >
-                    <i className="fa-solid fa-floppy-disk" /> SALVAR MATRÍCULA
+                    <i className="fa-solid fa-floppy-disk" /> {matriculaData ? "SALVAR MATRÍCULA" : "CADASTRAR MATRÍCULA"}
                   </Button>
                 </form>
-              )}
+              </>
+            )}
             </>
           )}
         </div>
