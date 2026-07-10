@@ -1,92 +1,492 @@
 .container {
   width: 100%;
-  height: 100vh;
+  padding-bottom: 40px;
 }
 
-.main_content {
+.mainLayout {
   display: flex;
-  justify-content: space-between;
-  padding: 50px;
+  gap: 24px;
+  width: 95%;
   max-width: 1500px;
-  height: calc(100vh - 70px);
   margin: 0 auto;
+  margin-top: 20px;
+  background: #242424
+
 }
 
-.main_content .bg_left {
+.dashboardColumn {
+  flex: 1.2;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 50%;
-  padding: 20px;
-  position: relative;
-  border-radius: 10px;
-  background-color: #242424;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-.main_content .bg_right .pagination {
+.registrarColumn {
+  flex: 1;
+  background: rgba(46, 50, 56, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header Card */
+.headerCard {
+  background: rgba(46, 50, 56, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.iconSimulado {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #FFE066 0%, #F5B041 100%);
+  color: #242424;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.headerInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.headerLabel {
+  color: #DA9E00;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.headerTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.simuladoTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.badgeAtivo {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.headerMetrics {
+  display: flex;
+  gap: 16px;
+}
+
+.metricItem {
+  flex: 1;
+  background-color: #1A1A1A;
+  border: 1px solid #40444b;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.metricIcon {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255,255,255,0.05);
+  color: #a0a0a0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.metricLabel {
+  color: #a0a0a0;
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+
+.metricValue {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Titles */
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  margin: 10px 0 0 0;
+}
+
+/* Stats Grid */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.statBox {
+  background: rgba(46, 50, 56, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.statIconWrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.statContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.statBoxLabel {
+  color: #a0a0a0;
+  font-size: 12px;
+}
+
+.statBoxValueGroup {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.statBoxValue {
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.statBoxText {
+  color: #a0a0a0;
+  font-size: 12px;
+}
+
+.statBoxSub {
+  color: #a0a0a0;
+  font-size: 12px;
+}
+
+/* Desempenho */
+.desempenhoCard {
+  background: #1A1A1A;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 24px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.desempenhoHeader {
+  display: flex;
+  justify-content: space-between;
+  color: #a0a0a0;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.progressBarBg {
   width: 100%;
-  height: fit-content;
-  position: absolute;
-  bottom: 20px;
-  left: 0px;
+  height: 8px;
+  background-color: #2e3238;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
 }
 
-.main_content .bg_right {
+.progressBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, #F5B041 0%, #FFE066 100%);
+  border-radius: 4px;
+}
+
+.progressText {
+  text-align: right;
+  color: #a0a0a0;
+  font-size: 13px;
+}
+
+/* Faixas */
+.faixasGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.faixaBox {
+  background: rgba(46, 50, 56, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  width:40%;
-  padding: 20px;
-  position: relative;
-  border-radius: 10px;
-  background-color: #242424;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  align-items: center;
+  gap: 8px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
-
-
-.main_content .bg_right .form_title {
-  color: #E0E0E0;
-  text-align: center;
-  font-size: 22px;
-  letter-spacing: 0.5px;
-  margin-bottom: 20px;
+.faixaTitle {
+  font-size: 16px;
+  font-weight: 700;
 }
 
-.main_content .bg_right .form_subtitle {
+.faixaAlunos {
+  color: #fff;
+  font-size: 14px;
+}
+
+.faixaPct {
+  color: #a0a0a0;
+  font-size: 13px;
+}
+
+/* Relatorio Btn */
+.relatorioBtn {
+  background: rgba(46, 50, 56, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px 20px;
+  color: #DA9E00;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 10px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.relatorioBtn:hover {
+  background-color: rgba(218, 158, 0, 0.1);
+  border-color: rgba(218, 158, 0, 0.25);
+}
+
+/* Right side - Registrar */
+.registrarHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.registrarIcon {
+  width: 36px;
+  height: 36px;
+  background-color: rgba(255,255,255,0.05);
+  color: #fff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.registrarTitle {
   font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
 }
 
-.main_content .alunos_container {
-  margin-top: 30px;
+.registrarSubtitle {
+  color: #a0a0a0;
+  font-size: 13px;
+  margin: 0 0 24px 0;
+}
+
+.registrarFilters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.searchInput {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background-color: #2e3238;
+  border: 1px solid #40444b;
+  border-radius: 8px;
+  padding: 0 12px;
+  transition: border-color 0.2s;
+}
+
+.searchInput:focus-within {
+  border-color: #DA9E00;
+}
+
+.searchInput input {
+  background: transparent;
+  border: none;
+  color: #fff;
+  padding: 10px 0;
+  width: 100%;
+  outline: none;
+  margin-left: 8px;
+  font-size: 13px;
+}
+
+.searchInput input::placeholder {
+  color: #8a8f98;
+}
+
+.sortSelect {
+  background-color: #2e3238;
+  border: 1px solid #40444b;
+  color: #a0a0a0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  outline: none;
+  font-size: 13px;
+}
+
+.viewBtn {
+  background-color: #2e3238;
+  border: 1px solid #40444b;
+  color: #a0a0a0;
+  width: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.alunosList {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
+  flex: 1;
+}
+
+.alunoCard {
+  background-color: #2e3238;
+  border: 1px solid #40444b;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.alunoInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.alunoAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4ade80 0%, #16a34a 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.alunoNome {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 2px 0;
+}
+
+.alunoEmail {
+  font-size: 12px;
+  color: #a0a0a0;
+  margin: 0;
+}
+
+.btnRegistrarNota {
+  background-color: #e11d48;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.2s;
+}
+
+.btnRegistrarNota:hover {
+  opacity: 0.9;
+}
+
+.concluidoMensagem {
+  text-align: center;
+  padding: 40px;
+  color: #a0a0a0;
+  background-color: #2e3238;
+  border-radius: 12px;
+  border: 1px dashed #40444b;
+}
+
+.paginationWrapper {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 1200px) {
+  .mainLayout {
+    flex-direction: column;
+  }
 }
 
 @media (max-width: 768px) {
-  .container {
-    height: fit-content;
-  }
-
-  .main_content {
+  .statsGrid, .faixasGrid, .headerMetrics {
+    grid-template-columns: 1fr 1fr;
     flex-direction: column;
-    gap: 40px;
-    height: 100%;
-    padding: 20px;
-    padding-bottom: 100px;
   }
-  
-  .main_content .bg_left, 
-  .main_content .bg_right {
-    width: 100%;
-  }
-
-  .main_content .bg_left {
-    height: 600px;
-  }
-  .main_content .bg_right{
-    height: 600px;
-  }
-  
 }

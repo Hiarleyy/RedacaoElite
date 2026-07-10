@@ -110,13 +110,13 @@ const ModalRegistrarNotas = ({
           <DetailsCard
             title="Nome"
             content={aluno.name}
-            bg_color="#ca7e0b"
+            bg_color="#2e3238"
             text_size="14px"
           />
           <DetailsCard
             title="Nome do Simulado"
             content={nameSimulado}
-            bg_color="#ca7e0b"
+            bg_color="#2e3238"
             text_color="#ffffff"
             text_size="14px"
           />
@@ -158,7 +158,7 @@ const ModalRegistrarNotas = ({
         <DetailsCard
           title="Nota Final"
           content={notaFinal}
-          bg_color="#2E7D32"
+          bg_color="#24272c"
           text_size="16px"
         />
 
