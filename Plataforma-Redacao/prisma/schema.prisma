@@ -108,11 +108,23 @@ model Correcao {
 }
 
 model Proposta {
-  id      String   @id @db.VarChar(36)
-  tema    String   @db.VarChar(200)
-  caminho String   @db.VarChar(100)
-  data    DateTime @default(now())
+  id          String   @id @db.Char(36)
+  tema        String   @db.VarChar(200)
+  dataInicial DateTime @default(now())
+  dataFinal   DateTime @default(now())
+  eixos       String[] @db.VarChar(100)
+  materiais   MaterialApoio[] 
 }
+
+model MaterialApoio {
+  id         String   @id @db.Char(36)
+  tipo       String   @db.VarChar(50)   // "PDF", "VIDEO", "IMAGEM"
+  caminho    String   @db.VarChar(255)
+  nome       String   @db.VarChar(200)
+  propostaId String   @db.VarChar(36)
+  proposta   Proposta @relation(fields: [propostaId], references: [id], onDelete: Cascade)
+}
+
 
 model Modulo {
   id          String   @id @db.Char(36)

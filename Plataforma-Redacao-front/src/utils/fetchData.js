@@ -55,6 +55,21 @@ const fetchData = () => {
     const response = await axios.get(`${baseURL}/propostas`, { headers: getHeaders() })
     return response.data.data
   }
+  const getPropostaById = async (id) => {
+    const response = await axios.get(`${baseURL}/propostas/${id}`, { headers: getHeaders() })
+    return response.data.data
+  }
+
+  const createProposta = async (formData) => {
+    const response = await axios.post(`${baseURL}/propostas`, formData, { headers: getHeaders() })
+    return response.data
+  }
+
+  const updateProposta = async (id, formData) => {
+    const response = await axios.put(`${baseURL}/propostas/${id}`, formData, { headers: getHeaders() })
+    return response.data
+  }
+
   const getRedacoes = async (usuarioId = false, corrigidas = false, pendentes = false) => {
     // Buscando as redações corrigidas de um usuário específico
     if (usuarioId && corrigidas) {
@@ -174,7 +189,6 @@ const fetchData = () => {
     return response.data
   }
 
-  // ── Matrículas ───────────────────────────────────────────────────────────
   const createMatricula = async (matriculaData) => {
     const response = await axios.post(`${baseURL}/matriculas`, matriculaData, { headers: getHeaders() })
     return response.data
@@ -247,6 +261,8 @@ const fetchData = () => {
     getRanking,
     getRedacoes,
     getPropostas,
+    createProposta,
+    updateProposta,
     getRedacoesCorrigidas,
     getRedacoesUser,
     getRedacaoById,

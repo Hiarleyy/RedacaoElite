@@ -27,20 +27,71 @@ const propostasController = {
 
   create: async (req, res, next) => {
     try {
-      const { tema } = req.body;
+      const { tema, dataInicial, dataFinal } = req.body;
+      let { eixos, materiaisInfo } = req.body;
 
-      if (!req.file) {
-        return res.status(400).json({ error: "Arquivo não enviado." });
-      }
-      const resposta = await propostasModel.criarProposta({
-        tema,
-        caminho: req.file.filename,
+      if (typeof eixos === 'string') eixos = JSON.parse(eixos);
+      if (typeof materiaisInfo === 'string') materiaisInfo = JSON.parse(materiaisInfo);
+
+      const files = req.files || [];
+      const materiais = (materiaisInfo || []).map(info => {
+        const material = { tipo: info.tipo, nome: info.titulo, caminho: info.caminho || '' };
+        if (info.tipo === 'pdf' || info.tipo === 'imagem') {
+          const file = files.find(f => f.originalname === info.caminho);
+          if (file) {
+            material.caminho = file.filename;
+          }
+        }
+        return material;
       });
-      console.log("resposta")
-      res.status(201).json({ message: "proposta salva com sucesso!", data: resposta });
+
+      const proposta = await propostasModel.criarProposta({
+        tema,
+        dataInicial: new Date(dataInicial),
+        dataFinal: new Date(dataFinal),
+        eixos,
+        MaterialApoio: materiais,
+      });
+      res.status(201).json({ message: "proposta criada com sucesso!", data: proposta });
     } catch (error) {
+      console.log(error);
       next(error)
-    }
+    } 
+  },
+
+  update: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { tema, dataInicial, dataFinal } = req.body;
+      let { eixos, materiaisInfo } = req.body;
+
+      if (typeof eixos === 'string') eixos = JSON.parse(eixos);
+      if (typeof materiaisInfo === 'string') materiaisInfo = JSON.parse(materiaisInfo);
+
+      const files = req.files || [];
+      const materiais = (materiaisInfo || []).map(info => {
+        const material = { tipo: info.tipo, nome: info.titulo, caminho: info.caminho || '' };
+        if (info.tipo === 'pdf' || info.tipo === 'imagem') {
+          const file = files.find(f => f.originalname === info.caminho);
+          if (file) {
+            material.caminho = file.filename;
+          }
+        }
+        return material;
+      });
+
+      const proposta = await propostasModel.atualizarProposta(id, {
+        tema,
+        dataInicial: new Date(dataInicial),
+        dataFinal: new Date(dataFinal),
+        eixos,
+        MaterialApoio: materiais,
+      });
+      res.status(200).json({ message: "proposta atualizada com sucesso!", data: proposta });
+    } catch (error) {
+      console.log(error);
+      next(error)
+    } 
   },
 
   delete: async (req, res, next) => {

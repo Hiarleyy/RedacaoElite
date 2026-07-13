@@ -44,6 +44,18 @@ const propostasModel = {
     const novaProposta = await propostasRepository.crieNovaProposta(corpo.data);
     return novaProposta;
   },
+
+  atualizarProposta: async (id, data) => {
+    const corpo = criarPropostaSchema.safeParse(data);
+  
+    if (!corpo.success) {
+      throw new HttpError(400, "Erro de validação: Verifique se os dados enviados estão corretos.");
+    }
+   await propostasModel.retornarUmaProposta(id)
+   const propostaAtualizada = await propostasRepository.atualizeUmaProposta(id, corpo.data)
+   return propostaAtualizada
+  },
+
   // Deletando Uma Proposta
   deletarUmaProposta: async (id) => {
     const propostaDeletada = await propostasRepository.deletarUmaProposta(id);
