@@ -22,7 +22,8 @@ import AlunoPagamentos from "./pages/Aluno/Pagamentos/Pagamentos"
 // Admin Pages
 import FrequenciaAlunos from "./pages/Admin/FrequenciaAlunos/FrequenciaAlunos"
 import DashboardAdmin from "./pages/Admin/Dashboard/Dashboard"
-import NovaProposta from "./pages/Admin/NovaProposta/NovaProposta"
+import NovaProposta from "./pages/Admin/GerenciarProposta/NovaProposta"
+import CadastrarProposta from "./pages/Admin/CadastrarProposta/CadastrarProposta"
 import GerenciarTurmas from "./pages/Admin/GerenciarTurmas/GerenciarTurmas"
 import DetalhesTurma from "./pages/Admin/DetalhesTurma/DetalhesTurma"
 import GerenciarAlunos from "./pages/Admin/GerenciarAlunos/GerenciarAlunos"
@@ -124,6 +125,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <DashboardAdmin /> },
       { path: "nova-proposta", element: <NovaProposta /> },
+      { path: "cadastrar-proposta", element: <CadastrarProposta /> },
       { path: "gerenciar-turmas", element: <GerenciarTurmas /> },
       { path: "gerenciar-turmas/:turma_id", element: <DetalhesTurma /> },
       { path: "gerenciar-alunos", element: <GerenciarAlunos /> },

@@ -71,11 +71,13 @@ router.get("/redacoes/:id", authMiddleware, redacoesController.show)
 router.delete("/redacoes/:id", authMiddleware, redacoesController.delete)
 
 //Rotas relacionadas a propostas
-router.post("/propostas", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), uploadPropostas.single("file"), propostasController.create)
+router.post("/propostas", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), uploadPropostas.array("arquivos"), propostasController.create)
 router.get("/propostas", authMiddleware, propostasController.index);
 router.get("/propostas/download", propostasController.download)
 router.get("/propostas/:id", authMiddleware, propostasController.show)
 router.delete("/propostas/:id", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), propostasController.delete)
+router.put("/propostas/:id", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), uploadPropostas.array("arquivos"), propostasController.update)
+
 
 // Rotas relacionadas a correções
 router.get("/correcoes", correcoesController.index)
