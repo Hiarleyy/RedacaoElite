@@ -1,57 +1,182 @@
+/* ============================================
+   HEADER / SIDEBAR — Redesign premium
+   Referência: sidebar com ícone + texto, active state, meta circular
+   ============================================ */
+
 .header {
-  background-color: #242424;
-  width: 256px;
-  height: 100vh;
-  position: sticky;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-}
-
-.header .logo {
-  height: 70px;
+  background-color: #1e1e1e;
+  width: 220px;
+  height: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  border-bottom: 1px solid #c4c4c44d;
-}
-
-.header .logo img {
-  width: 40px;
-}
-
-.header .menu_options {
-  display: flex;
-  justify-content: center;
   flex-direction: column;
-  gap: 10px;
-  padding: 10px;
-  margin-top: 20px;
+  border-right: 1px solid #c4c4c41a;
   overflow-y: auto;
-  max-height: calc(100vh - 70px);
   scrollbar-width: thin;
-  scrollbar-color: #c4c4c44d transparent;
+  scrollbar-color: #333 transparent;
 }
 
-.header .menu_options .link {
-  background-color: #242424;
-  height: 48px;
+/* ─── Logo ─── */
+.logo {
+  height: 64px;
   display: flex;
   align-items: center;
-  padding-left: 15px;
-  border-radius: 10px;
+  justify-content: center;
+  border-bottom: 1px solid #c4c4c41a;
+  flex-shrink: 0;
+}
+
+.logo img {
+  width: 38px;
+}
+
+/* ─── Navegação ─── */
+.menu_options {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 8px;
+  flex: 1;
+}
+
+.link {
+  display: flex;
+  align-items: center;
   gap: 10px;
-  transition: background-color 0.2s ease;
+  padding: 10px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: background-color 0.18s ease, color 0.18s ease;
+  position: relative;
+  cursor: pointer;
 }
 
-.header .menu_options .link p {
-  color: #E0E0E0;
+.link:hover {
+  background-color: rgba(218, 158, 0, 0.08);
 }
 
-.header .menu_options .link i {
-  color: #E0E0E0;
+.link:hover .link_icon_wrap {
+  color: #da9e00;
 }
 
-.header .menu_options .link:hover {
-  filter: brightness(0.85);
+.link:hover p {
+  color: #e0e0e0;
+}
+
+/* Ícone */
+.link_icon_wrap {
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-size: 16px;
+  flex-shrink: 0;
+  transition: all 0.18s ease;
+}
+
+.link p {
+  font-size: 13px;
+  font-weight: 500;
+  color: #888;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.18s ease;
+}
+
+/* ─── Link Ativo ─── */
+.link_active {
+  background-color: rgba(218, 158, 0, 0.1);
+}
+
+.link_active .link_icon_wrap {
+  color: #da9e00;
+}
+
+.link_active p {
+  color: #da9e00;
+  font-weight: 600;
+}
+
+/* Indicador lateral do item ativo */
+.link_active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 20px;
+  background-color: #da9e00;
+  border-radius: 0 3px 3px 0;
+}
+
+/* ─── Seção META ─── */
+.meta_section {
+  margin: 8px;
+  padding: 14px;
+  background: linear-gradient(145deg, #1a1600, #1e1a00);
+  border: 1px solid rgba(218, 158, 0, 0.2);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.meta_header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #da9e00;
+  text-transform: uppercase;
+  align-self: flex-start;
+}
+
+.meta_header i {
+  font-size: 12px;
+}
+
+/* SVG do progresso circular */
+.progress_svg {
+  width: 80px;
+  height: 80px;
+  filter: drop-shadow(0 0 8px rgba(218, 158, 0, 0.25));
+}
+
+.meta_motivacional {
+  font-size: 11px;
+  color: #888;
+  text-align: center;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.meta_btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  background-color: #da9e00;
+  color: #111;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 9px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  letter-spacing: 0.3px;
+  margin-top: 2px;
+}
+
+.meta_btn:hover {
+  background-color: #f5c842;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(218, 158, 0, 0.3);
 }

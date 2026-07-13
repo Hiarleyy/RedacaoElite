@@ -38,6 +38,7 @@ import GerenciaPagamentos from "./pages/Admin/GerenciaPagamentos/GerenciaPagamen
 import GerenciarNotas from "./pages/Admin/GerenciarNotas/GerenciarNotas"
 import CalendarioAcademico from "./pages/Admin/CalendarioAcademico/CalendarioAcademico"
 import MatriculaAluno from "./pages/Admin/MatriculaAluno/MatriculaAluno"
+import ContadorEnem from "./pages/Admin/ContadorEnem/ContadorEnem"
 
 const isAuthenticated = () => {
   return localStorage.getItem("user_access_data") !== null
@@ -145,6 +146,7 @@ const router = createBrowserRouter([
       { path: "calendario", element: <CalendarioAcademico /> },
       { path: "FrequenciaAlunos", element: <FrequenciaAlunos /> },
       { path: "MatriculaAluno", element: <MatriculaAluno /> },
+      { path: "contador-enem", element: <ContadorEnem /> },
     ],
   },
 ]);

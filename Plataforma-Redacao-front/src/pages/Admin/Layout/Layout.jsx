@@ -20,6 +20,7 @@ const links = [
   { name: "Frequência", icon: "fa-solid fa-user", path: "FrequenciaAlunos" },
   { name: "Simulados", icon: "fa-solid fa-bullseye", path: "Simulados" },
   { name: "Calendário acadêmico", icon: "fa-solid fa-calendar-days", path: "calendario" },
+  { name: "Contador ENEM", icon: "fa-solid fa-stopwatch", path: "contador-enem" },
   { name: "Configuracoes", icon: "fa-solid fa-gear", path: "configuracoes" },
   { name: "Matrículas", icon: "fa-solid fa-graduation-cap", path: "MatriculaAluno" },
 ]
