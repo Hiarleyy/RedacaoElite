@@ -1,0 +1,346 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  padding-bottom: 30px;
+  background-color: #000000;
+
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.topSection {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 20px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+@media (max-width: 900px) {
+  .topSection {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bannerCard {
+  background-color: #1a1a1a;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: 350px;
+  border: 1px solid #2a2a2a;
+}
+
+.bannerImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.bannerContent {
+  z-index: 1;
+  position: relative;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: white;
+  text-align: center;
+  background: rgba(0,0,0,0.6);
+}
+
+.bannerTitle {
+  font-size: 32px;
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+.bannerTitle span {
+  font-size: 14px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+  color: #cccccc;
+}
+
+.bannerSubtitle {
+  font-size: 16px;
+  max-width: 80%;
+  margin-bottom: 15px;
+  line-height: 1.4;
+}
+
+.bannerHighlight {
+  background-color: #DA9E00;
+  color: #000;
+  padding: 5px 15px;
+  font-weight: bold;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.temaPropostoCard {
+  background-color: #1a1a1a;
+  border-radius: 12px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border: 1px solid #2a2a2a;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #DA9E00;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+.temaTextoContainer {
+  background-color: #242424;
+  padding: 30px 20px;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+.temaTexto {
+  color: #ffffff;
+  font-size: 18px;
+  text-align: center;
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.eixosTitle {
+  color: #DA9E00;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.eixosContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.eixoTag {
+  background-color: transparent;
+  border: 1px solid #4a4a4a;
+  color: #cccccc;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+
+.actionSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  background-color: #242424;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: auto;
+  border: 1px solid #333;
+}
+
+@media (max-width: 600px) {
+  .actionSection {
+    grid-template-columns: 1fr;
+  }
+}
+
+.countdownContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid #3a3a3a;
+}
+
+@media (max-width: 600px) {
+  .countdownContainer {
+    border-right: none;
+    border-bottom: 1px solid #3a3a3a;
+    padding-bottom: 15px;
+  }
+}
+
+.countdownFlex {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  justify-content: center;
+}
+
+.countdownItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.countdownValue {
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.countdownLabel {
+  color: #888888;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.countdownColon {
+  color: #DA9E00;
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: -15px;
+}
+
+.btnEnviar {
+  background-color: #DA9E00;
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 20px;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s;
+  height: 100%;
+}
+
+.btnEnviar:hover {
+  background-color: #c28c00;
+}
+
+.bottomCards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+@media (max-width: 1100px) {
+  .bottomCards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .bottomCards {
+    grid-template-columns: 1fr;
+  }
+}
+
+.materialCard {
+  background-color: #1a1a1a;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  border: 1px solid #2a2a2a;
+}
+
+.materialDesc {
+  color: #aaaaaa;
+  font-size: 13px;
+  line-height: 1.4;
+  flex-grow: 1;
+}
+
+.materialPreview {
+  background-color: #242424;
+  height: 140px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: #4a4a4a;
+  font-size: 50px;
+  border: 1px solid #333;
+}
+
+.materialPreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.materialBtn {
+  background-color: #DA9E00;
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  padding: 12px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.materialBtn:hover {
+  background-color: #c28c00;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+.quoteSection {
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  color: #DA9E00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.quoteIcon {
+  font-size: 24px;
+  margin-top: -10px;
+}
+
+.quoteText {
+  font-family: 'Pacifico', cursive;
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.quoteAuthor {
+  font-family: 'Pacifico', cursive;
+  font-size: 24px;
+  margin-left: 10px;
+  opacity: 0.8;
+}

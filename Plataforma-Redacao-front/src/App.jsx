@@ -18,6 +18,7 @@ import NovaRedacao from "./pages/Aluno/NovaRedacao/NovaRedacao"
 import DesenpenhoAluno from "./pages/Aluno/DesenpenhoAluno/DesenpenhoAluno"
 import SimuladosAluno from "./pages/Aluno/Simulados/Simulados"
 import AlunoPagamentos from "./pages/Aluno/Pagamentos/Pagamentos"
+import TemaSemanal from "./pages/Aluno/TemaSemanal/TemaSemanal"
 
 // Admin Pages
 import FrequenciaAlunos from "./pages/Admin/FrequenciaAlunos/FrequenciaAlunos"
@@ -39,6 +40,7 @@ import GerenciarNotas from "./pages/Admin/GerenciarNotas/GerenciarNotas"
 import CalendarioAcademico from "./pages/Admin/CalendarioAcademico/CalendarioAcademico"
 import MatriculaAluno from "./pages/Admin/MatriculaAluno/MatriculaAluno"
 import ContadorEnem from "./pages/Admin/ContadorEnem/ContadorEnem"
+import Pomodoro from "./pages/Aluno/Pomodoro/Pomodoro"
 
 const isAuthenticated = () => {
   return localStorage.getItem("user_access_data") !== null
@@ -117,6 +119,8 @@ const router = createBrowserRouter([
       { path: "ControleDesempenho", element: <DesenpenhoAluno /> },
       { path: "SimuladosAluno", element: <SimuladosAluno /> },
       { path: "pagamentos", element: <AlunoPagamentos /> },
+      { path: "pomodoro", element: <Pomodoro /> },
+      { path: "tema-semanal", element: <TemaSemanal /> },
     ],
   },
 
