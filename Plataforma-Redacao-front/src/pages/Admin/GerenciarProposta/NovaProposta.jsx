@@ -196,6 +196,7 @@ const NovaProposta = () => {
         headers: getHeaders()
       });
       fetchPropostas();
+      window.location.reload();
     } catch (error) {
       console.error("Erro ao deletar proposta:", error);
     } finally {

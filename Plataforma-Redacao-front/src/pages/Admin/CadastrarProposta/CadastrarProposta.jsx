@@ -79,10 +79,10 @@ const CadastrarProposta = () => {
         };
 
         if (mat.isExisting) {
-          // Material already exists in the backend, keep its path
+        
           info.caminho = mat.nomeDisplay;
         } else if (mat.arquivo) {
-          info.caminho = mat.arquivo.name; // temporary reference for backend to match with file.originalname
+          info.caminho = mat.arquivo.name; 
           formData.append('arquivos', mat.arquivo);
         } else {
           info.caminho = mat.link;
@@ -181,7 +181,8 @@ const CadastrarProposta = () => {
       tipo: formMaterial.tipo,
       arquivo: formMaterial.arquivo,
       nomeDisplay: formMaterial.arquivo ? formMaterial.arquivo.name : formMaterial.link,
-      tamanho: formMaterial.arquivo ? (formMaterial.arquivo.size / (1024 * 1024)).toFixed(2) + ' MB' : '-'
+      tamanho: formMaterial.arquivo ? (formMaterial.arquivo.size / (1024 * 1024)).toFixed(2) + ' MB' : '-',
+      link: formMaterial.link
     };
 
     setMateriais((prev) => [...prev, novoMaterial]);
@@ -322,7 +323,8 @@ const CadastrarProposta = () => {
               </div>
               <div className={styles.sectionBody}>
                 <p className={styles.sectionSubtitle}>Adicione materiais complementares que ficarão disponíveis para os alunos.</p>
-                
+                <p className={styles.sectionSubtitle}>Materiais: Folha de redacao, link do vídeo, imagem da capa, material de apoio e tema.
+                </p>
               </div>
               <div className={styles.materiaisGrid}>
                     {/* FOLHA DE REDAÇÃO PADRÃO - FIXA */}
@@ -425,24 +427,19 @@ const CadastrarProposta = () => {
             <h3>Adicionar Material de Apoio</h3>
             
             <div className={styles.modalFormGroup}>
-              <label>Título do Card (Ex: PDF DO TEMA)</label>
-              <input 
-                type="text" 
+              <label>Título do Card</label>
+              <select 
                 value={formMaterial.titulo} 
                 className={styles.modalInput}
                 onChange={e => setFormMaterial({...formMaterial, titulo: e.target.value})} 
-              />
+              >
+                <option value="">Selecione...</option>
+                <option value="Tema da Proposta">Tema da Proposta</option>
+                <option value="Video Aula">Vídeo Aula</option>
+                <option value="Material de Apoio">Material de Apoio</option>
+                <option value="Imagem de capa">Imagem de capa</option>
+              </select>
             </div>
-
-            <div className={styles.modalFormGroup}>
-              <label>Descrição</label>
-              <textarea 
-                value={formMaterial.descricao} 
-                className={styles.modalTextarea}
-                onChange={e => setFormMaterial({...formMaterial, descricao: e.target.value})} 
-              />
-            </div>
-
             <div className={styles.modalFormGroup}>
               <label>Tipo de Material</label>
               <select 
