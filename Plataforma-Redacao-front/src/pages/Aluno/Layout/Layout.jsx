@@ -11,6 +11,8 @@ import CountdownEnem from "../../../components/CountdownEnem/CountdownEnem"
 const links = [
   { name: "Início", icon: "fa-solid fa-house", path: "" },
   { name: "Perfil", icon: "fa-solid fa-user", path: "perfil" },
+  { name: "Pomodoro", icon: "fa-solid fa-clock", path: "pomodoro" },
+  { name: "Tema semanal", icon: "fa-solid fa-calendar-week", path: "tema-semanal" },
   { name: "Nova redação", icon: "fa-solid fa-pen", path: "nova-redacao" },
   { name: "Ranking", icon: "fa-solid fa-ranking-star", path: "ranking" },
   { name: "Cursos", icon: "fa-solid fa-tv", path: "cursos" },
@@ -18,6 +20,7 @@ const links = [
   { name: "Pagamentos", icon: "fa-solid fa-credit-card", path: "pagamentos" },
   { name: "Blog e Artigos", icon: "fa-solid fa-newspaper", path: "artigos" },
   { name: "Configurações", icon: "fa-solid fa-gear", path: "configuracoes" },
+
 ]
 
 const META_NOTA = 1000

@@ -100,10 +100,19 @@ const propostasController = {
       const proposta = await propostasModel.retornarUmaProposta(id);
       if (!proposta) throw new HttpError(404, "Proposta não encontrada");
 
-      const filePath = path.join(__dirname, "..", "uploads", "propostas", proposta.caminho);
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
+      if (proposta.materiais) {
+        proposta.materiais.forEach(material => {
+          if (material.tipo === 'pdf' || material.tipo === 'imagem') {
+            if (material.caminho) {
+              const filePath = path.join(__dirname, "..", "uploads", "propostas", material.caminho);
+              if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+              }
+            }
+          }
+        });
       }
+
       await propostasRepository.deletarUmaProposta(id);
 
       res.status(204).send();
