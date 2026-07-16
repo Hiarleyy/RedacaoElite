@@ -15,6 +15,8 @@ import RedacoesTabela from "../../../components/RedacoesTabela/RedacoesTabela"
 import Loading from "../../../components/Loading/Loading"
 import DeleteModal from "../../../components/DeleteModal/DeleteModal"
 import CorrecaoModal from "../../../components/CorrecaoModal/CorrecaoModal"
+import { jsPDF } from "jspdf"
+import defaultProfilePicture from '../../../images/Defalult_profile_picture.jpg'
 
 const baseURL = import.meta.env.VITE_API_BASE_URL
 
@@ -35,6 +37,7 @@ const DetalhesAluno = () => {
   const [modalIsClicked, setModalIsClicked] = useState(false)
   const [modalRedacaoIsClicked, setModalRedacaoIsClicked] = useState(false)
   const [modalData, setModalData] = useState({})
+  const [downloadingHistorico, setDownloadingHistorico] = useState(false)
 
   // ── Tab state ──────────────────────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState("cadastrais")
@@ -75,6 +78,88 @@ const DetalhesAluno = () => {
     if (d.length <= 2) return d.length ? `(${d}` : ""
     if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`
     return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`
+  }
+
+  // ── Download Histórico ─────────────────────────────────────────────────────
+  const handleDownloadHistorico = async () => {
+    if (!alunoData) return
+    setDownloadingHistorico(true)
+    try {
+      const { getNotasByUsuarioId, getRedacoesUser, getFrequencias } = fetchData()
+
+      const notasResponse = await getNotasByUsuarioId(aluno_id)
+      const notasSimulados = notasResponse || []
+
+      const redacoesResponse = await getRedacoesUser(aluno_id)
+      const redacoesCorrigidas = (redacoesResponse || []).filter(r => r.nota !== undefined && r.nota !== null)
+
+      const frequenciasResponse = await getFrequencias()
+      const frequenciasAluno = (frequenciasResponse || []).filter(f => String(f.usuarioId) === String(aluno_id))
+
+      const somaNotas = notasSimulados.reduce((acc, curr) => acc + (Number(curr.nota) || 0), 0)
+        + redacoesCorrigidas.reduce((acc, curr) => acc + (Number(curr.nota) || 0), 0)
+      const qtdNotas = notasSimulados.length + redacoesCorrigidas.length
+      const mediaGeral = qtdNotas > 0 ? (somaNotas / qtdNotas).toFixed(2) : "Sem notas"
+
+      const totalAulas = frequenciasAluno.length
+      const presencas = frequenciasAluno.filter(f => f.status === "PRESENTE" || f.status === "JUSTIFICADO").length
+      const faltas = frequenciasAluno.filter(f => f.status === "FALTOU").length
+      const percentualFrequencia = totalAulas > 0 ? ((presencas / totalAulas) * 100).toFixed(1) + "%" : "Sem registros"
+
+      const doc = new jsPDF()
+      doc.setFont("helvetica")
+
+      doc.setFontSize(22)
+      doc.setTextColor(33, 33, 33)
+      doc.text("Historico Escolar Simplificado", 105, 20, { align: "center" })
+
+      doc.setDrawColor(200, 200, 200)
+      doc.line(20, 25, 190, 25)
+
+      doc.setFontSize(14)
+      doc.setTextColor(50, 50, 50)
+      doc.text("Dados Pessoais", 20, 40)
+
+      doc.setFontSize(12)
+      doc.setTextColor(100, 100, 100)
+      doc.text(`Nome: ${alunoData.nome}`, 20, 50)
+      doc.text(`E-mail: ${alunoData.email}`, 20, 58)
+      doc.text(`Turma: ${alunoData.turma?.nome || 'Nao definida'}`, 20, 66)
+      doc.text(`Data de Matricula: ${brasilFormatData(alunoData.dataCriacao)}`, 20, 74)
+
+      doc.setFontSize(14)
+      doc.setTextColor(50, 50, 50)
+      doc.text("Desempenho Academico", 20, 90)
+
+      doc.setFontSize(12)
+      doc.setTextColor(100, 100, 100)
+      doc.text(`Simulados Realizados: ${notasSimulados.length}`, 20, 100)
+      doc.text(`Redacoes Corrigidas: ${redacoesCorrigidas.length}`, 20, 108)
+      doc.text(`Media Geral: ${mediaGeral}`, 20, 116)
+
+      doc.setFontSize(14)
+      doc.setTextColor(50, 50, 50)
+      doc.text("Controle de Frequencia", 20, 132)
+
+      doc.setFontSize(12)
+      doc.setTextColor(100, 100, 100)
+      doc.text(`Total de Aulas Registradas: ${totalAulas}`, 20, 142)
+      doc.text(`Presencas (inclui Justificadas): ${presencas}`, 20, 150)
+      doc.text(`Faltas: ${faltas}`, 20, 158)
+      doc.text(`Percentual de Frequencia: ${percentualFrequencia}`, 20, 166)
+
+      doc.setFontSize(10)
+      doc.setTextColor(150, 150, 150)
+      const dataEmissao = new Date().toLocaleDateString('pt-BR')
+      doc.text(`Documento emitido em: ${dataEmissao}`, 105, 280, { align: "center" })
+
+      doc.save(`Historico_${alunoData.nome.replace(/\s+/g, '_')}.pdf`)
+    } catch (error) {
+      console.error("Erro ao gerar historico:", error)
+      alert("Ocorreu um erro ao gerar o historico do aluno.")
+    } finally {
+      setDownloadingHistorico(false)
+    }
   }
 
   // ── Handlers ───────────────────────────────────────────────────────────────
@@ -299,7 +384,12 @@ const DetalhesAluno = () => {
               {/* Student Header */}
               <div className={styles.student_header}>
                 <div className={styles.student_avatar}>
-                  <i className="fa-solid fa-user-graduate" />
+                  <img
+                    src={alunoData?.caminho ? `${baseURL}/usuarios/${alunoData.id}/profile-image` : defaultProfilePicture}
+                    alt={alunoData?.nome}
+                    onError={(e) => { e.target.src = defaultProfilePicture }}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+                  />
                 </div>
                 <div className={styles.student_name_block}>
                   <h2 className={styles.student_name}>{alunoData?.nome}</h2>
@@ -343,6 +433,16 @@ const DetalhesAluno = () => {
               <GraficoNotas array={notasRedacoes} height_size="300px" />
 
               <div className={styles.danger_zone}>
+                <Button
+                  text_size="14px"
+                  text_color="#111"
+                  padding_sz="10px"
+                  bg_color="#DA9E00"
+                  isLoading={downloadingHistorico}
+                  onClick={handleDownloadHistorico}
+                >
+                  <i className="fa-solid fa-file-pdf"></i> {downloadingHistorico ? "GERANDO..." : "BAIXAR HISTÓRICO"}
+                </Button>
                 <Button
                   text_size="14px"
                   text_color="#E0E0E0"
@@ -464,204 +564,204 @@ const DetalhesAluno = () => {
                     </div>
                   )}
                   <form onSubmit={handleSaveMatricula} className={styles.matricula_form}>
-                  {/* DADOS PESSOAIS */}
-                  <div className={styles.section_header}>
-                    <i className="fa-solid fa-user" />
-                    <span>DADOS PESSOAIS</span>
-                  </div>
-
-                  <div className={styles.field_row}>
-                    <div className={styles.field_group}>
-                      <label className={styles.label}>CPF <span className={styles.required}>*</span></label>
-                      <input
-                        type="text"
-                        className={styles.field_input}
-                        placeholder="123.456.789-00"
-                        value={cpf}
-                        onChange={(e) => setCpf(maskCpf(e.target.value))}
-                      />
+                    {/* DADOS PESSOAIS */}
+                    <div className={styles.section_header}>
+                      <i className="fa-solid fa-user" />
+                      <span>DADOS PESSOAIS</span>
                     </div>
-                    <div className={styles.field_group}>
-                      <label className={styles.label}>Data de Nascimento</label>
-                      <input
-                        type="date"
-                        className={styles.field_input}
-                        value={dataNascimento}
-                        onChange={(e) => setDataNascimento(e.target.value)}
-                      />
+
+                    <div className={styles.field_row}>
+                      <div className={styles.field_group}>
+                        <label className={styles.label}>CPF <span className={styles.required}>*</span></label>
+                        <input
+                          type="text"
+                          className={styles.field_input}
+                          placeholder="123.456.789-00"
+                          value={cpf}
+                          onChange={(e) => setCpf(maskCpf(e.target.value))}
+                        />
+                      </div>
+                      <div className={styles.field_group}>
+                        <label className={styles.label}>Data de Nascimento</label>
+                        <input
+                          type="date"
+                          className={styles.field_input}
+                          value={dataNascimento}
+                          onChange={(e) => setDataNascimento(e.target.value)}
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  <div className={styles.field_group}>
-                    <label className={styles.label}>Gênero</label>
-                    <select
-                      className={styles.field_input}
-                      value={genero}
-                      onChange={(e) => setGenero(e.target.value)}
-                    >
-                      <option value="">Selecione o gênero</option>
-                      <option value="Masculino">Masculino</option>
-                      <option value="Feminino">Feminino</option>
-                      <option value="Outro">Outro</option>
-                      <option value="Prefiro não informar">Prefiro não informar</option>
-                    </select>
-                  </div>
-
-                  {/* CONTATO */}
-                  <div className={styles.section_header}>
-                    <i className="fa-solid fa-address-book" />
-                    <span>CONTATO</span>
-                  </div>
-
-                  <div className={styles.field_group}>
-                    <label className={styles.label}>Telefone <span className={styles.required}>*</span></label>
-                    <input
-                      type="text"
-                      className={styles.field_input}
-                      placeholder="(91) 98765-4321"
-                      value={telefone}
-                      onChange={(e) => setTelefone(maskPhone(e.target.value))}
-                    />
-                  </div>
-
-                  <div className={styles.field_group}>
-                    <label className={styles.label}>Endereço</label>
-                    <input
-                      type="text"
-                      className={styles.field_input}
-                      placeholder="Rua, número, apto"
-                      value={endereco}
-                      onChange={(e) => setEndereco(e.target.value)}
-                    />
-                  </div>
-
-                  <div className={styles.field_row}>
                     <div className={styles.field_group}>
-                      <label className={styles.label}>Bairro</label>
-                      <input
-                        type="text"
-                        className={styles.field_input}
-                        placeholder="Bairro"
-                        value={bairro}
-                        onChange={(e) => setBairro(e.target.value)}
-                      />
-                    </div>
-                    <div className={styles.field_group}>
-                      <label className={styles.label}>Cidade</label>
-                      <input
-                        type="text"
-                        className={styles.field_input}
-                        placeholder="Cidade"
-                        value={cidade}
-                        onChange={(e) => setCidade(e.target.value)}
-                      />
-                    </div>
-                  </div>
-
-                  {/* DADOS DO RESPONSÁVEL */}
-                  <div className={styles.section_header}>
-                    <i className="fa-solid fa-user-shield" />
-                    <span>DADOS DO RESPONSÁVEL</span>
-                  </div>
-
-                  <div className={styles.field_group}>
-                    <label className={styles.label}>Nome do Responsável</label>
-                    <input
-                      type="text"
-                      className={styles.field_input}
-                      placeholder="Nome do responsável"
-                      value={nomeResponsavel}
-                      onChange={(e) => setNomeResponsavel(e.target.value)}
-                    />
-                  </div>
-
-                  <div className={styles.field_row}>
-                    <div className={styles.field_group}>
-                      <label className={styles.label}>Vínculo</label>
+                      <label className={styles.label}>Gênero</label>
                       <select
                         className={styles.field_input}
-                        value={vinculoResponsavel}
-                        onChange={(e) => setVinculoResponsavel(e.target.value)}
+                        value={genero}
+                        onChange={(e) => setGenero(e.target.value)}
                       >
-                        <option value="">Selecione o vínculo</option>
-                        <option value="Pai">Pai</option>
-                        <option value="Mãe">Mãe</option>
-                        <option value="Responsável legal">Responsável legal</option>
+                        <option value="">Selecione o gênero</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Feminino">Feminino</option>
                         <option value="Outro">Outro</option>
+                        <option value="Prefiro não informar">Prefiro não informar</option>
                       </select>
                     </div>
+
+                    {/* CONTATO */}
+                    <div className={styles.section_header}>
+                      <i className="fa-solid fa-address-book" />
+                      <span>CONTATO</span>
+                    </div>
+
                     <div className={styles.field_group}>
-                      <label className={styles.label}>Telefone do Responsável</label>
+                      <label className={styles.label}>Telefone <span className={styles.required}>*</span></label>
                       <input
                         type="text"
                         className={styles.field_input}
                         placeholder="(91) 98765-4321"
-                        value={telefoneResponsavel}
-                        onChange={(e) => setTelefoneResponsavel(maskPhone(e.target.value))}
+                        value={telefone}
+                        onChange={(e) => setTelefone(maskPhone(e.target.value))}
                       />
                     </div>
-                  </div>
 
-                  {/* ACADÊMICO */}
-                  <div className={styles.section_header}>
-                    <i className="fa-solid fa-graduation-cap" />
-                    <span>ACADÊMICO</span>
-                  </div>
-
-                  <div className={styles.field_row}>
                     <div className={styles.field_group}>
-                      <label className={styles.label}>Data de Início <span className={styles.required}>*</span></label>
+                      <label className={styles.label}>Endereço</label>
                       <input
-                        type="date"
+                        type="text"
                         className={styles.field_input}
-                        value={dataInicio}
-                        onChange={(e) => setDataInicio(e.target.value)}
+                        placeholder="Rua, número, apto"
+                        value={endereco}
+                        onChange={(e) => setEndereco(e.target.value)}
                       />
                     </div>
-                    <div className={styles.field_group}>
-                      <label className={styles.label}>Como conheceu</label>
-                      <select
-                        className={styles.field_input}
-                        value={comoConheceu}
-                        onChange={(e) => setComoConheceu(e.target.value)}
-                      >
-                        <option value="">Selecione</option>
-                        <option value="Indicação de amigo">Indicação de amigo</option>
-                        <option value="Redes sociais">Redes sociais</option>
-                        <option value="Google">Google</option>
-                        <option value="Outro">Outro</option>
-                      </select>
+
+                    <div className={styles.field_row}>
+                      <div className={styles.field_group}>
+                        <label className={styles.label}>Bairro</label>
+                        <input
+                          type="text"
+                          className={styles.field_input}
+                          placeholder="Bairro"
+                          value={bairro}
+                          onChange={(e) => setBairro(e.target.value)}
+                        />
+                      </div>
+                      <div className={styles.field_group}>
+                        <label className={styles.label}>Cidade</label>
+                        <input
+                          type="text"
+                          className={styles.field_input}
+                          placeholder="Cidade"
+                          value={cidade}
+                          onChange={(e) => setCidade(e.target.value)}
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  <div className={styles.field_group}>
-                    <label className={styles.label}>Observações</label>
-                    <textarea
-                      className={styles.field_textarea}
-                      placeholder="Observações adicionais..."
-                      value={observacoes}
-                      onChange={(e) => setObservacoes(e.target.value)}
-                      rows={3}
+                    {/* DADOS DO RESPONSÁVEL */}
+                    <div className={styles.section_header}>
+                      <i className="fa-solid fa-user-shield" />
+                      <span>DADOS DO RESPONSÁVEL</span>
+                    </div>
+
+                    <div className={styles.field_group}>
+                      <label className={styles.label}>Nome do Responsável</label>
+                      <input
+                        type="text"
+                        className={styles.field_input}
+                        placeholder="Nome do responsável"
+                        value={nomeResponsavel}
+                        onChange={(e) => setNomeResponsavel(e.target.value)}
+                      />
+                    </div>
+
+                    <div className={styles.field_row}>
+                      <div className={styles.field_group}>
+                        <label className={styles.label}>Vínculo</label>
+                        <select
+                          className={styles.field_input}
+                          value={vinculoResponsavel}
+                          onChange={(e) => setVinculoResponsavel(e.target.value)}
+                        >
+                          <option value="">Selecione o vínculo</option>
+                          <option value="Pai">Pai</option>
+                          <option value="Mãe">Mãe</option>
+                          <option value="Responsável legal">Responsável legal</option>
+                          <option value="Outro">Outro</option>
+                        </select>
+                      </div>
+                      <div className={styles.field_group}>
+                        <label className={styles.label}>Telefone do Responsável</label>
+                        <input
+                          type="text"
+                          className={styles.field_input}
+                          placeholder="(91) 98765-4321"
+                          value={telefoneResponsavel}
+                          onChange={(e) => setTelefoneResponsavel(maskPhone(e.target.value))}
+                        />
+                      </div>
+                    </div>
+
+                    {/* ACADÊMICO */}
+                    <div className={styles.section_header}>
+                      <i className="fa-solid fa-graduation-cap" />
+                      <span>ACADÊMICO</span>
+                    </div>
+
+                    <div className={styles.field_row}>
+                      <div className={styles.field_group}>
+                        <label className={styles.label}>Data de Início <span className={styles.required}>*</span></label>
+                        <input
+                          type="date"
+                          className={styles.field_input}
+                          value={dataInicio}
+                          onChange={(e) => setDataInicio(e.target.value)}
+                        />
+                      </div>
+                      <div className={styles.field_group}>
+                        <label className={styles.label}>Como conheceu</label>
+                        <select
+                          className={styles.field_input}
+                          value={comoConheceu}
+                          onChange={(e) => setComoConheceu(e.target.value)}
+                        >
+                          <option value="">Selecione</option>
+                          <option value="Indicação de amigo">Indicação de amigo</option>
+                          <option value="Redes sociais">Redes sociais</option>
+                          <option value="Google">Google</option>
+                          <option value="Outro">Outro</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className={styles.field_group}>
+                      <label className={styles.label}>Observações</label>
+                      <textarea
+                        className={styles.field_textarea}
+                        placeholder="Observações adicionais..."
+                        value={observacoes}
+                        onChange={(e) => setObservacoes(e.target.value)}
+                        rows={3}
+                      />
+                    </div>
+
+                    <Message
+                      text={matriculaMessage ? matriculaMessage.text : ""}
+                      type={matriculaMessage ? matriculaMessage.type : ""}
                     />
-                  </div>
 
-                  <Message
-                    text={matriculaMessage ? matriculaMessage.text : ""}
-                    type={matriculaMessage ? matriculaMessage.type : ""}
-                  />
-
-                  <Button
-                    text_size="18px"
-                    text_color="#E0E0E0"
-                    padding_sz="10px"
-                    bg_color="#DA9E00"
-                    isLoading={isSavingMatricula}
-                  >
-                    <i className="fa-solid fa-floppy-disk" /> {matriculaData ? "SALVAR MATRÍCULA" : "CADASTRAR MATRÍCULA"}
-                  </Button>
-                </form>
-              </>
-            )}
+                    <Button
+                      text_size="18px"
+                      text_color="#E0E0E0"
+                      padding_sz="10px"
+                      bg_color="#DA9E00"
+                      isLoading={isSavingMatricula}
+                    >
+                      <i className="fa-solid fa-floppy-disk" /> {matriculaData ? "SALVAR MATRÍCULA" : "CADASTRAR MATRÍCULA"}
+                    </Button>
+                  </form>
+                </>
+              )}
             </>
           )}
         </div>

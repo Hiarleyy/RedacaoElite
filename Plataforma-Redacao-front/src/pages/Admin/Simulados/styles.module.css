@@ -12,7 +12,6 @@
   width: 85%;
   max-width: 1400px;
   margin: 0 auto;
-  background-color: #242424;
   margin-top: 2%;
 }
 
@@ -42,17 +41,6 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
-.overviewSection::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 400px;
-  height: 100%;
-  background: radial-gradient(circle at top right, rgba(218, 158, 0, 0.12) 0%, transparent 60%);
-  pointer-events: none;
-}
-
 .overviewTitle {
   font-size: 20px;
   font-weight: 600;
@@ -73,10 +61,11 @@
   background-color: #2e3238;
   border: 1px solid #40444b;
   border-radius: 12px;
-  padding: 20px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
+  min-height: 160px;
   transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
 
@@ -93,15 +82,10 @@
 }
 
 .iconWrapper {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background-color: rgba(218, 158, 0, 0.1);
-  color: #DA9E00;
+  color: #fff;
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 18px;
+  font-size: 20px;
 }
 
 .statLabel {
@@ -123,7 +107,7 @@
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  margin-top: 4px;
+  margin-top: auto;
 }
 
 .trendUp {
@@ -190,6 +174,15 @@
   font-size: 14px;
   font-weight: 500;
   transition: all 0.2s;
+}
+
+.filterSelect {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23a0a0a0'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 16px;
+  padding-right: 40px;
 }
 
 .filterSelect:hover, .filterBtn:hover {
@@ -319,6 +312,28 @@
 }
 .actionBtnIcon {
   padding: 10px 12px;
+}
+
+.emptyState {
+  background: rgba(46, 50, 56, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 80px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: #9ba1a6;
+  font-size: 14px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.emptyStateIcon {
+  font-size: 48px;
+  color: #5c626b;
+  margin-bottom: 8px;
 }
 
 /* Right Form */

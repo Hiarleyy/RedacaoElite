@@ -250,6 +250,42 @@ const fetchData = () => {
     return response.data
   }
 
+  // ── Artigos ───────────────────────────────────────────────────────────────
+  const getArtigos = async () => {
+    const response = await axios.get(`${baseURL}/artigos`, { headers: getHeaders() })
+    return response.data.data
+  }
+
+  const getArtigoById = async (id) => {
+    const response = await axios.get(`${baseURL}/artigos/${id}`, { headers: getHeaders() })
+    return response.data.data
+  }
+
+  const createArtigo = async (formData) => {
+    const response = await axios.post(`${baseURL}/artigos`, formData, {
+      headers: {
+        ...getHeaders(),
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    return response.data.data
+  }
+
+  const updateArtigo = async (id, formData) => {
+    const response = await axios.put(`${baseURL}/artigos/${id}`, formData, {
+      headers: {
+        ...getHeaders(),
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    return response.data.data
+  }
+
+  const deleteArtigo = async (id) => {
+    const response = await axios.delete(`${baseURL}/artigos/${id}`, { headers: getHeaders() })
+    return response.data.data
+  }
+
   return {
     getTurmas,
     getTurmaById,
@@ -290,7 +326,12 @@ const fetchData = () => {
     updateFrequencia,
     createMatricula,
     getMatriculas,
-    getMatriculaByUsuarioId
+    getMatriculaByUsuarioId,
+    getArtigos,
+    getArtigoById,
+    createArtigo,
+    updateArtigo,
+    deleteArtigo
   }
 }
 

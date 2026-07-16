@@ -211,3 +211,22 @@ model CalendarioAcademico {
   tipoEvento   TipoEvento? @relation(fields: [tipoEventoId], references: [id])
 }
 
+model Artigo {
+  id           String   @id @db.Char(36)
+  titulo       String   @db.VarChar(200)
+  subtitulo    String?  @db.VarChar(255)
+  conteudo     String   @db.Text
+  categoria    String   @db.VarChar(100)
+  imagemCapa   String?  @db.VarChar(255)
+  tempoLeitura Int?
+  destaque     String   @default("NENHUM") @db.VarChar(50)
+  publicado    Boolean  @default(false)
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
+model Configuracao {
+  chave        String   @id @db.VarChar(100)
+  valor        String   @db.Text
+  atualizadoEm DateTime @updatedAt
+}

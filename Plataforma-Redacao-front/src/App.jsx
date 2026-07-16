@@ -18,6 +18,7 @@ import NovaRedacao from "./pages/Aluno/NovaRedacao/NovaRedacao"
 import DesenpenhoAluno from "./pages/Aluno/DesenpenhoAluno/DesenpenhoAluno"
 import SimuladosAluno from "./pages/Aluno/Simulados/Simulados"
 import AlunoPagamentos from "./pages/Aluno/Pagamentos/Pagamentos"
+import Artigos from "./pages/Aluno/Artigos/Artigos"
 
 // Admin Pages
 import FrequenciaAlunos from "./pages/Admin/FrequenciaAlunos/FrequenciaAlunos"
@@ -39,6 +40,8 @@ import GerenciarNotas from "./pages/Admin/GerenciarNotas/GerenciarNotas"
 import CalendarioAcademico from "./pages/Admin/CalendarioAcademico/CalendarioAcademico"
 import MatriculaAluno from "./pages/Admin/MatriculaAluno/MatriculaAluno"
 import ContadorEnem from "./pages/Admin/ContadorEnem/ContadorEnem"
+import GerenciarArtigos from "./pages/Admin/GerenciarArtigos/GerenciarArtigos"
+import NovoArtigo from "./pages/Admin/GerenciarArtigos/NovoArtigo"
 
 const isAuthenticated = () => {
   return localStorage.getItem("user_access_data") !== null
@@ -117,6 +120,7 @@ const router = createBrowserRouter([
       { path: "ControleDesempenho", element: <DesenpenhoAluno /> },
       { path: "SimuladosAluno", element: <SimuladosAluno /> },
       { path: "pagamentos", element: <AlunoPagamentos /> },
+      { path: "artigos", element: <Artigos /> },
     ],
   },
 
@@ -147,6 +151,9 @@ const router = createBrowserRouter([
       { path: "FrequenciaAlunos", element: <FrequenciaAlunos /> },
       { path: "MatriculaAluno", element: <MatriculaAluno /> },
       { path: "contador-enem", element: <ContadorEnem /> },
+      { path: "artigos", element: <GerenciarArtigos /> },
+      { path: "artigos/novo", element: <NovoArtigo /> },
+      { path: "artigos/:id/editar", element: <NovoArtigo /> },
     ],
   },
 ]);

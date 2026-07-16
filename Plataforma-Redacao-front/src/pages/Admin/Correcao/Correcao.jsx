@@ -250,8 +250,9 @@ const Correcao = () => {
       />
       <Title title="Correção" />
 
-      {/* ── Filtros Avançados ── */}
-      <div className={styles.filtros_card}>
+      <div className={styles.content_wrapper}>
+        {/* ── Filtros Avançados ── */}
+        <div className={styles.filtros_card}>
         <div className={styles.filtros_header}>
           <i className="fa-solid fa-filter" />
           <span>Filtros avançados</span>
@@ -454,6 +455,7 @@ const Correcao = () => {
         O download reúne todas as redações corrigidas do tema filtrado e as compacta em um arquivo .zip
         <i className="fa-solid fa-circle-info" />
       </p>
+      </div>
     </div>
   )
 }

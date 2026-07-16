@@ -145,215 +145,215 @@ const Simulados = () => {
 
   return (
     <div className={styles.container}>
-      <Title title="Financeiro" />
-        <div className={styles.mainLayout}>
-          <div className={styles.leftColumn}>
-            
-            <div className={styles.overviewSection}>
-              <h2 className={styles.overviewTitle}>Visão geral dos simulados</h2>
-              <div className={styles.overviewGrid}>
-                <div className={styles.statCard}>
-                  <div className={styles.statHeader}>
-                    <div className={styles.iconWrapper}>
-                      <i className="fa-solid fa-clipboard-list"></i>
-                    </div>
-                    <p className={styles.statLabel}>Total de simulados</p>
-                  </div>
-                  <p className={styles.statValue}>{TotalSimulados.length}</p>
-                  <div className={styles.statFooter}>
-                    <i className="fa-solid fa-arrow-trend-up trendUp"></i>
-                    <span className={styles.trendUp}>+100% este mês</span>
-                  </div>
-                </div>
-                
-                <div className={styles.statCard}>
-                  <div className={styles.statHeader}>
-                    <div className={styles.iconWrapper}>
-                      <i className="fa-solid fa-users"></i>
-                    </div>
-                    <p className={styles.statLabel}>Total de turmas</p>
-                  </div>
-                  <p className={styles.statValue}>{turmasComSimulado.length}</p>
-                  <div className={styles.statFooter}>
-                    <i className="fa-solid fa-arrow-trend-up trendUp"></i>
-                    <span className={styles.trendUp}>+100% este mês</span>
-                  </div>
-                </div>
+      <Title title="Simulados" />
+      <div className={styles.mainLayout}>
+        <div className={styles.leftColumn}>
 
-                <div className={styles.statCard}>
-                  <div className={styles.statHeader}>
-                    <div className={styles.iconWrapper}>
-                      <i className="fa-solid fa-user"></i>
-                    </div>
-                    <p className={styles.statLabel}>Total de participantes</p>
+          <div className={styles.overviewSection}>
+            <h2 className={styles.overviewTitle}>Visão geral dos simulados</h2>
+            <div className={styles.overviewGrid}>
+              <div className={styles.statCard}>
+                <div className={styles.statHeader}>
+                  <div className={styles.iconWrapper}>
+                    <i className="fa-solid fa-clipboard-list"></i>
                   </div>
-                  <p className={styles.statValue}>
-                    {TotalSimulados.reduce((acc, curr) => acc + curr.totalAlunos, 0)}
-                  </p>
-                  <div className={styles.statFooter}>
-                    <i className="fa-solid fa-arrow-trend-up trendUp"></i>
-                    <span className={styles.trendUp}>+100% este mês</span>
-                  </div>
+                  <p className={styles.statLabel}>Total de simulados</p>
                 </div>
+                <p className={styles.statValue}>{TotalSimulados.length}</p>
+                <div className={styles.statFooter}>
+                  <i className="fa-solid fa-arrow-trend-up trendUp"></i>
+                  <span className={styles.trendUp}>+100% este mês</span>
+                </div>
+              </div>
 
-                <div className={styles.statCard}>
-                  <div className={styles.statHeader}>
-                    <div className={styles.iconWrapper}>
-                      <i className="fa-solid fa-chart-line"></i>
-                    </div>
-                    <p className={styles.statLabel}>Média geral</p>
+              <div className={styles.statCard}>
+                <div className={styles.statHeader}>
+                  <div className={styles.iconWrapper}>
+                    <i className="fa-solid fa-users"></i>
                   </div>
-                  <p className={styles.statValue}>7,4</p>
-                  <div className={styles.statFooter}>
-                    <span style={{ color: '#9ba1a6' }}>Desempenho</span>
-                    <span className={styles.badgeGood}>Bom</span>
+                  <p className={styles.statLabel}>Total de turmas</p>
+                </div>
+                <p className={styles.statValue}>{turmasComSimulado.length}</p>
+                <div className={styles.statFooter}>
+                  <i className="fa-solid fa-arrow-trend-up trendUp"></i>
+                  <span className={styles.trendUp}>+100% este mês</span>
+                </div>
+              </div>
+
+              <div className={styles.statCard}>
+                <div className={styles.statHeader}>
+                  <div className={styles.iconWrapper}>
+                    <i className="fa-solid fa-user"></i>
                   </div>
+                  <p className={styles.statLabel}>Total participantes</p>
+                </div>
+                <p className={styles.statValue}>
+                  {TotalSimulados.reduce((acc, curr) => acc + curr.totalAlunos, 0)}
+                </p>
+                <div className={styles.statFooter}>
+                  <i className="fa-solid fa-arrow-trend-up trendUp"></i>
+                  <span className={styles.trendUp}>+100% este mês</span>
+                </div>
+              </div>
+
+              <div className={styles.statCard}>
+                <div className={styles.statHeader}>
+                  <div className={styles.iconWrapper}>
+                    <i className="fa-solid fa-chart-line"></i>
+                  </div>
+                  <p className={styles.statLabel}>Média geral</p>
+                </div>
+                <div className={styles.statFooter}>
+                  <span style={{ color: '#9ba1a6' }}>Desempenho</span>
+                  <span className={styles.badgeGood}>Bom</span>
                 </div>
               </div>
             </div>
+          </div>
 
-            <div className={styles.filtersBar}>
-              <div className={styles.searchInput}>
-                <i className="fa-solid fa-magnifying-glass" style={{color: '#9ba1a6'}}></i>
-                <input 
-                  type="text" 
-                  placeholder="Buscar simulado..." 
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
+          <div className={styles.filtersBar}>
+            <div className={styles.searchInput}>
+              <i className="fa-solid fa-magnifying-glass" style={{ color: '#9ba1a6' }}></i>
+              <input
+                type="text"
+                placeholder="Buscar simulado..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+            <select className={styles.filterSelect}>
+              <option value="">Todas as turmas</option>
+              {turmasDisponiveis.map(t => <option key={t.id} value={t.id}>{t.nome}</option>)}
+            </select>
+            <button className={styles.filterBtn}>
+              <i className="fa-solid fa-filter"></i> Mais filtros <i className="fa-solid fa-chevron-down" style={{ fontSize: '12px', marginLeft: '4px' }}></i>
+            </button>
+            <button className={styles.primaryBtn}>
+              <i className="fa-solid fa-download"></i> Baixar todas as redações
+            </button>
+          </div>
+
+          <div className={styles.simuladosList}>
+            {currentSimulados.map((item) => (
+              <div key={item.id} className={styles.simuladoItem}>
+                <div className={styles.itemIcon}>
+                  <i className="fa-regular fa-clipboard"></i>
+                </div>
+                <div className={styles.itemContent}>
+                  <div className={styles.itemHeader}>
+                    <h3 className={styles.itemTitle}>{item.titulo}</h3>
+                    <span className={styles.badgeActive}>{item.status}</span>
+                  </div>
+                  <div className={styles.itemMeta}>
+                    <i className="fa-regular fa-calendar"></i> {formatarData(item.data)} <span style={{ margin: '0 8px' }}>|</span> Turma: {item.nomeTurma}
+                  </div>
+                </div>
+                <div className={styles.itemActions}>
+                  <button className={styles.actionBtn} onClick={() => handleResultados(item.id)}>
+                    <i className="fa-solid fa-user-group"></i> {item.totalAlunos} participantes
+                  </button>
+                  <button className={`${styles.actionBtn} ${styles.actionBtnIcon}`} onClick={() => handleResultados(item.id)}>
+                    <i className="fa-solid fa-chevron-down"></i>
+                  </button>
+                </div>
               </div>
-              <select className={styles.filterSelect}>
-                <option value="">Todas as turmas</option>
-                {turmasDisponiveis.map(t => <option key={t.id} value={t.id}>{t.nome}</option>)}
-              </select>
-              <button className={styles.filterBtn}>
-                <i className="fa-solid fa-filter"></i> Mais filtros <i className="fa-solid fa-chevron-down" style={{fontSize: '12px', marginLeft: '4px'}}></i>
-              </button>
-              <button className={styles.primaryBtn}>
-                <i className="fa-solid fa-download"></i> Baixar todas as redações
-              </button>
-            </div>
-
-            <div className={styles.simuladosList}>
-              {currentSimulados.map((item) => (
-                <div key={item.id} className={styles.simuladoItem}>
-                  <div className={styles.itemIcon}>
-                    <i className="fa-regular fa-clipboard"></i>
-                  </div>
-                  <div className={styles.itemContent}>
-                    <div className={styles.itemHeader}>
-                      <h3 className={styles.itemTitle}>{item.titulo}</h3>
-                      <span className={styles.badgeActive}>{item.status}</span>
-                    </div>
-                    <div className={styles.itemMeta}>
-                      <i className="fa-regular fa-calendar"></i> {formatarData(item.data)} <span style={{margin: '0 8px'}}>|</span> Turma: {item.nomeTurma}
-                    </div>
-                  </div>
-                  <div className={styles.itemActions}>
-                    <button className={styles.actionBtn} onClick={() => handleResultados(item.id)}>
-                      <i className="fa-solid fa-user-group"></i> {item.totalAlunos} participantes
-                    </button>
-                    <button className={`${styles.actionBtn} ${styles.actionBtnIcon}`} onClick={() => handleResultados(item.id)}>
-                      <i className="fa-solid fa-chevron-down"></i>
-                    </button>
-                  </div>
-                </div>
-              ))}
-              {currentSimulados.length === 0 && (
-                <div style={{ textAlign: 'center', padding: '40px', color: '#9ba1a6' }}>
-                  Nenhum simulado encontrado.
-                </div>
-              )}
-            </div>
-
-            {simuladosFiltrados.length > itemsPerPage && (
-              <div className={styles.pagination}>
-                <Pagination
-                  currentPage={currentPage}
-                  totalItems={simuladosFiltrados.length}
-                  itemsPerPage={itemsPerPage}
-                  setCurrentPage={setCurrentPage}
-                />
+            ))}
+            {currentSimulados.length === 0 && (
+              <div className={styles.emptyState}>
+                <i className={`fa-solid fa-file-magnifying-glass ${styles.emptyStateIcon}`}></i>
+                <p>Nenhum simulado encontrado.</p>
               </div>
             )}
-
           </div>
 
-          <div className={styles.rightColumn}>
-            <div className={styles.formContainer}>
-              <div className={styles.formHeader}>
-                <div className={styles.formHeaderIcon}>
-                  <i className="fa-solid fa-clipboard-check"></i>
-                </div>
-                <div>
-                  <h3 className={styles.formHeaderTitle}>Cadastrar simulado</h3>
-                  <p className={styles.formHeaderDesc}>Crie um novo simulado para suas turmas.</p>
-                </div>
+          {simuladosFiltrados.length > itemsPerPage && (
+            <div className={styles.pagination}>
+              <Pagination
+                currentPage={currentPage}
+                totalItems={simuladosFiltrados.length}
+                itemsPerPage={itemsPerPage}
+                setCurrentPage={setCurrentPage}
+              />
+            </div>
+          )}
+
+        </div>
+
+        <div className={styles.rightColumn}>
+          <div className={styles.formContainer}>
+            <div className={styles.formHeader}>
+              <div className={styles.formHeaderIcon}>
+                <i className="fa-solid fa-clipboard-check"></i>
+              </div>
+              <div>
+                <h3 className={styles.formHeaderTitle}>Cadastrar simulado</h3>
+                <p className={styles.formHeaderDesc}>Crie um novo simulado para suas turmas.</p>
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmit}>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Título do simulado</label>
+                <input
+                  type="text"
+                  className={styles.formInput}
+                  placeholder="Ex.: Simulado ENEM 2026"
+                  value={titulo}
+                  onChange={(e) => setTitulo(e.target.value)}
+                  required
+                />
               </div>
 
-              <form onSubmit={handleSubmit}>
-                <div className={styles.formGroup}>
-                  <label className={styles.formLabel}>Título do simulado</label>
-                  <input 
-                    type="text" 
-                    className={styles.formInput} 
-                    placeholder="Ex.: Simulado ENEM 2026"
-                    value={titulo}
-                    onChange={(e) => setTitulo(e.target.value)}
-                    required
-                  />
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Selecione a turma</label>
+                <select
+                  className={styles.formSelect}
+                  value={turma}
+                  onChange={(e) => setTurma(e.target.value)}
+                  required
+                >
+                  <option value="" disabled>Selecione uma turma</option>
+                  {turmasDisponiveis.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.nome}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Data de realização</label>
+                <input
+                  type="date"
+                  className={styles.formInput}
+                  value={dataRealizacao}
+                  onChange={(e) => setDataRealizacao(e.target.value)}
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Observações (opcional)</label>
+                <textarea
+                  className={styles.formTextarea}
+                  placeholder="Adicione informações complementares..."
+                  value={observacoes}
+                  onChange={(e) => setObservacoes(e.target.value)}
+                ></textarea>
+              </div>
+
+              <button type="submit" className={styles.submitBtn}>
+                Cadastrar Simulado
+              </button>
+
+              {formMessage && (
+                <div style={{ marginTop: '16px' }}>
+                  <Message text={formMessage.text} type={formMessage.type} />
                 </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.formLabel}>Selecione a turma</label>
-                  <select 
-                    className={styles.formSelect}
-                    value={turma}
-                    onChange={(e) => setTurma(e.target.value)}
-                    required
-                  >
-                    <option value="" disabled>Selecione uma turma</option>
-                    {turmasDisponiveis.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        {t.nome}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.formLabel}>Data de realização</label>
-                  <input 
-                    type="date" 
-                    className={styles.formInput} 
-                    value={dataRealizacao}
-                    onChange={(e) => setDataRealizacao(e.target.value)}
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.formLabel}>Observações (opcional)</label>
-                  <textarea 
-                    className={styles.formTextarea} 
-                    placeholder="Adicione informações complementares..."
-                    value={observacoes}
-                    onChange={(e) => setObservacoes(e.target.value)}
-                  ></textarea>
-                </div>
-
-                <button type="submit" className={styles.submitBtn}>
-                  Cadastrar Simulado
-                </button>
-
-                {formMessage && (
-                  <div style={{marginTop: '16px'}}>
-                    <Message text={formMessage.text} type={formMessage.type} />
-                  </div>
-                )}
-              </form>
-            </div>
+              )}
+            </form>
           </div>
         </div>
+      </div>
     </div>
   );
 };
