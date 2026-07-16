@@ -18,6 +18,7 @@ const links = [
   { name: "Cursos", icon: "fa-solid fa-tv", path: "cursos" },
   { name: "Simulados", icon: "fa-solid fa-bullseye", path: "SimuladosAluno" },
   { name: "Pagamentos", icon: "fa-solid fa-credit-card", path: "pagamentos" },
+  { name: "Blog e Artigos", icon: "fa-solid fa-newspaper", path: "artigos" },
   { name: "Configurações", icon: "fa-solid fa-gear", path: "configuracoes" },
 
 ]

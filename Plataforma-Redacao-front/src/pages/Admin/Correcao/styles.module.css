@@ -1,13 +1,17 @@
-/* ── Reset / Base ────────────────────────────────────────────── */
 .container {
   width: 100%;
   min-height: 100vh;
   background-color: #1A1A1A;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.content_wrapper {
   padding: 28px 32px 48px;
   display: flex;
   flex-direction: column;
   gap: 24px;
-  box-sizing: border-box;
 }
 
 /* ── Cabeçalho ───────────────────────────────────────────────── */
@@ -557,7 +561,7 @@
 }
 
 @media (max-width: 600px) {
-  .container {
+  .content_wrapper {
     padding: 16px 14px 48px;
   }
 

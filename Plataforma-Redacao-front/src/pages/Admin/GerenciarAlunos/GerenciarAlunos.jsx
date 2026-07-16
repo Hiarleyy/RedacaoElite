@@ -9,6 +9,7 @@ import Loading from "../../../components/Loading/Loading"
 import defaultProfilePicture from '../../../images/Defalult_profile_picture.jpg';
 import useUseful from "../../../utils/useUseful"
 import DeleteModal from "../../../components/DeleteModal/DeleteModal"
+import { jsPDF } from "jspdf"
 
 const baseURL = import.meta.env.VITE_API_BASE_URL
 
@@ -37,6 +38,7 @@ const GerenciarAlunos = () => {
   const [modalIsClicked, setModalIsClicked] = useState(false)
   const [currentAlunoId, setCurrentAlunoId] = useState("")
   const [activeMenuId, setActiveMenuId] = useState(null)
+  const [downloadingId, setDownloadingId] = useState(null)
 
   // ── Paginação ─────────────────────────────────────────────────────────────
   const [currentPage, setCurrentPage] = useState(1)
@@ -72,6 +74,102 @@ const GerenciarAlunos = () => {
   const deleteAluno = async (id) => {
     await axios.delete(`${baseURL}/usuarios/${id}`, { headers: getHeaders() })
     await loadInitialData()
+  }
+
+  const handleDownloadHistorico = async (aluno) => {
+    setDownloadingId(aluno.id)
+    try {
+      const { getNotasByUsuarioId, getRedacoesUser, getFrequencias } = fetchData()
+
+      // Buscar notas de simulados
+      const notasResponse = await getNotasByUsuarioId(aluno.id)
+      const notasSimulados = notasResponse || []
+
+      // Buscar notas de redações
+      const redacoesResponse = await getRedacoesUser(aluno.id)
+      const redacoesCorrigidas = (redacoesResponse || []).filter(r => r.nota !== undefined && r.nota !== null)
+
+      // Buscar frequências
+      const frequenciasResponse = await getFrequencias()
+      const frequenciasAluno = (frequenciasResponse || []).filter(f => String(f.usuarioId) === String(aluno.id))
+
+      // Calcular médias
+      const totalSimulados = notasSimulados.reduce((acc, curr) => acc + (Number(curr.nota) || 0), 0)
+      const totalRedacoes = redacoesCorrigidas.reduce((acc, curr) => acc + (Number(curr.nota) || 0), 0)
+      
+      let somaNotas = totalSimulados + totalRedacoes
+      let qtdNotas = notasSimulados.length + redacoesCorrigidas.length
+      let mediaGeral = qtdNotas > 0 ? (somaNotas / qtdNotas).toFixed(2) : "Sem notas"
+
+      // Calcular frequência
+      const totalAulas = frequenciasAluno.length
+      const presencas = frequenciasAluno.filter(f => f.status === "PRESENTE" || f.status === "JUSTIFICADO").length
+      const faltas = frequenciasAluno.filter(f => f.status === "FALTOU").length
+      const percentualFrequencia = totalAulas > 0 ? ((presencas / totalAulas) * 100).toFixed(1) + "%" : "Sem registros"
+
+      // Gerar PDF
+      const doc = new jsPDF()
+
+      // Estilo Base
+      doc.setFont("helvetica")
+      
+      // Cabeçalho
+      doc.setFontSize(22)
+      doc.setTextColor(33, 33, 33)
+      doc.text("Historico Escolar Simplificado", 105, 20, { align: "center" })
+
+      // Linha separadora
+      doc.setDrawColor(200, 200, 200)
+      doc.line(20, 25, 190, 25)
+
+      // Dados do Aluno
+      doc.setFontSize(14)
+      doc.setTextColor(50, 50, 50)
+      doc.text("Dados Pessoais", 20, 40)
+      
+      doc.setFontSize(12)
+      doc.setTextColor(100, 100, 100)
+      doc.text(`Nome: ${aluno.nome}`, 20, 50)
+      doc.text(`E-mail: ${aluno.email}`, 20, 58)
+      doc.text(`Turma: ${aluno.turma?.nome || 'Nao definida'}`, 20, 66)
+      doc.text(`Data de Matricula: ${formatLocalDate(aluno.dataCriacao)}`, 20, 74)
+
+      // Seção de Desempenho
+      doc.setFontSize(14)
+      doc.setTextColor(50, 50, 50)
+      doc.text("Desempenho Academico", 20, 90)
+
+      doc.setFontSize(12)
+      doc.setTextColor(100, 100, 100)
+      doc.text(`Simulados Realizados: ${notasSimulados.length}`, 20, 100)
+      doc.text(`Redacoes Corrigidas: ${redacoesCorrigidas.length}`, 20, 108)
+      doc.text(`Media Geral: ${mediaGeral}`, 20, 116)
+
+      // Seção de Frequência
+      doc.setFontSize(14)
+      doc.setTextColor(50, 50, 50)
+      doc.text("Controle de Frequencia", 20, 132)
+
+      doc.setFontSize(12)
+      doc.setTextColor(100, 100, 100)
+      doc.text(`Total de Aulas Registradas: ${totalAulas}`, 20, 142)
+      doc.text(`Presencas (inclui Justificadas): ${presencas}`, 20, 150)
+      doc.text(`Faltas: ${faltas}`, 20, 158)
+      doc.text(`Percentual de Frequencia: ${percentualFrequencia}`, 20, 166)
+
+      // Rodapé
+      doc.setFontSize(10)
+      doc.setTextColor(150, 150, 150)
+      const dataEmissao = new Date().toLocaleDateString('pt-BR')
+      doc.text(`Documento emitido em: ${dataEmissao}`, 105, 280, { align: "center" })
+
+      doc.save(`Historico_${aluno.nome.replace(/\s+/g, '_')}.pdf`)
+    } catch (error) {
+      console.error("Erro ao gerar historico:", error)
+      alert("Ocorreu um erro ao gerar o historico do aluno.")
+    } finally {
+      setDownloadingId(null)
+    }
   }
 
   // ── Ações de Filtros ──────────────────────────────────────────────────────
@@ -351,6 +449,21 @@ const GerenciarAlunos = () => {
                                 onClick={() => navigate(`/admin/gerenciar-alunos/${aluno.id}`)}
                               >
                                 <i className="fa-solid fa-eye" /> Ver Detalhes
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  handleDownloadHistorico(aluno)
+                                  setActiveMenuId(null)
+                                }}
+                                disabled={downloadingId === aluno.id}
+                              >
+                                {downloadingId === aluno.id ? (
+                                  <i className="fa-solid fa-spinner fa-spin" />
+                                ) : (
+                                  <i className="fa-solid fa-file-pdf" />
+                                )}{" "}
+                                {downloadingId === aluno.id ? "Gerando..." : "Baixar Histórico"}
                               </button>
                               <button
                                 type="button"

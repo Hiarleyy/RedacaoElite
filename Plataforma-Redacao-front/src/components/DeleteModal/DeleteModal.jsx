@@ -11,18 +11,20 @@ const DeleteModal = ({ message, modalIsClicked, deleteOnClick, cancelOnClick }) 
             text_size="16px" 
             padding_sz="15px" 
             bg_color="#B2433F"
+            type="button"
             onClick={deleteOnClick}
           >
-            <i class="fa-solid fa-trash"></i>
+            <i className="fa-solid fa-trash"></i>
             DELETAR
           </Button>
           <Button 
             text_size="16px" 
             padding_sz="15px" 
             bg_color="#1A1A1A"
+            type="button"
             onClick={cancelOnClick}
           >
-            <i class="fa-solid fa-ban"></i>
+            <i className="fa-solid fa-ban"></i>
             CANCELAR
           </Button>
         </div>

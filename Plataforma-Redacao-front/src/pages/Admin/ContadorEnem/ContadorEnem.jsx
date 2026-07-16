@@ -1,8 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import styles from "./styles.module.css";
 import Title from "../../../components/Title/Title";
+import axios from "axios";
+import useUseful from "../../../utils/useUseful";
 
-const STORAGE_KEY = "enem_contador_config";
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+const CHAVE_CONFIG = "contador_enem";
 
 const defaultConfig = {
   titulo: "Contagem Regressiva para o ENEM",
@@ -29,20 +32,41 @@ const calcularTempo = (dataAlvo) => {
 };
 
 const ContadorEnem = () => {
-  const [config, setConfig] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? { ...defaultConfig, ...JSON.parse(saved) } : { ...defaultConfig };
-    } catch {
-      return { ...defaultConfig };
-    }
-  });
-
+  const [config, setConfig] = useState(defaultConfig);
+  const [loading, setLoading] = useState(true);
   const [tempo, setTempo] = useState(null);
-  const [tituloInput, setTituloInput] = useState(config.titulo);
-  const [dataInput, setDataInput] = useState(config.dataAlvo ? config.dataAlvo.slice(0, 16) : "");
+  const [tituloInput, setTituloInput] = useState("");
+  const [dataInput, setDataInput] = useState("");
   const [salvoFeedback, setSalvoFeedback] = useState(false);
-  const [editando, setEditando] = useState(!config.dataAlvo);
+  const [editando, setEditando] = useState(false);
+
+  const { getHeaders } = useUseful();
+
+  useEffect(() => {
+    const fetchConfig = async () => {
+      try {
+        const response = await axios.get(`${baseURL}/configuracoes/${CHAVE_CONFIG}`, {
+          headers: getHeaders()
+        });
+        if (response.data) {
+          setConfig(response.data);
+          setTituloInput(response.data.titulo || defaultConfig.titulo);
+          setDataInput(response.data.dataAlvo ? response.data.dataAlvo.slice(0, 16) : "");
+          setEditando(!response.data.dataAlvo);
+        } else {
+          setTituloInput(defaultConfig.titulo);
+          setEditando(true);
+        }
+      } catch (error) {
+        console.error("Erro ao carregar configuração do contador:", error);
+        setTituloInput(defaultConfig.titulo);
+        setEditando(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchConfig();
+  }, []);
 
   // Atualiza o tempo a cada segundo
   useEffect(() => {
@@ -52,7 +76,7 @@ const ContadorEnem = () => {
     return () => clearInterval(interval);
   }, [config.dataAlvo]);
 
-  const handleSalvar = useCallback(() => {
+  const handleSalvar = useCallback(async () => {
     if (!tituloInput.trim()) {
       alert("Informe um título para o contador.");
       return;
@@ -66,31 +90,48 @@ const ContadorEnem = () => {
       dataAlvo: new Date(dataInput).toISOString(),
       ativo: true,
     };
-    setConfig(novaConfig);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(novaConfig));
-    setSalvoFeedback(true);
-    setEditando(false);
-    setTimeout(() => setSalvoFeedback(false), 3000);
-  }, [tituloInput, dataInput]);
 
-  const handleRedefinir = () => {
+    try {
+      await axios.post(`${baseURL}/configuracoes/${CHAVE_CONFIG}`, novaConfig, {
+        headers: getHeaders()
+      });
+      setConfig(novaConfig);
+      setSalvoFeedback(true);
+      setEditando(false);
+      setTimeout(() => setSalvoFeedback(false), 3000);
+    } catch (error) {
+      console.error("Erro ao salvar configuração:", error);
+      alert("Erro ao salvar a configuração. Tente novamente.");
+    }
+  }, [tituloInput, dataInput, getHeaders]);
+
+  const handleRedefinir = async () => {
     setTituloInput(defaultConfig.titulo);
     setDataInput("");
     const novaConfig = { ...defaultConfig };
-    setConfig(novaConfig);
-    localStorage.removeItem(STORAGE_KEY);
-    setEditando(true);
+
+    try {
+      await axios.post(`${baseURL}/configuracoes/${CHAVE_CONFIG}`, novaConfig, {
+        headers: getHeaders()
+      });
+      setConfig(novaConfig);
+      setEditando(true);
+    } catch (error) {
+      console.error("Erro ao redefinir configuração:", error);
+    }
   };
+
+  if (loading) return <div>Carregando...</div>;
 
   const dataFormatada = config.dataAlvo
     ? new Date(config.dataAlvo).toLocaleString("pt-BR", {
-        weekday: "long",
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      })
+      weekday: "long",
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
     : null;
 
   const progressoPercent = (() => {
@@ -107,10 +148,6 @@ const ContadorEnem = () => {
 
         {/* ── Preview do Contador ── */}
         <div className={styles.preview_card}>
-          <div className={styles.preview_label}>
-            <i className="fa-solid fa-eye" />
-            Visualização
-          </div>
 
           {config.dataAlvo && tempo ? (
             <div className={styles.countdown_wrapper}>
@@ -244,37 +281,6 @@ const ContadorEnem = () => {
               <p>O contador será exibido na página inicial dos alunos. A configuração é salva localmente e persistida entre sessões.</p>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* ── Datas do ENEM ── Sugestões rápidas */}
-      <div className={styles.sugestoes_card}>
-        <div className={styles.sugestoes_header}>
-          <i className="fa-solid fa-bolt" />
-          <h4>Datas oficiais do ENEM 2026 (sugestões rápidas)</h4>
-        </div>
-        <div className={styles.sugestoes_grid}>
-          {[
-            { label: "ENEM 2026 — 1º Dia", data: "2026-11-01T13:00:00" },
-            { label: "ENEM 2026 — 2º Dia", data: "2026-11-08T13:00:00" },
-            { label: "ENEM Digital — 1º Dia", data: "2026-11-15T13:00:00" },
-            { label: "ENEM Digital — 2º Dia", data: "2026-11-22T13:00:00" },
-          ].map((s) => (
-            <button
-              key={s.data}
-              className={styles.sugestao_btn}
-              onClick={() => {
-                setDataInput(s.data.slice(0, 16));
-                setTituloInput(`Contagem Regressiva — ${s.label}`);
-              }}
-            >
-              <i className="fa-solid fa-calendar-day" />
-              <span className={styles.sugestao_label}>{s.label}</span>
-              <span className={styles.sugestao_data}>
-                {new Date(s.data).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })}
-              </span>
-            </button>
-          ))}
         </div>
       </div>
     </div>

@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import styles from "./styles.module.css";
+import axios from "axios";
+import useUseful from "../../utils/useUseful";
 
-const STORAGE_KEY = "enem_contador_config";
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+const CHAVE_CONFIG = "contador_enem";
 const pad = (n) => String(n).padStart(2, "0");
 
 const calcularTempo = (dataAlvo) => {
@@ -21,17 +24,23 @@ const CountdownEnem = () => {
   const [config, setConfig] = useState(null);
   const [tempo, setTempo] = useState(null);
 
+  const { getHeaders } = useUseful();
+
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed.dataAlvo && parsed.ativo) setConfig(parsed);
+    const fetchConfig = async () => {
+      try {
+        const response = await axios.get(`${baseURL}/configuracoes/${CHAVE_CONFIG}`, {
+          headers: getHeaders()
+        });
+        if (response.data && response.data.ativo) {
+          setConfig(response.data);
+        }
+      } catch (error) {
+        console.error("Erro ao carregar contador do ENEM:", error);
       }
-    } catch {
-      // ignorar erros de parse
-    }
-  }, []);
+    };
+    fetchConfig();
+  }, [getHeaders]);
 
   useEffect(() => {
     if (!config?.dataAlvo) return;

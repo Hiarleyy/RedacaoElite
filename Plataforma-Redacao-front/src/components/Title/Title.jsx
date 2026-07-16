@@ -1,7 +1,7 @@
 import styles from "./styles.module.css"
 import { useNavigate } from "react-router-dom"
 
-const Title = ({ title }) => {
+const Title = ({ title, subtitle }) => {
   const navigate = useNavigate()
   
   const logout = () => {
@@ -12,7 +12,10 @@ const Title = ({ title }) => {
   return (
     <div className={styles.title}>
       <div className={styles.title_container}>
-        <p className={styles.text}>{title}</p>
+        <div className={styles.title_text_container}>
+          <p className={styles.text}>{title}</p>
+          {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
+        </div>
 
         <button className={styles.logout} onClick={logout}>
           <i class="fa-solid fa-right-from-bracket"></i>
