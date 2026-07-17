@@ -15,7 +15,7 @@ import RedacoesTabela from "../../../components/RedacoesTabela/RedacoesTabela"
 import Loading from "../../../components/Loading/Loading"
 import DeleteModal from "../../../components/DeleteModal/DeleteModal"
 import CorrecaoModal from "../../../components/CorrecaoModal/CorrecaoModal"
-import { jsPDF } from "jspdf"
+import { gerarHistoricoPdf } from "../../../components/HistoricoPdf/HistoricoPdf"
 import defaultProfilePicture from '../../../images/Defalult_profile_picture.jpg'
 
 const baseURL = import.meta.env.VITE_API_BASE_URL
@@ -87,14 +87,29 @@ const DetalhesAluno = () => {
     try {
       const { getNotasByUsuarioId, getRedacoesUser, getFrequencias } = fetchData()
 
-      const notasResponse = await getNotasByUsuarioId(aluno_id)
-      const notasSimulados = notasResponse || []
+      let notasSimulados = []
+      try {
+        const notasResponse = await getNotasByUsuarioId(aluno_id)
+        notasSimulados = notasResponse || []
+      } catch (err) {
+        console.warn("Erro ao buscar notas de simulados:", err)
+      }
 
-      const redacoesResponse = await getRedacoesUser(aluno_id)
-      const redacoesCorrigidas = (redacoesResponse || []).filter(r => r.nota !== undefined && r.nota !== null)
+      let redacoesCorrigidas = []
+      try {
+        const redacoesResponse = await getRedacoesUser(aluno_id)
+        redacoesCorrigidas = (redacoesResponse || []).filter(r => r.nota !== undefined && r.nota !== null)
+      } catch (err) {
+        console.warn("Erro ao buscar redações:", err)
+      }
 
-      const frequenciasResponse = await getFrequencias()
-      const frequenciasAluno = (frequenciasResponse || []).filter(f => String(f.usuarioId) === String(aluno_id))
+      let frequenciasAluno = []
+      try {
+        const frequenciasResponse = await getFrequencias()
+        frequenciasAluno = (frequenciasResponse || []).filter(f => String(f.usuarioId) === String(aluno_id))
+      } catch (err) {
+        console.warn("Erro ao buscar frequências:", err)
+      }
 
       const somaNotas = notasSimulados.reduce((acc, curr) => acc + (Number(curr.nota) || 0), 0)
         + redacoesCorrigidas.reduce((acc, curr) => acc + (Number(curr.nota) || 0), 0)
@@ -106,54 +121,23 @@ const DetalhesAluno = () => {
       const faltas = frequenciasAluno.filter(f => f.status === "FALTOU").length
       const percentualFrequencia = totalAulas > 0 ? ((presencas / totalAulas) * 100).toFixed(1) + "%" : "Sem registros"
 
-      const doc = new jsPDF()
-      doc.setFont("helvetica")
+      const safeNome = (alunoData.nome || "Aluno").replace(/\s+/g, '_')
+      
+      const dadosHistorico = {
+        nome: alunoData.nome,
+        email: alunoData.email,
+        turma: alunoData.turma?.nome,
+        dataMatricula: alunoData.dataCriacao,
+        simuladosRealizados: notasSimulados.length,
+        redacoesCorrigidas: redacoesCorrigidas.length,
+        mediaGeral,
+        totalAulas,
+        presencas,
+        faltas,
+        percentualFrequencia
+      }
 
-      doc.setFontSize(22)
-      doc.setTextColor(33, 33, 33)
-      doc.text("Historico Escolar Simplificado", 105, 20, { align: "center" })
-
-      doc.setDrawColor(200, 200, 200)
-      doc.line(20, 25, 190, 25)
-
-      doc.setFontSize(14)
-      doc.setTextColor(50, 50, 50)
-      doc.text("Dados Pessoais", 20, 40)
-
-      doc.setFontSize(12)
-      doc.setTextColor(100, 100, 100)
-      doc.text(`Nome: ${alunoData.nome}`, 20, 50)
-      doc.text(`E-mail: ${alunoData.email}`, 20, 58)
-      doc.text(`Turma: ${alunoData.turma?.nome || 'Nao definida'}`, 20, 66)
-      doc.text(`Data de Matricula: ${brasilFormatData(alunoData.dataCriacao)}`, 20, 74)
-
-      doc.setFontSize(14)
-      doc.setTextColor(50, 50, 50)
-      doc.text("Desempenho Academico", 20, 90)
-
-      doc.setFontSize(12)
-      doc.setTextColor(100, 100, 100)
-      doc.text(`Simulados Realizados: ${notasSimulados.length}`, 20, 100)
-      doc.text(`Redacoes Corrigidas: ${redacoesCorrigidas.length}`, 20, 108)
-      doc.text(`Media Geral: ${mediaGeral}`, 20, 116)
-
-      doc.setFontSize(14)
-      doc.setTextColor(50, 50, 50)
-      doc.text("Controle de Frequencia", 20, 132)
-
-      doc.setFontSize(12)
-      doc.setTextColor(100, 100, 100)
-      doc.text(`Total de Aulas Registradas: ${totalAulas}`, 20, 142)
-      doc.text(`Presencas (inclui Justificadas): ${presencas}`, 20, 150)
-      doc.text(`Faltas: ${faltas}`, 20, 158)
-      doc.text(`Percentual de Frequencia: ${percentualFrequencia}`, 20, 166)
-
-      doc.setFontSize(10)
-      doc.setTextColor(150, 150, 150)
-      const dataEmissao = new Date().toLocaleDateString('pt-BR')
-      doc.text(`Documento emitido em: ${dataEmissao}`, 105, 280, { align: "center" })
-
-      doc.save(`Historico_${alunoData.nome.replace(/\s+/g, '_')}.pdf`)
+      await gerarHistoricoPdf(dadosHistorico, `Historico_${safeNome}`)
     } catch (error) {
       console.error("Erro ao gerar historico:", error)
       alert("Ocorreu um erro ao gerar o historico do aluno.")
