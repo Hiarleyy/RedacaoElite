@@ -20,6 +20,9 @@ const authMiddleware = require("./middlewares/auth-middleware")
 const calendarioController = require("./controllers/calendario-controller")
 const tipoEventoController = require("./controllers/tipoEvento-controller")
 const matriculasController = require("./controllers/matriculas-controller")
+const artigosController = require("./controllers/artigos-controller")
+const uploadArtigos = require("./middlewares/upload-artigos")
+const configuracoesRoute = require("./routes/configuracoes-route")
 
 const router = express.Router()
 
@@ -124,17 +127,28 @@ router.post("/calendario", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']
 router.put("/calendario/:id", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), calendarioController.update)
 router.delete("/calendario/:id", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), calendarioController.delete)
 
-// Rotas relacionadas aos tipos de evento do calendário
-router.get("/tipoEvento", authMiddleware, tipoEventoController.index)
-router.get("/tipoEvento/:id", authMiddleware, tipoEventoController.show)
-router.post("/tipoEvento", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), tipoEventoController.create)
-router.put("/tipoEvento/:id", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), tipoEventoController.update)
-router.delete("/tipoEvento/:id", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), tipoEventoController.delete)
+// Rotas de Eventos (Tipos de Eventos do Calendário)
+router.get("/tiposevento", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), tipoEventoController.index)
+router.get("/tiposevento/:id", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), tipoEventoController.show)
+router.post("/tiposevento", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), tipoEventoController.create)
+router.put("/tiposevento/:id", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), tipoEventoController.update)
+router.delete("/tiposevento/:id", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), tipoEventoController.delete)
+
+// Rotas de Artigos (Blog)
+router.get("/artigos", authMiddleware, artigosController.index)
+router.get("/artigos/:id", authMiddleware, artigosController.show)
+router.get("/artigos/:id/capa", artigosController.getCapaImage)
+router.post("/artigos", authMiddleware, adminMiddleware(['ADMIN']), uploadArtigos.single('file'), artigosController.create)
+router.put("/artigos/:id", authMiddleware, adminMiddleware(['ADMIN']), uploadArtigos.single('file'), artigosController.update)
+router.delete("/artigos/:id", authMiddleware, adminMiddleware(['ADMIN']), artigosController.delete)
 
 // Rotas relacionadas a matrículas
 router.post("/matriculas", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), matriculasController.create)
 router.get("/matriculas", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), matriculasController.index)
 router.get("/matriculas/:id", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), matriculasController.show)
 router.get("/matriculas/usuario/:usuarioId", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), matriculasController.showByUsuario)
+
+// Rotas de Configurações
+router.use("/configuracoes", authMiddleware, configuracoesRoute)
 
 module.exports = router

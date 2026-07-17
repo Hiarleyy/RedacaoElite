@@ -13,7 +13,8 @@ const Button = ({
   height_size = undefined,
   onClick = undefined,
   isLoading,
-  className
+  className,
+  type = "submit"
 }) => {  // HOOK PARA INTERFACE MOBILE
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   
@@ -41,7 +42,7 @@ const Button = ({
   return (
     <button 
       className={`${styles.btn} ${className || ''}`} 
-      type="submit"
+      type={type}
       onClick={onClick} 
       style={{ 
         backgroundColor: bg_color, 
