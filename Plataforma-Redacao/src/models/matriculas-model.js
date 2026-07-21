@@ -23,7 +23,7 @@ const matriculasModel = {
       cpf, dataNascimento, genero,
       telefone, endereco, bairro, cidade,
       nomeResponsavel, vinculoResponsavel, telefoneResponsavel,
-      dataInicio, comoConheceu, observacoes
+      dataInicio, diaVencimento, comoConheceu, observacoes
     } = corpo.data
 
     // ── 2. Verifica e-mail duplicado ────────────────────────────
@@ -35,12 +35,16 @@ const matriculasModel = {
     const parteLocal = email.match(regex)?.[1] ?? "redacao123"
     const hashedPassword = await bcrypt.hash(parteLocal, 10)
 
+    const diaVenc = diaVencimento ? parseInt(diaVencimento) : null
+
     const novoUsuario = await usuariosRepository.crieNovoUsuario({
       nome,
       email,
       password: hashedPassword,
       tipoUsuario: "STANDARD",
-      turmaId
+      turmaId,
+      diaVencimentoPadrao: diaVenc,
+      valorMensalidadePadrao: 150.00
     })
 
     // ── 4. Busca o usuário recém-criado para obter o id ─────────
@@ -60,6 +64,7 @@ const matriculasModel = {
       vinculoResponsavel:  vinculoResponsavel  || null,
       telefoneResponsavel: telefoneResponsavel || null,
       dataInicio,
+      diaVencimento:       diaVencimento       || null,
       comoConheceu: comoConheceu || null,
       observacoes:  observacoes  || null
     })
@@ -100,6 +105,21 @@ const matriculasModel = {
 
     // 2. Faz o upsert da matrícula
     const matricula = await matriculasRepository.upsertMatriculaPorUsuarioId(usuarioId, corpo.data)
+
+    // Atualiza o dia de vencimento padrão do usuário se informado
+    if (corpo.data.diaVencimento) {
+      const diaVenc = parseInt(corpo.data.diaVencimento)
+      if (!isNaN(diaVenc)) {
+        const prisma = require("../database/db")
+        await prisma.usuario.update({
+          where: { id: usuarioId },
+          data: {
+            diaVencimentoPadrao: diaVenc
+          }
+        })
+      }
+    }
+
     return matricula
   }
 }

@@ -6,6 +6,7 @@ import Configuracoes from "./pages/Common/Configuracoes/Configuracoes"
 import Ranking from "./pages/Common/Ranking/Ranking"
 import VideoPage from "./pages/Common/VideoPage/VideoPage"
 import Cursos from "./pages/Common/Cursos/Cursos"
+import ModuloPage from "./pages/Common/ModuloPage/ModuloPage"
 
 // Layouts
 import AlunoLayout from "./pages/Aluno/Layout/Layout"
@@ -18,7 +19,7 @@ import NovaRedacao from "./pages/Aluno/NovaRedacao/NovaRedacao"
 import DesenpenhoAluno from "./pages/Aluno/DesenpenhoAluno/DesenpenhoAluno"
 import SimuladosAluno from "./pages/Aluno/Simulados/Simulados"
 import AlunoPagamentos from "./pages/Aluno/Pagamentos/Pagamentos"
-import Artigos from "./pages/Aluno/Artigos/Artigos"
+import Artigos from "./pages/Common/Artigos/Artigos"
 import TemaSemanal from "./pages/Aluno/TemaSemanal/TemaSemanal"
 
 // Admin Pages
@@ -31,6 +32,7 @@ import DetalhesTurma from "./pages/Admin/DetalhesTurma/DetalhesTurma"
 import GerenciarAlunos from "./pages/Admin/GerenciarAlunos/GerenciarAlunos"
 import DetalhesAluno from "./pages/Admin/DetalhesAluno/DetalhesAluno"
 import GerenciarCursos from "./pages/Admin/GerenciarCursos/GerenciarCursos"
+import CadastrarCurso from "./pages/Admin/CadastrarCurso/CadastrarCurso"
 import Correcao from "./pages/Admin/Correcao/Correcao"
 import CorrigirRedacao from "./pages/Admin/CorrigirRedacao/CorrigirRedacao"
 import Pagamentos from "./pages/Admin/Pagamentos/pagamentos"
@@ -118,6 +120,7 @@ const router = createBrowserRouter([
       { path: "ranking", element: <Ranking /> },
       { path: "cursos", element: <Cursos /> },
       { path: "cursos/:video_id", element: <VideoPage /> },
+      { path: "modulo/:modulo_id", element: <ModuloPage /> },
       { path: "configuracoes", element: <Configuracoes /> },
       { path: "ControleDesempenho", element: <DesenpenhoAluno /> },
       { path: "SimuladosAluno", element: <SimuladosAluno /> },
@@ -140,9 +143,11 @@ const router = createBrowserRouter([
       { path: "gerenciar-alunos", element: <GerenciarAlunos /> },
       { path: "gerenciar-alunos/:aluno_id", element: <DetalhesAluno /> },
       { path: "gerenciar-cursos", element: <GerenciarCursos /> },
+      { path: "cadastrar-curso", element: <CadastrarCurso /> },
       { path: "ranking", element: <Ranking /> },
       { path: "cursos", element: <Cursos /> },
       { path: "cursos/:video_id", element: <VideoPage /> },
+      { path: "modulo/:modulo_id", element: <ModuloPage /> },
       { path: "correcao", element: <Correcao /> },
       { path: "correcao/:redacao_id", element: <CorrigirRedacao /> },
       { path: "pagamentos", element: <Pagamentos /> },
@@ -158,6 +163,7 @@ const router = createBrowserRouter([
       { path: "artigos", element: <GerenciarArtigos /> },
       { path: "artigos/novo", element: <NovoArtigo /> },
       { path: "artigos/:id/editar", element: <NovoArtigo /> },
+      { path: "blog", element: <Artigos /> },
     ],
   },
 ]);

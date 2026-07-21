@@ -1,25 +1,33 @@
 .container {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
   overflow-x: hidden;
+  background-color: #1A1A1A;
 }
 
 .main_content {
   display: flex;
-  justify-content: space-between;
-  padding: 50px;
+  flex-direction: column;
+  padding: 30px 50px 80px;
   max-width: 1500px;
-  height: calc(100vh - 70px);
+  width: 100%;
   margin: 0 auto;
+  min-height: calc(100vh - 70px);
+  height: auto;
+  box-sizing: border-box;
 }
 
 .main_content .container_pag {
   width: 100%;
-  padding: 20px;
+  min-width: 0;
+  padding: 30px;
   position: relative;
-  border-radius: 10px;
+  border-radius: 12px;
   background-color: #242424;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-sizing: border-box;
 }
 
 .main_content .container_pag h1 {
@@ -48,8 +56,8 @@
 }
 
 .container_pag .container_table {
-  margin-top: 15px;
-  height: 60%;
+  margin-top: 20px;
+  width: 100%;
 }
 
 /* Estilos para o container de botões - Desktop */
@@ -513,29 +521,33 @@
   margin-top: 15px;
   border-radius: 8px;
   border: 1px solid #333333;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  background-color: #1A1A1A;
 }
 
 .payment_table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  background-color: #242424;
+  background-color: transparent;
 }
 
 .payment_table th {
-  background-color: #1A1A1A;
+  background-color: #16161a;
   color: #aaaaaa;
   padding: 14px 18px;
-  font-weight: 500;
-  font-size: 14px;
-  border-bottom: 1px solid #333333;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .payment_table td {
   padding: 14px 18px;
   color: #dddddd;
   font-size: 14px;
-  border-bottom: 1px solid #333333;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .payment_table tr:hover {

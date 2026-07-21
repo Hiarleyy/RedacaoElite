@@ -26,12 +26,15 @@ const modulosController = {
   create: async (req, res, next) => {
     try {
       const corpoDaRequisicao = req.body
-      const resposta = await modulosModel.criarModulo(corpoDaRequisicao)
+      console.log("CREATE MODULO req.body.pdfInfo:", req.body.pdfInfo)
+      console.log("CREATE MODULO req.files:", req.files)
+      const resposta = await modulosModel.criarModulo(corpoDaRequisicao, req.files)
       res.status(200).json({ message: "modulo criado com sucesso.", data: resposta })
     } catch (error) {
       next(error)
     }
   },
+  
   delete: async (req, res, next) => {
     try {
       const { id } = req.params
@@ -41,11 +44,14 @@ const modulosController = {
       next(error)
     }
   }, 
+  
   update: async (req, res, next) => {
     try {
       const { id } = req.params
       const corpoDaRequisicao = req.body
-      const resposta = await modulosModel.atualizarModulo(id, corpoDaRequisicao)
+      console.log("UPDATE MODULO req.body.pdfInfo:", req.body.pdfInfo)
+      console.log("UPDATE MODULO req.files:", req.files)
+      const resposta = await modulosModel.atualizarModulo(id, corpoDaRequisicao, req.files)
       res.status(200).json({ message: "Modulo atualizado com sucesso.", data: resposta })
     } catch (error) {
       next(error)

@@ -8,7 +8,6 @@ const baseURL = import.meta.env.VITE_API_BASE_URL
 const fetchData = () => {
   const getTurmas = async () => {
     const response = await axios.get(`${baseURL}/turmas`, { headers: getHeaders() })
-
     return response.data.data
   }
 
@@ -331,7 +330,8 @@ const fetchData = () => {
     getArtigoById,
     createArtigo,
     updateArtigo,
-    deleteArtigo
+    deleteArtigo,
+    getPropostaById
   }
 }
 

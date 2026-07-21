@@ -20,7 +20,8 @@ const decryptMatricula = (matricula) => {
     comoConheceu: decrypt(matricula.comoConheceu),
     condicaoMedica: decrypt(matricula.condicaoMedica),
     deficiencia: decrypt(matricula.deficiencia),
-    necessidadeEducacional: decrypt(matricula.necessidadeEducacional)
+    necessidadeEducacional: decrypt(matricula.necessidadeEducacional),
+    diaVencimento: decrypt(matricula.diaVencimento)
   }
 }
 
@@ -43,7 +44,8 @@ const decryptAndMaskMatricula = (matricula) => {
     genero: mask(dec.genero, "genero"),
     condicaoMedica: mask(dec.condicaoMedica, "condicaoMedica"),
     deficiencia: mask(dec.deficiencia, "deficiencia"),
-    necessidadeEducacional: mask(dec.necessidadeEducacional, "necessidadeEducacional")
+    necessidadeEducacional: mask(dec.necessidadeEducacional, "necessidadeEducacional"),
+    diaVencimento: mask(dec.diaVencimento, "diaVencimento")
   }
 }
 
@@ -68,6 +70,7 @@ const matriculasRepository = {
         vinculoResponsavel: true,
         telefoneResponsavel: true,
         dataInicio: true,
+        diaVencimento: true,
         comoConheceu: true,
         observacoes: true,
         condicaoMedica: true,
@@ -147,6 +150,7 @@ const matriculasRepository = {
         vinculoResponsavel: true,
         telefoneResponsavel: true,
         dataInicio: true,
+        diaVencimento: true,
         comoConheceu: true,
         observacoes: true,
         condicaoMedica: true,

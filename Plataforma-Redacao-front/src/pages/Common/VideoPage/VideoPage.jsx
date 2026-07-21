@@ -57,6 +57,16 @@ const VideoPage = () => {
   }, [video_id])
 
   useEffect(() => {
+    if (video_id) {
+      const completed = JSON.parse(localStorage.getItem("completed_videos") || "[]");
+      if (!completed.includes(video_id)) {
+        completed.push(video_id);
+        localStorage.setItem("completed_videos", JSON.stringify(completed));
+      }
+    }
+  }, [video_id])
+
+  useEffect(() => {
     setIsModuloLoading(true)
     try {
       const getData = async () => {

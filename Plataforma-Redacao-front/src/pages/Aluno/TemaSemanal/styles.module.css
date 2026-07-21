@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
 .container {
   display: flex;
   flex-direction: column;
@@ -313,8 +315,6 @@
 .materialBtn:hover {
   background-color: #c28c00;
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
 
 .quoteSection {
   text-align: center;

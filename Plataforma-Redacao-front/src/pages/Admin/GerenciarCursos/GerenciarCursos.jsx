@@ -1,8 +1,5 @@
 import styles from "./styles.module.css";
 import Title from "../../../components/Title/Title";
-import InfoCard from "../../../components/InfoCard/InfoCard";
-import Input from "../../../components/Input/Input";
-import Button from "../../../components/Button/Button";
 import axios from "axios";
 import fetchData from "../../../utils/fetchData";
 import useUseful from "../../../utils/useUseful";
@@ -11,70 +8,31 @@ import Pagination from "../../../components/Pagination/Pagination";
 import Message from "../../../components/Message/Message";
 import Loading from "../../../components/Loading/Loading";
 import DeleteModal from "../../../components/DeleteModal/DeleteModal";
+import { useNavigate } from "react-router-dom";
 
-const baseURL = import.meta.env.VITE_API_BASE_URL
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 const GerenciarCursos = () => {
-  const [formMessage, setFormMessage] = useState(null);
   const [modulos, setModulos] = useState([]);
-  const [nome, setNome] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [playlistUrl, setPlaylistUrl] = useState("");
   const { brasilFormatData, getHeaders } = useUseful();
+  const navigate = useNavigate();
 
-  const [isLoading, setIsLoading] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [modalIsClicked, setModalIsClicked] = useState(false);
-  const [currentCursoId, setCurrentCursoId] = useState("")
+  const [currentCursoId, setCurrentCursoId] = useState("");
+
+  // Search filter state
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentModulos = modulos.slice(indexOfFirstItem, indexOfLastItem);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const response = await axios.post(
-        `${baseURL}/modulos`, 
-        {
-          nome,
-          descricao,
-          playlistUrl,
-        },
-        { headers: getHeaders() }
-      );
-
-      setFormMessage({
-        type: "success",
-        text: `Curso ${response.data.data.nome} criado com sucesso.`,
-      });
-
-      setNome("");
-      setDescricao("");
-      setPlaylistUrl("");
-
-      await getData();
-    } catch (error) {
-      setFormMessage({
-        type: "error",
-        text: error.response?.data?.error || "Erro ao criar curso.",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const itemsPerPage = 6;
 
   const getData = async () => {
     setIsLoadingData(true);
     try {
       const { getModulos } = fetchData();
       const response = await getModulos();
-      setModulos(response);
+      setModulos(response || []);
     } catch (error) {
       console.error("Erro ao buscar cursos:", error);
     } finally {
@@ -83,13 +41,38 @@ const GerenciarCursos = () => {
   };
 
   const deleteModulo = async (id) => {
-    await axios.delete(`${baseURL}/modulos/${id}`, { headers: getHeaders() });
-    await getData();
+    try {
+      await axios.delete(`${baseURL}/modulos/${id}`, { headers: getHeaders() });
+      await getData();
+    } catch (error) {
+      console.error("Erro ao excluir curso:", error);
+    }
   };
 
   useEffect(() => {
     getData();
   }, []);
+
+  // Reset page to 1 when search term changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
+  const handleDeleteClick = (id) => {
+    setCurrentCursoId(id);
+    setModalIsClicked(true);
+  };
+
+  // Filter logic
+  const filteredModulos = modulos.filter(
+    (modulo) =>
+      modulo.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (modulo.descricao && modulo.descricao.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentModulos = filteredModulos.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <div className={styles.container}>
@@ -97,106 +80,160 @@ const GerenciarCursos = () => {
         message="Você tem certeza que deseja excluir esse(a) Curso(a)?"
         modalIsClicked={modalIsClicked}
         deleteOnClick={() => {
-          deleteModulo(currentCursoId)
-          setModalIsClicked(false)
-        }} 
-        cancelOnClick={() => setModalIsClicked(false)} 
+          deleteModulo(currentCursoId);
+          setModalIsClicked(false);
+        }}
+        cancelOnClick={() => setModalIsClicked(false)}
       />
 
       <Title title="Gerenciar cursos" />
 
-      <div className={styles.main_content}>
-        <div className={styles.bg_left}>
-          {isLoadingData ? (
-            <div className={styles.loading}>
-              <Loading />
+      <div className={styles.mainLayout}>
+        {/* Filters Bar */}
+        <div className={styles.filtersBar}>
+          <div className={styles.filterGroup}>
+            <span className={styles.filterLabel}>Buscar curso</span>
+            <div className={styles.filterInputWrapper}>
+              <i className={`fa-solid fa-search ${styles.filterIcon}`}></i>
+              <input
+                type="text"
+                className={styles.filterInput}
+                placeholder="Pesquise por nome ou descrição..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
-          ) : modulos.length === 0 ? (
-            <Message 
-              text="Nenhum curso cadastrado." 
-              text_color="#E0E0E0"
-              marginTop="30px"
-            />
-          ) : (
-            <>
-              <p className={styles.title}>Seus cursos</p>
+          </div>
 
-              <div className={styles.cursos_container}>
-                {currentModulos.map((modulo) => (
-                  <InfoCard
-                    key={modulo.id}
-                    title={modulo.nome}
-                    subtitle={brasilFormatData(modulo.dataCriacao)}
-                    onClick={() => {
-                      setCurrentCursoId(modulo.id)
-                      setModalIsClicked(true)
-                    }}
-                  />
-                ))}
+          <div className={styles.actionButtons}>
+            {searchTerm && (
+              <button
+                className={styles.clearBtn}
+                onClick={() => setSearchTerm("")}
+              >
+                <i className="fa-solid fa-filter-circle-xmark"></i> Limpar busca
+              </button>
+            )}
+            <button
+              className={styles.newThemeBtn}
+              onClick={() => navigate("/admin/cadastrar-curso")}
+            >
+              Cadastrar novo curso
+            </button>
+          </div>
+        </div>
+
+        {/* Table Section */}
+        {isLoadingData ? (
+          <div className={styles.loading}>
+            <Loading />
+          </div>
+        ) : filteredModulos.length === 0 ? (
+          <div className={styles.tableContainer}>
+            <div style={{ padding: "32px", textAlign: "center", color: "#a0a0a0" }}>
+              Nenhum curso encontrado.
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className={styles.tableContainer}>
+              <div className={styles.tableHeader}>
+                <div>CURSO / MÓDULO</div>
+                <div>PLAYLIST</div>
+                <div className={styles.colData}>DATA DE CRIAÇÃO</div>
+                <div className={styles.colAcoes}>AÇÕES</div>
               </div>
 
-              <div className={styles.pagination}>
+              <div className={styles.tableBody}>
+                {currentModulos.map((modulo) => (
+                  <div key={modulo.id} className={styles.tableRow}>
+                    <div className={styles.colCurso}>
+                      <div className={styles.cursoIcon}>
+                        <i className="fa-solid fa-graduation-cap"></i>
+                      </div>
+                      <div className={styles.cursoInfo}>
+                        <h4 className={styles.cursoTitle}>{modulo.nome}</h4>
+                        <p className={styles.cursoSubtitle}>{modulo.descricao}</p>
+                      </div>
+                    </div>
+
+                    <div className={styles.colPlaylist}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                        {modulo.playlistUrl ? (
+                          <a
+                            href={modulo.playlistUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.playlistLink}
+                          >
+                            <i className="fa-solid fa-square-arrow-up-right"></i> Playlist
+                          </a>
+                        ) : (
+                          <span className={styles.noLink}>Sem playlist</span>
+                        )}
+                        {modulo.pdfUrl ? (
+                          <a
+                            href={modulo.pdfUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.playlistLink}
+                            style={{ color: "#4ade80" }}
+                          >
+                            <i className="fa-solid fa-file-pdf"></i> PDF Resumo
+                          </a>
+                        ) : (
+                          <span className={styles.noLink}>Sem PDF</span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className={styles.colData}>
+                      <div className={styles.creationDate}>
+                        <i className="fa-regular fa-calendar"></i>
+                        {brasilFormatData(modulo.dataCriacao)}
+                      </div>
+                    </div>
+
+                    <div className={styles.colAcoes}>
+                      <button
+                        className={styles.actionBtn}
+                        onClick={() => navigate(`/admin/modulo/${modulo.id}`)}
+                        title="Ver módulo"
+                      >
+                        <i className="fa-solid fa-eye"></i>
+                      </button>
+                      <button
+                        className={styles.actionBtn}
+                        onClick={() => navigate("/admin/cadastrar-curso", { state: { modulo } })}
+                        title="Editar"
+                      >
+                        <i className="fa-solid fa-pen"></i>
+                      </button>
+                      <button
+                        className={`${styles.actionBtn} ${styles.deleteBtn}`}
+                        onClick={() => handleDeleteClick(modulo.id)}
+                        title="Excluir"
+                      >
+                        <i className="fa-regular fa-trash-can"></i>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {filteredModulos.length > 0 && (
+              <div className={styles.paginationWrapper}>
                 <Pagination
                   currentPage={currentPage}
-                  totalItems={modulos.length}
+                  totalItems={filteredModulos.length}
                   itemsPerPage={itemsPerPage}
                   setCurrentPage={setCurrentPage}
                 />
               </div>
-            </>
-          )}
-        </div>
-
-        <div className={styles.bg_right}>
-          <p className={styles.form_title}>Cadastre um novo curso</p>
-
-          <form onSubmit={handleSubmit}>
-            <Input
-              type="text"
-              placeholder="Nome do curso"
-              color="#1A1A1A"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-            >
-              <i className="fa-solid fa-tv"></i>
-            </Input>
-
-            <Input
-              type="text"
-              placeholder="Descrição do curso"
-              color="#1A1A1A"
-              value={descricao}
-              onChange={(e) => setDescricao(e.target.value)}
-            >
-              <i className="fa-solid fa-comment"></i>
-            </Input>
-
-            <Input
-              type="text"
-              placeholder="Link da playlist"
-              color="#1A1A1A"
-              value={playlistUrl}
-              onChange={(e) => setPlaylistUrl(e.target.value)}
-            >
-              <i className="fa-solid fa-link"></i>
-            </Input>
-
-            <Message
-              text={formMessage ? formMessage.text : ""}
-              type={formMessage ? formMessage.type : ""}
-            />
-
-            <Button
-              text_size="20px"
-              text_color="#E0E0E0"
-              padding_sz="10px"
-              bg_color="#DA9E00"
-              isLoading={isLoading}
-            >
-              CADASTRAR
-            </Button>
-          </form>
-        </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

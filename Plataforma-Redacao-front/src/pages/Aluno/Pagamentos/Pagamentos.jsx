@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styles from "./styles.module.css";
 import Title from "../../../components/Title/Title";
 import fetchData from "../../../utils/fetchData";
@@ -64,53 +64,79 @@ const AlunoPagamentos = () => {
     return `${day}/${month}/${year}`;
   };
 
-  // Separação de pagamentos
-  const pagos = pagamentos
-    .filter((p) => p.dataPagamento !== null)
-    .sort((a, b) => new Date(b.dataPagamento) - new Date(a.dataPagamento));
-
-  const pendentes = pagamentos
-    .filter((p) => p.dataPagamento === null)
-    .sort((a, b) => new Date(a.dataVencimento) - new Date(b.dataVencimento));
-
   // Verifica se existe algum vencido
-  const hoje = new Date();
-  hoje.setHours(0, 0, 0, 0);
+  const hoje = useMemo(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }, []);
 
-  const temAtrasado = pendentes.some((p) => {
-    if (!p.dataVencimento) return false;
-    const vencimento = new Date(p.dataVencimento);
-    vencimento.setHours(0, 0, 0, 0);
-    return vencimento < hoje;
-  });
+  // Separação de pagamentos
+  const pagos = useMemo(() => {
+    return pagamentos
+      .filter((p) => p.dataPagamento !== null)
+      .sort((a, b) => new Date(b.dataPagamento) - new Date(a.dataPagamento));
+  }, [pagamentos]);
 
-  // Próximo vencimento (calculado a partir dos pendentes ou projetado a partir do padrão cadastrado)
+  const pendentes = useMemo(() => {
+    const list = pagamentos
+      .filter((p) => p.dataPagamento === null)
+      .sort((a, b) => new Date(a.dataVencimento) - new Date(b.dataVencimento));
+
+    if (list.length === 0) {
+      const diaVenc = alunoInfo?.matricula?.diaVencimento || alunoInfo?.diaVencimentoPadrao;
+      if (diaVenc) {
+        const day = parseInt(diaVenc);
+        if (!isNaN(day)) {
+          const today = new Date();
+          let year = today.getFullYear();
+          let month = today.getMonth();
+
+          if (today.getDate() > day) {
+            month += 1;
+            if (month > 11) {
+              month = 0;
+              year += 1;
+            }
+          }
+
+          const nextPaymentDate = new Date(year, month, day, 12, 0, 0);
+          list.push({
+            id: "virtual-next",
+            tipoDespensa: "Mensalidade Elite",
+            dataVencimento: nextPaymentDate.toISOString(),
+            valor: alunoInfo?.valorMensalidadePadrao || 0.0,
+            status: "ENTRADA"
+          });
+        }
+      }
+    }
+    return list;
+  }, [pagamentos, alunoInfo]);
+
+  const temAtrasado = useMemo(() => {
+    return pendentes.some((p) => {
+      if (!p.dataVencimento) return false;
+      const vencimento = new Date(p.dataVencimento);
+      vencimento.setHours(0, 0, 0, 0);
+      return vencimento < hoje;
+    });
+  }, [pendentes, hoje]);
+
+  // Próximo vencimento (calculado a partir dos pendentes ou obtido da matrícula)
   let proximoPgData = null;
   let proximoPgValor = null;
+
+  const diaVencMatricula = alunoInfo?.matricula?.diaVencimento || alunoInfo?.diaVencimentoPadrao;
 
   if (pendentes.length > 0) {
     proximoPgData = formatDate(pendentes[0].dataVencimento);
     proximoPgValor = formatCurrency(pendentes[0].valor);
-  } else if (alunoInfo && alunoInfo.diaVencimentoPadrao && alunoInfo.valorMensalidadePadrao) {
-    const diaVenc = alunoInfo.diaVencimentoPadrao;
-    let mesVenc = hoje.getMonth();
-    let anoVenc = hoje.getFullYear();
-
-    // Se o dia atual já passou do dia de vencimento, a próxima mensalidade é no mês que vem
-    if (new Date().getDate() > diaVenc) {
-      mesVenc += 1;
-      if (mesVenc > 11) {
-        mesVenc = 0;
-        anoVenc += 1;
-      }
+  } else if (diaVencMatricula) {
+    proximoPgData = `Até dia ${diaVencMatricula}`;
+    if (alunoInfo?.valorMensalidadePadrao) {
+      proximoPgValor = formatCurrency(alunoInfo.valorMensalidadePadrao);
     }
-
-    const ultimoDia = new Date(anoVenc, mesVenc + 1, 0).getDate();
-    const diaReal = Math.min(diaVenc, ultimoDia);
-    const dateProj = new Date(anoVenc, mesVenc, diaReal, 12, 0, 0);
-
-    proximoPgData = formatDate(dateProj);
-    proximoPgValor = formatCurrency(alunoInfo.valorMensalidadePadrao);
   }
 
   // Total pago

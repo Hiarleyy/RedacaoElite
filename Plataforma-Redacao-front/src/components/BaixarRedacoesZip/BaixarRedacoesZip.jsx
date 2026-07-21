@@ -21,7 +21,15 @@ const BaixarRedacoesZip = ({ turmaId = "", busca = "", disabled = false }) => {
     setError(null)
 
     try {
-      const token = localStorage.getItem("token")
+      let token = null
+      try {
+        const storedUser = localStorage.getItem("user_access_data")
+        if (storedUser) {
+          token = JSON.parse(storedUser)?.token
+        }
+      } catch (err) {
+        console.error("Erro ao obter o token de acesso:", err)
+      }
 
       // Monta query string com filtros ativos
       const params = new URLSearchParams()

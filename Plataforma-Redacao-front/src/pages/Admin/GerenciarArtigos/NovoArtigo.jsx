@@ -5,6 +5,18 @@ import { useState, useEffect, useRef } from "react"
 import { createPortal } from "react-dom"
 import { useNavigate, useParams } from "react-router-dom"
 import fetchData from "../../../utils/fetchData"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
+
+// Helper to extract plain text from React nodes
+function extractText(node) {
+  if (typeof node === 'string') return node;
+  if (Array.isArray(node)) return node.map(extractText).join('');
+  if (node && node.props && node.props.children) {
+    return extractText(node.props.children);
+  }
+  return '';
+}
 
 const NovoArtigo = () => {
   const navigate = useNavigate()
@@ -27,6 +39,7 @@ const NovoArtigo = () => {
   const [message, setMessage] = useState(null)
   const [showConfirm, setShowConfirm] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [showPreview, setShowPreview] = useState(false)
 
   const textareaRef = useRef(null)
 
@@ -256,16 +269,49 @@ const NovoArtigo = () => {
               <div className={styles.toolbar_divider}></div>
               <button type="button" onClick={() => insertMarkdown('[', '](https://)')} title="Link"><i className="fa-solid fa-link"></i></button>
               <button type="button" onClick={() => insertMarkdown('- ')} title="Lista"><i className="fa-solid fa-list"></i></button>
+              <div className={styles.toolbar_divider} style={{ marginLeft: "auto", marginRight: 0 }}></div>
+              <button type="button" onClick={() => setShowPreview(!showPreview)} title={showPreview ? "Voltar para Edição" : "Ver Preview"} style={{ width: "auto", padding: "0 10px", color: showPreview ? "#DA9E00" : "#a0a0a0" }}>
+                {showPreview ? <><i className="fa-solid fa-pen" style={{ marginRight: 6 }}></i> Escrever</> : <><i className="fa-solid fa-eye" style={{ marginRight: 6 }}></i> Preview</>}
+              </button>
             </div>
-            <textarea 
-              ref={textareaRef}
-              name="conteudo" 
-              value={formData.conteudo} 
-              onChange={handleChange}
-              required
-              rows="15"
-              placeholder="Escreva o conteúdo do artigo aqui... (Aceita Markdown)"
-            ></textarea>
+            
+            {showPreview ? (
+              <div className={styles.preview_box}>
+                {formData.conteudo ? (
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      blockquote: ({ children }) => {
+                        const textContent = extractText(children);
+                        if (textContent.includes("💡") || textContent.toLowerCase().includes("dica importante")) {
+                          return (
+                            <div style={{ backgroundColor: 'rgba(218, 158, 0, 0.1)', border: '1px solid #DA9E00', padding: '15px', borderRadius: '8px', margin: '15px 0', display: 'flex', gap: '15px' }}>
+                              <div style={{ color: '#DA9E00', fontSize: '20px' }}><i className="fa-regular fa-lightbulb"></i></div>
+                              <div style={{ color: '#fff' }}>{children}</div>
+                            </div>
+                          );
+                        }
+                        return <blockquote>{children}</blockquote>;
+                      }
+                    }}
+                  >
+                    {formData.conteudo}
+                  </ReactMarkdown>
+                ) : (
+                  <p style={{ color: "#a0a0a0", fontStyle: "italic", textAlign: "center", marginTop: "20px" }}>Nada para visualizar ainda.</p>
+                )}
+              </div>
+            ) : (
+              <textarea 
+                ref={textareaRef}
+                name="conteudo" 
+                value={formData.conteudo} 
+                onChange={handleChange}
+                required
+                rows="15"
+                placeholder="Escreva o conteúdo do artigo aqui... (Aceita Markdown)"
+              ></textarea>
+            )}
           </div>
         </div>
 
@@ -380,8 +426,8 @@ const NovoArtigo = () => {
                 type="button"
                 onClick={() => setShowConfirm(false)}
                 style={{
-                  backgroundColor: "transparent",
-                  color: "#a0a0a0",
+                  backgroundColor: "#F2F2F2",
+                  color: "#842828ff",
                   border: "1px solid #40444b",
                   borderRadius: "8px",
                   padding: "14px",

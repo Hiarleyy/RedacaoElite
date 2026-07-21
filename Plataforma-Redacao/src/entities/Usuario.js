@@ -9,6 +9,8 @@ class Usuario {
     this.password = usuario.password
     this.tipoUsuario = usuario.tipoUsuario?.toUpperCase() ?? "STANDARD";
     this.turmaId = usuario.turmaId ?? null;
+    this.diaVencimentoPadrao = usuario.diaVencimentoPadrao ?? null;
+    this.valorMensalidadePadrao = usuario.valorMensalidadePadrao ?? null;
   }
 }
 

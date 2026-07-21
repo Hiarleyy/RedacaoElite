@@ -175,6 +175,43 @@ const Pomodoro = () => {
     const totalPontos = historyData.reduce((acc, curr) => acc + curr.pontos, 0);
     const tempoTotalSecs = historyData.reduce((acc, curr) => acc + curr.duracao, 0);
 
+    const calcularSequenciaDias = (sessions) => {
+        if (!sessions || sessions.length === 0) return 0;
+        
+        const dates = sessions.map(s => {
+            const d = new Date(s.data);
+            return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+        });
+        
+        const uniqueDates = [...new Set(dates)].sort((a, b) => b - a);
+        
+        const oneDay = 24 * 60 * 60 * 1000;
+        const today = new Date();
+        const todayTime = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+        
+        const mostRecent = uniqueDates[0];
+        // Se a última sessão não foi hoje nem ontem, a sequência quebrou
+        if (todayTime - mostRecent > oneDay) {
+            return 0;
+        }
+        
+        let streak = 1;
+        for (let i = 0; i < uniqueDates.length - 1; i++) {
+            if (uniqueDates[i] - uniqueDates[i + 1] === oneDay) {
+                streak++;
+            } else if (uniqueDates[i] - uniqueDates[i + 1] > oneDay) {
+                break;
+            }
+        }
+        return streak;
+    };
+
+    const sequenciaDias = calcularSequenciaDias(historyData);
+
+    const focoMedio = historyData.length > 0
+        ? Math.min(100, Math.round(historyData.reduce((acc, curr) => acc + Math.min(100, (curr.duracao / 3000) * 100), 0) / historyData.length))
+        : 0;
+
     const formatTempoTotal = (secs) => {
         const hours = Math.floor(secs / 3600);
         const mins = Math.floor((secs % 3600) / 60);
@@ -349,7 +386,7 @@ const Pomodoro = () => {
                             <div className={styles.statBox}>
                                 <div className={styles.statIconRow}>
                                     <Flame className={styles.statIcon} />
-                                    <span className={styles.statValue}>1</span>
+                                    <span className={styles.statValue}>{sequenciaDias}</span>
                                 </div>
                                 <span className={styles.statLabel}>Sequência de dias</span>
                             </div>
@@ -366,11 +403,11 @@ const Pomodoro = () => {
                         <div className={styles.focusBarContainer}>
                             <div className={styles.focusHeader}>
                                 <TrendingUp className={styles.statIcon} />
-                                <span className={styles.focusPercentage}>70%</span>
+                                <span className={styles.focusPercentage}>{focoMedio}%</span>
                             </div>
                             <div className={styles.focusText}>Foco médio da sessão</div>
                             <div style={{marginTop: '12px'}} className={styles.progressBar}>
-                                <div className={styles.progressFill}></div>
+                                <div className={styles.progressFill} style={{ width: `${focoMedio}%` }}></div>
                             </div>
                         </div>
                     </section>
@@ -408,10 +445,7 @@ const Pomodoro = () => {
                     <span className={styles.quoteAuthor}>Prof. Daniel Vieira</span>
                 </div>
 
-                {/* Floating Action Button */}
-                <button className={styles.fabButton}>
-                    <Upload size={28} />
-                </button>
+    
             </div>
         
         </div>

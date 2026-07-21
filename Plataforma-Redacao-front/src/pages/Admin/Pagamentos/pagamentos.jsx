@@ -52,7 +52,7 @@ const Pagamentos = () => {
   const [generalStartDate, setGeneralStartDate] = useState("");
   const [generalEndDate, setGeneralEndDate] = useState("");
   const [generalCurrentPage, setGeneralCurrentPage] = useState(1);
-  
+
   // Filtros da aba de alunos
   const [studentSearch, setStudentSearch] = useState("");
   const [selectedTurma, setSelectedTurma] = useState("");
@@ -60,7 +60,7 @@ const Pagamentos = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [onlyInadimplentes, setOnlyInadimplentes] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  
+
   const navigate = useNavigate();
   const { getHeaders } = useUseful();
 
@@ -335,7 +335,7 @@ const Pagamentos = () => {
         <div className={styles.container_pag}>
           <h1>Financeiro</h1>
           <p>Acompanhe pagamentos, receitas, despesas e mensalidades dos alunos</p>
-          
+
           {/* Abas */}
           {userRole === "ADMIN" && (
             <div className={styles.tab_buttons}>
@@ -612,7 +612,7 @@ const Pagamentos = () => {
 
                 <div className={styles.filter_group} style={{ minWidth: "160px" }}>
                   <label>Situação Financeira</label>
-                  <div 
+                  <div
                     className={styles.checkbox_group}
                     onClick={() => setOnlyInadimplentes(prev => !prev)}
                   >
@@ -640,8 +640,8 @@ const Pagamentos = () => {
                       <th>Status Período</th>
                       <th>Status Geral</th>
                       {userRole === "ADMIN" && (
-                      <th style={{ textAlign: "center" }}>Ações</th>
-                    )}
+                        <th style={{ textAlign: "center" }}>Ações</th>
+                      )}
                     </tr>
                   </thead>
                   <tbody>
@@ -654,11 +654,11 @@ const Pagamentos = () => {
                     ) : (
                       paginatedAlunos.map((aluno) => {
                         const hasPayment = aluno.periodPayment !== null;
-                        
+
                         let periodStatusText = aluno.periodStatus;
                         let periodStatusClass = `${styles.badge} ${styles.pendente}`;
                         let periodStatusIcon = "fa-solid fa-circle-minus";
-                        
+
                         if (aluno.periodStatus === "Pago") {
                           periodStatusClass = `${styles.badge} ${styles.pago}`;
                           periodStatusIcon = "fa-solid fa-circle-check";
@@ -671,11 +671,11 @@ const Pagamentos = () => {
                         }
 
                         const generalStatusText = aluno.isGenerallyInadimplente ? "Inadimplente" : "Em Dia";
-                        const generalStatusClass = aluno.isGenerallyInadimplente 
-                          ? `${styles.badge} ${styles.atrasado}` 
+                        const generalStatusClass = aluno.isGenerallyInadimplente
+                          ? `${styles.badge} ${styles.atrasado}`
                           : `${styles.badge} ${styles.pago}`;
-                        const generalStatusIcon = aluno.isGenerallyInadimplente 
-                          ? "fa-solid fa-triangle-exclamation" 
+                        const generalStatusIcon = aluno.isGenerallyInadimplente
+                          ? "fa-solid fa-triangle-exclamation"
                           : "fa-solid fa-shield-check";
 
                         return (
@@ -719,7 +719,7 @@ const Pagamentos = () => {
                                   </span>
                                 )}
                               </td>
-                              )}
+                            )}
                           </tr>
                         );
                       })

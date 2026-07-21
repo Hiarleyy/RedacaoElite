@@ -244,12 +244,10 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  background: rgba(46, 50, 56, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #242424;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 12px;
   padding: 30px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
 }
 
 .form_row {
@@ -278,8 +276,8 @@
 .form_group select,
 .form_group textarea,
 .form_group input[type="file"] {
-  background-color: #242424;
-  border: 1px solid #40444b;
+  background-color: #121212;
+  border: 1px solid #D9CE00;
   color: #fff;
   border-radius: 8px;
   padding: 12px 16px;
@@ -550,3 +548,44 @@
   background-color: #40444b;
   margin: 0 5px;
 }
+
+.preview_box {
+  background-color: #121212;
+  color: #e0e0e0;
+  padding: 20px;
+  min-height: 200px;
+  max-height: 500px;
+  overflow-y: auto;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.preview_box h1, .preview_box h2, .preview_box h3 {
+  color: #DA9E00;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.preview_box p {
+  margin-bottom: 1em;
+}
+
+.preview_box ul, .preview_box ol {
+  margin-left: 20px;
+  margin-bottom: 1em;
+}
+
+.preview_box a {
+  color: #DA9E00;
+  text-decoration: underline;
+}
+
+.preview_box blockquote {
+  border-left: 4px solid #DA9E00;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 12px 16px;
+  margin: 1em 0;
+  border-radius: 0 8px 8px 0;
+  color: #ccc;
+}
+

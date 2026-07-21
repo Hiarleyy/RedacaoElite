@@ -38,7 +38,15 @@ const DownloadZipModal = ({ isOpen, onClose, turmas = [], temas = [] }) => {
     setSuccess(false)
 
     try {
-      const token = localStorage.getItem("token")
+      let token = null
+      try {
+        const storedUser = localStorage.getItem("user_access_data")
+        if (storedUser) {
+          token = JSON.parse(storedUser)?.token
+        }
+      } catch (err) {
+        console.error("Erro ao obter o token de acesso:", err)
+      }
 
       const params = new URLSearchParams()
       if (turmaSelecionada) params.append("turmaId", turmaSelecionada)
@@ -52,7 +60,7 @@ const DownloadZipModal = ({ isOpen, onClose, turmas = [], temas = [] }) => {
 
       if (!response.ok) {
         const data = await response.json().catch(() => ({}))
-        throw new Error(data.message || `Erro no servidor: ${response.status}`)
+        throw new Error(data.error || data.message || `Erro no servidor: ${response.status}`)
       }
 
       const blob = await response.blob()

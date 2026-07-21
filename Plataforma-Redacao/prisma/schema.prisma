@@ -25,6 +25,7 @@ model Usuario {
   matricula       Matricula?
   turma           Turma?          @relation(fields: [turmaId], references: [id])
   pagamentos      Pagamento[]
+  pomodoroSessions PomodoroSession[]
 }
 
 model Matricula {
@@ -41,6 +42,7 @@ model Matricula {
   vinculoResponsavel   String?  @db.VarChar(255)
   telefoneResponsavel  String?  @db.VarChar(255)
   dataInicio           String   @db.VarChar(255)
+  diaVencimento        String?  @db.VarChar(255)
   comoConheceu         String?  @db.VarChar(255)
   observacoes          String?  @db.Text
   condicaoMedica       String?  @db.Text
@@ -131,18 +133,22 @@ model Modulo {
   nome        String   @db.VarChar(100)
   descricao   String?
   playlistUrl String   @db.VarChar(255)
+  pdfUrl      String?  @db.VarChar(255)
   dataCriacao DateTime @default(now())
   videos      Video[]
 }
 
 model Video {
-  id        String @id @db.Char(36)
-  titulo    String @db.VarChar(200)
-  url       String @db.VarChar(255)
+  id        String  @id @db.Char(36)
+  titulo    String  @db.VarChar(200)
+  url       String  @db.VarChar(255)
   ordem     Int
-  moduloId  String @db.VarChar(36)
-  thumbnail String @db.VarChar(255)
-  modulo    Modulo @relation(fields: [moduloId], references: [id], onDelete: Cascade)
+  moduloId  String  @db.VarChar(36)
+  thumbnail String  @db.VarChar(255)
+  descricao String? @db.Text
+  duracao   String? @db.VarChar(50)
+  nivel     String? @db.VarChar(50)
+  modulo    Modulo  @relation(fields: [moduloId], references: [id], onDelete: Cascade)
 }
 
 model Simulado {
@@ -229,4 +235,14 @@ model Configuracao {
   chave        String   @id @db.VarChar(100)
   valor        String   @db.Text
   atualizadoEm DateTime @updatedAt
+}
+
+model PomodoroSession {
+  id        String   @id @db.Char(36)
+  tema      String   @db.VarChar(200)
+  duracao   Int
+  pontos    Int
+  data      DateTime @default(now())
+  usuarioId String   @db.Char(36)
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 }

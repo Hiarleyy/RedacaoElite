@@ -12,7 +12,7 @@ const RankingAlunos = () => {
   const [ranking, setRanking] = useState([])
   const [turmas, setTurmas] = useState([])
   const [selectedTurma, setSelectedTurma] = useState("")
-  const [selectedTipo, setSelectedTipo] = useState("redacoes_media")
+  const [selectedTipo, setSelectedTipo] = useState("redacoes_ultima")
   const [selectedEscopo, setSelectedEscopo] = useState("geral")
   const [currentUser, setCurrentUser] = useState(null)
   const [dbUser, setDbUser] = useState(null)
@@ -321,20 +321,20 @@ const RankingAlunos = () => {
             <div className={styles.section_buttons_group}>
               <button
                 type="button"
-                className={`${styles.filter_btn} ${selectedTipo === "redacoes_media" ? styles.active : ""}`}
-                onClick={() => setSelectedTipo("redacoes_media")}
-              >
-                <i className="fa-regular fa-star"></i>
-                <span>Média Geral</span>
-              </button>
-
-              <button
-                type="button"
                 className={`${styles.filter_btn} ${selectedTipo === "redacoes_ultima" ? styles.active : ""}`}
                 onClick={() => setSelectedTipo("redacoes_ultima")}
               >
                 <i className="fa-regular fa-file-lines"></i>
                 <span>Última Redação</span>
+              </button>
+              
+              <button
+                type="button"
+                className={`${styles.filter_btn} ${selectedTipo === "redacoes_media" ? styles.active : ""}`}
+                onClick={() => setSelectedTipo("redacoes_media")}
+              >
+                <i className="fa-regular fa-star"></i>
+                <span>Média Geral</span>
               </button>
 
               <button

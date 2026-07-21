@@ -91,16 +91,19 @@ const Pagination = ({ current, total, perPage, onChange }) => {
 
 // ── Card de Redação Pendente ───────────────────────────────────────
 const CardPendente = ({ redacao, onClick }) => (
-  <div className={styles.card} onClick={onClick}>
+  <div className={`${styles.card} ${styles.card_pendente}`} onClick={onClick}>
     <div className={styles.card_left}>
       <p className={styles.card_titulo}>{redacao.titulo}</p>
       <p className={styles.card_aluno}>
-        <span>{redacao?.usuario?.nome}</span>
+        <span className={styles.aluno_nome}>{redacao?.usuario?.nome}</span>
         {redacao?.usuario?.turma?.nome && (
           <span className={styles.card_turma}> • {redacao.usuario.turma.nome}</span>
         )}
       </p>
-      <p className={styles.card_data}>{formatDataHora(redacao.data)}</p>
+      <p className={styles.card_data}>
+        <i className="fa-regular fa-clock" style={{ marginRight: "6px", color: "rgba(245, 158, 11, 0.7)" }} />
+        {formatDataHora(redacao.data)}
+      </p>
     </div>
     <div className={styles.card_right}>
       <div className={styles.card_tempo}>
@@ -113,16 +116,19 @@ const CardPendente = ({ redacao, onClick }) => (
 
 // ── Card de Redação Corrigida ──────────────────────────────────────
 const CardCorrigida = ({ redacao, onView }) => (
-  <div className={styles.card}>
+  <div className={`${styles.card} ${styles.card_corrigida}`}>
     <div className={styles.card_left}>
       <p className={styles.card_titulo}>{redacao.titulo}</p>
       <p className={styles.card_aluno}>
-        <span>{redacao?.usuario?.nome}</span>
+        <span className={styles.aluno_nome}>{redacao?.usuario?.nome}</span>
         {redacao?.usuario?.turma?.nome && (
           <span className={styles.card_turma}> • {redacao.usuario.turma.nome}</span>
         )}
       </p>
-      <p className={styles.card_data}>{formatDataHora(redacao.data)}</p>
+      <p className={styles.card_data}>
+        <i className="fa-regular fa-calendar-check" style={{ marginRight: "6px", color: "rgba(34, 197, 94, 0.7)" }} />
+        {formatDataHora(redacao.data)}
+      </p>
     </div>
     <div className={styles.card_right}>
       <span className={styles.badge_corrigida}>
@@ -326,14 +332,14 @@ const Correcao = () => {
           </div>
 
           <div className={styles.filtro_group} style={{ justifyContent: "flex-end" }}>
-            <label className={styles.filtro_label}>&nbsp;</label>
+            <label className={`${styles.filtro_label} ${styles.desktop_only_label}`}>&nbsp;</label>
             <button className={styles.btn_limpar} onClick={limparFiltros}>
               <i className="fa-solid fa-rotate-left" /> Limpar filtros
             </button>
           </div>
 
           <div className={styles.filtro_group} style={{ flexShrink: 0 }}>
-            <label className={styles.filtro_label}>&nbsp;</label>
+            <label className={`${styles.filtro_label} ${styles.desktop_only_label}`}>&nbsp;</label>
             <button
               className={styles.btn_download_all}
               onClick={() => setDownloadModalOpen(true)}
@@ -342,7 +348,6 @@ const Correcao = () => {
               <i className="fa-solid fa-file-zipper" />
               <div>
                 <span className={styles.btn_download_title}>Baixar redações (.zip)</span>
-                <span className={styles.btn_download_sub}>Selecionar turma e tema</span>
               </div>
             </button>
           </div>
@@ -354,7 +359,7 @@ const Correcao = () => {
 
         {/* Pendentes */}
         {(situacao === "todas" || situacao === "pendente") && (
-          <div className={styles.painel}>
+          <div className={`${styles.painel} ${styles.painel_pendente}`}>
             <div className={styles.painel_header}>
               <div className={styles.painel_title_row}>
                 <i className="fa-regular fa-clock" style={{ color: "#f59e0b" }} />
@@ -401,7 +406,7 @@ const Correcao = () => {
 
         {/* Corrigidas */}
         {(situacao === "todas" || situacao === "corrigida") && (
-          <div className={styles.painel}>
+          <div className={`${styles.painel} ${styles.painel_corrigida}`}>
             <div className={styles.painel_header}>
               <div className={styles.painel_title_row}>
                 <i className="fa-solid fa-circle-check" style={{ color: "#22c55e" }} />
