@@ -22,6 +22,7 @@ const tipoEventoController = require("./controllers/tipoEvento-controller")
 const matriculasController = require("./controllers/matriculas-controller")
 const artigosController = require("./controllers/artigos-controller")
 const uploadArtigos = require("./middlewares/upload-artigos")
+const uploadModulos = require("./middlewares/upload-modulos")
 const configuracoesRoute = require("./routes/configuracoes-route")
 
 const router = express.Router()
@@ -62,11 +63,12 @@ router.get("/pagamentos/:id", authMiddleware, pagamentosController.show)
 // Rotas relacionadas a modulos
 router.get("/modulos", authMiddleware, modulosController.index)
 router.get("/modulos/:id", authMiddleware, modulosController.show)
-router.post("/modulos", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), modulosController.create)
+router.post("/modulos", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), uploadModulos.array("arquivos"), modulosController.create)
 router.delete("/modulos/:id", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), modulosController.delete)
-router.put("/modulos/:id", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), modulosController.update)
+router.put("/modulos/:id", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), uploadModulos.array("arquivos"), modulosController.update)
 
 // Rotas relacionadas a redações
+router.post("/redacoes/:usuarioId/upload", authMiddleware, uploadRedacoes.single("file"), redacoesController.create)
 router.get("/redacoes", authMiddleware, redacoesController.index)
 router.get("/redacoes/download-zip", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), redacoesController.downloadZip)
 router.get("/redacoes/download/:id", redacoesController.download)
@@ -101,6 +103,7 @@ router.get("/ranking", authMiddleware, rankingController.index)
 
 // Rota que retorna um vídeo
 router.get("/videos/:id", authMiddleware, videosController.show)
+router.put("/videos/:id", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), videosController.update)
 
 // rotas do simulado 
 router.post("/simulados", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), simuladoController.create)
@@ -147,6 +150,7 @@ router.post("/matriculas", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']
 router.get("/matriculas", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), matriculasController.index)
 router.get("/matriculas/:id", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), matriculasController.show)
 router.get("/matriculas/usuario/:usuarioId", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), matriculasController.showByUsuario)
+router.put("/matriculas/usuario/:usuarioId", authMiddleware, adminMiddleware(['ADMIN', 'PEDAGOGO']), matriculasController.updateByUsuario)
 
 // Rotas de Configurações
 router.use("/configuracoes", authMiddleware, configuracoesRoute)

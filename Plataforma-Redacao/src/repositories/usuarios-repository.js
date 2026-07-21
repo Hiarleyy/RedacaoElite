@@ -1,6 +1,7 @@
 const prisma = require("../database/db")
 const Usuario = require("../entities/Usuario")
 const deletarArquivo = require("../utils/deletar-arquivo")
+const { decrypt } = require("../utils/crypto")
 
 const usuariosRepository = {
   // Retorna todos os usuários do bando de dados
@@ -39,9 +40,17 @@ const usuariosRepository = {
         dataAtualizacao: true,
         turmaId: true,
         diaVencimentoPadrao: true,
-        valorMensalidadePadrao: true
+        valorMensalidadePadrao: true,
+        matricula: {
+          select: {
+            diaVencimento: true
+          }
+        }
       }
     })
+    if (usuario && usuario.matricula) {
+      usuario.matricula.diaVencimento = decrypt(usuario.matricula.diaVencimento)
+    }
     return usuario
   },
 

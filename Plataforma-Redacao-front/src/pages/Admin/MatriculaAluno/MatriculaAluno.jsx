@@ -25,6 +25,7 @@ const MatriculaAluno = () => {
 
   const [turma,       setTurma]       = useState("")
   const [dataInicio,  setDataInicio]  = useState("")
+  const [diaVencimento, setDiaVencimento] = useState("")
   const [comoConheceu, setComoConheceu] = useState("")
   const [condicaoMedica,  setCondicaoMedica]  = useState("")
   const [deficiencia, setDeficiencia] = useState("")
@@ -95,6 +96,7 @@ const MatriculaAluno = () => {
         telefoneResponsavel: telefoneResponsavel || null,
         // ─ acadêmico ─
         dataInicio,
+        diaVencimento:  diaVencimento  || null,
         comoConheceu: comoConheceu || null,
         condicaoMedica:  condicaoMedica  || null,
         deficiencia: deficiencia || null,
@@ -146,7 +148,7 @@ const MatriculaAluno = () => {
     setNomeCompleto(""); setDataNascimento(""); setCpf(""); setGenero("")
     setEmail(""); setTelefone(""); setEndereco(""); setBairro(""); setCidade("")
     setNomeResponsavel(""); setVinculoResponsavel(""); setTelefoneResponsavel("")
-    setTurma(""); setDataInicio(""); setComoConheceu(""); setCondicaoMedica("")
+    setTurma(""); setDataInicio(""); setDiaVencimento(""); setComoConheceu(""); setCondicaoMedica("")
     setDeficiencia(""); setNecessidadeEducacional("")
     setCharCount(0); setShowModal(false); setSubmitted(false)
   }
@@ -303,6 +305,10 @@ const MatriculaAluno = () => {
                       <div className={styles.modal_field}>
                         <span className={styles.modal_label}>Início</span>
                         <span className={styles.modal_value}>{fmtDate(dataInicio)}</span>
+                      </div>
+                      <div className={styles.modal_field}>
+                        <span className={styles.modal_label}>Dia de Vencimento</span>
+                        <span className={styles.modal_value}>{diaVencimento ? `Todo dia ${String(diaVencimento).padStart(2, '0')}` : "—"}</span>
                       </div>
                       <div className={styles.modal_field}>
                         <span className={styles.modal_label}>Como conheceu</span>
@@ -632,7 +638,7 @@ const MatriculaAluno = () => {
                   )}
                 </div>
 
-                <div className={styles.row_1}>
+                <div className={styles.row_2}>
                   <div className={styles.field_group}>
                     <label className={styles.label}>
                       Data de início <span className={styles.required}>*</span>
@@ -644,6 +650,24 @@ const MatriculaAluno = () => {
                       onChange={(e) => setDataInicio(e.target.value)}
                       required
                     />
+                  </div>
+                  <div className={styles.field_group}>
+                    <label className={styles.label}>
+                      Dia de Vencimento <span className={styles.required}>*</span>
+                    </label>
+                    <select
+                      className={styles.input}
+                      value={diaVencimento}
+                      onChange={(e) => setDiaVencimento(e.target.value)}
+                      required
+                    >
+                      <option value="">Selecione o dia</option>
+                      {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
+                        <option key={d} value={String(d)}>
+                          Todo dia {String(d).padStart(2, '0')}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
               </section>

@@ -18,8 +18,7 @@
   display: grid;
   grid-template-columns: 1fr 0.8fr 0.5fr;
   gap: 18px;
-  background: rgba(46, 50, 56, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #242424;
   border-radius: 12px;
   padding: 24px;
   backdrop-filter: blur(12px);
@@ -176,7 +175,7 @@
 
 /* Table Section */
 .tableContainer {
-  background: rgba(46, 50, 56, 0.45);
+  background: #242424;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   backdrop-filter: blur(12px);

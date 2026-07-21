@@ -6,7 +6,7 @@ const redacoesRepository = {
   retorneTodasAsRedacoes: async (usuarioId = false) => {
     let redacoes
     let quantidadeRedacoes
-    const includeBody = { usuario: true }
+    const includeBody = { usuario: true, correcao: true }
 
     // Retorna todas as redações
     if (!usuarioId) {

@@ -10,6 +10,7 @@ const modulosRepository = {
         nome: true,
         descricao: true,
         playlistUrl: true,
+        pdfUrl: true,
         dataCriacao: true,
         videos: true
       },
@@ -28,6 +29,7 @@ const modulosRepository = {
         nome: true, 
         descricao: true,
         playlistUrl: true,
+        pdfUrl: true,
         dataCriacao: true,
         videos: true 
       } 

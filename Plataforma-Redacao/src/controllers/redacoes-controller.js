@@ -1,7 +1,7 @@
 const redacoesModel = require("../models/redacoes-model")
 const path = require("path")
 const fs = require("fs")
-const archiver = require("archiver")
+const { ZipArchive } = require("archiver")
 
 const redacoesController = {
   // GET /redacoes
@@ -125,7 +125,7 @@ const redacoesController = {
       res.setHeader("Content-Type", "application/zip")
       res.setHeader("Content-Disposition", `attachment; filename="redacoes_corrigidas.zip"`)
 
-      const archive = archiver("zip", { zlib: { level: 6 } })
+      const archive = new ZipArchive({ zlib: { level: 6 } })
       archive.pipe(res)
 
       redacoesComArquivo.forEach((r) => {

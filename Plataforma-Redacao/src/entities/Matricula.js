@@ -16,6 +16,7 @@ class Matricula {
     this.vinculoResponsavel = data.vinculoResponsavel ? encrypt(data.vinculoResponsavel) : null
     this.telefoneResponsavel = data.telefoneResponsavel ? encrypt(data.telefoneResponsavel) : null
     this.dataInicio = encrypt(String(data.dataInicio))
+    this.diaVencimento = data.diaVencimento ? encrypt(String(data.diaVencimento)) : null
     this.comoConheceu = data.comoConheceu ? encrypt(data.comoConheceu) : null
     this.observacoes = data.observacoes ?? null
     this.condicaoMedica = data.condicaoMedica ? encrypt(data.condicaoMedica) : null

@@ -220,7 +220,7 @@ const EmptyRedacoes = () => (
       Que tal começar agora? Escreva sua primeira redação
       e embarque nessa jornada rumo ao topo!
     </p>
-    <button className={styles.empty_cta}>
+    <button className={styles.empty_cta} onClick={() => window.location.href = "/aluno/nova-redacao"} >
       <Pencil size={15} />
       Escrever Minha Redação
     </button>

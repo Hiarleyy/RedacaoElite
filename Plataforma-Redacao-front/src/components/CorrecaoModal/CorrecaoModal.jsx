@@ -13,7 +13,16 @@ const CorrecaoModal = ({ modalData, modalIsClicked, setModalIsClicked }) => {
     try {
       setDownloading(prev => ({ ...prev, [type]: true }))
       
-      const token = localStorage.getItem('token')
+      let token = null
+      try {
+        const storedUser = localStorage.getItem("user_access_data")
+        if (storedUser) {
+          token = JSON.parse(storedUser)?.token
+        }
+      } catch (err) {
+        console.error("Erro ao obter o token de acesso:", err)
+      }
+
       const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -75,28 +84,28 @@ const CorrecaoModal = ({ modalData, modalIsClicked, setModalIsClicked }) => {
         <div className={styles.divider}></div>
 
         <div className={styles.infos}>
-          <p className={styles.author}>{`Autor: ${modalData?.usuario?.nome}`}</p>
+          <p className={styles.author}>{`Autor: ${modalData?.usuario?.nome || "Desconhecido"}`}</p>
           <p className={styles.data}>{`Data de envio: ${brasilFormatData(modalData?.data)}`}</p>
-          <p className={styles.data}>{`Data da correção: ${brasilFormatData(modalData?.correcao?.data)}`}</p>
+          <p className={styles.data}>{`Data da correção: ${modalData?.correcao?.data ? brasilFormatData(modalData?.correcao?.data) : "Não avaliada"}`}</p>
         </div>
 
         <div className={styles.notes_box}>
           <p className={styles.notes_title}>Notas:</p>
           <div className={styles.notes}>
-            <p>{`Competência 01: ${modalData?.correcao?.competencia01}`}</p>
-            <p>{`Competência 02: ${modalData?.correcao?.competencia02}`}</p>
-            <p>{`Competência 03: ${modalData?.correcao?.competencia03}`}</p>
-            <p>{`Competência 04: ${modalData?.correcao?.competencia04}`}</p>
-            <p>{`Competência 05: ${modalData?.correcao?.competencia05}`}</p>
+            <p>{`Competência 01: ${modalData?.correcao?.competencia01 ?? "Aguardando"}`}</p>
+            <p>{`Competência 02: ${modalData?.correcao?.competencia02 ?? "Aguardando"}`}</p>
+            <p>{`Competência 03: ${modalData?.correcao?.competencia03 ?? "Aguardando"}`}</p>
+            <p>{`Competência 04: ${modalData?.correcao?.competencia04 ?? "Aguardando"}`}</p>
+            <p>{`Competência 05: ${modalData?.correcao?.competencia05 ?? "Aguardando"}`}</p>
           </div>
         </div>
 
-        <div className={styles.final_note}>{`Nota final: ${modalData?.correcao?.nota}`}</div>
+        <div className={styles.final_note}>{`Nota final: ${modalData?.correcao?.nota ?? "Aguardando"}`}</div>
 
         <div className={styles.feedback}>
           <p className={styles.feedback_text}>Feedback:</p>
           <div className={styles.feedback_content}>
-            <p>{modalData?.correcao?.feedback}</p>
+            <p>{modalData?.correcao?.feedback || "A redação ainda não possui feedback."}</p>
           </div>
         </div>
 

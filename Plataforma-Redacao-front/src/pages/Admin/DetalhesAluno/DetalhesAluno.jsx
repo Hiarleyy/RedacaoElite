@@ -58,6 +58,7 @@ const DetalhesAluno = () => {
   const [vinculoResponsavel, setVinculoResponsavel] = useState("")
   const [telefoneResponsavel, setTelefoneResponsavel] = useState("")
   const [dataInicio, setDataInicio] = useState("")
+  const [diaVencimento, setDiaVencimento] = useState("")
   const [comoConheceu, setComoConheceu] = useState("")
   const [observacoes, setObservacoes] = useState("")
 
@@ -197,6 +198,7 @@ const DetalhesAluno = () => {
           vinculoResponsavel: vinculoResponsavel || null,
           telefoneResponsavel: telefoneResponsavel || null,
           dataInicio,
+          diaVencimento: diaVencimento || null,
           comoConheceu: comoConheceu || null,
           observacoes: observacoes || null
         },
@@ -334,6 +336,7 @@ const DetalhesAluno = () => {
       setVinculoResponsavel(matriculaData.vinculoResponsavel || "")
       setTelefoneResponsavel(matriculaData.telefoneResponsavel || "")
       setDataInicio(matriculaData.dataInicio || "")
+      setDiaVencimento(matriculaData.diaVencimento || "")
       setComoConheceu(matriculaData.comoConheceu || "")
       setObservacoes(matriculaData.observacoes || "")
     }
@@ -703,19 +706,36 @@ const DetalhesAluno = () => {
                         />
                       </div>
                       <div className={styles.field_group}>
-                        <label className={styles.label}>Como conheceu</label>
+                        <label className={styles.label}>Dia de Vencimento <span className={styles.required}>*</span></label>
                         <select
                           className={styles.field_input}
-                          value={comoConheceu}
-                          onChange={(e) => setComoConheceu(e.target.value)}
+                          value={diaVencimento}
+                          onChange={(e) => setDiaVencimento(e.target.value)}
+                          required
                         >
-                          <option value="">Selecione</option>
-                          <option value="Indicação de amigo">Indicação de amigo</option>
-                          <option value="Redes sociais">Redes sociais</option>
-                          <option value="Google">Google</option>
-                          <option value="Outro">Outro</option>
+                          <option value="">Selecione o dia</option>
+                          {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
+                            <option key={d} value={String(d)}>
+                              Todo dia {String(d).padStart(2, '0')}
+                            </option>
+                          ))}
                         </select>
                       </div>
+                    </div>
+
+                    <div className={styles.field_group}>
+                      <label className={styles.label}>Como conheceu</label>
+                      <select
+                        className={styles.field_input}
+                        value={comoConheceu}
+                        onChange={(e) => setComoConheceu(e.target.value)}
+                      >
+                        <option value="">Selecione</option>
+                        <option value="Indicação de amigo">Indicação de amigo</option>
+                        <option value="Redes sociais">Redes sociais</option>
+                        <option value="Google">Google</option>
+                        <option value="Outro">Outro</option>
+                      </select>
                     </div>
 
                     <div className={styles.field_group}>

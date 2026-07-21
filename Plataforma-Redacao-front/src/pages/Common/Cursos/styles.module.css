@@ -1,25 +1,192 @@
 .container {
-  width: 100%;
-  min-height: 100vh;
+  width: 95%;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding-bottom: 60px;
 }
 
 .main_content {
-  display: flex;
-  flex-direction: column;
-  border-radius: 10px;
-  gap: 30px;
-  padding: 50px;
-  max-width: 1500px;
-  min-height: calc(100vh - 70px);
-  margin: 40px auto;
-  background-color: #242424;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  margin-top: 30px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-@media (max-width: 768px) { 
-  .main_content {
-    padding: 20px;
-    margin: 0;
-    border-radius: 0;
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+/* Modules Grid */
+.modulesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+  width: 100%;
+}
+
+/* Modulo Card */
+.moduloCard {
+  background-color: #242424;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 280px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.moduloCard:hover {
+  transform: translateY(-4px);
+  border-color: #DA9E00;
+  box-shadow: 0 8px 25px rgba(218, 158, 0, 0.1);
+}
+
+/* Card Header */
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.iconWrapper {
+  width: 42px;
+  height: 42px;
+  background-color: rgba(218, 158, 0, 0.1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconWrapper i {
+  color: #DA9E00;
+  font-size: 20px;
+}
+
+.moduloBadge {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #a0a0a0;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Card Body */
+.cardBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.moduloTitle {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.moduloDesc {
+  color: #888888;
+  font-size: 13px;
+  margin: 0;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Card Footer */
+.cardFooter {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 16px;
+}
+
+.progressSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.progressText {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #a0a0a0;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.progressPct {
+  color: #DA9E00;
+  font-weight: 700;
+}
+
+.progressBarWrapper {
+  height: 6px;
+  background-color: #1a1a1a;
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progressBar {
+  height: 100%;
+  background-color: #DA9E00;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.verModuloBtn {
+  background-color: #DA9E00;
+  color: #111;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(218, 158, 0, 0.1);
+}
+
+.verModuloBtn:hover {
+  background-color: #F5B041;
+  box-shadow: 0 6px 15px rgba(218, 158, 0, 0.2);
+}
+
+.verModuloBtn i {
+  font-size: 12px;
+  transition: transform 0.2s ease;
+}
+
+.verModuloBtn:hover i {
+  transform: translateX(4px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modulesGrid {
+    grid-template-columns: 1fr;
   }
 }

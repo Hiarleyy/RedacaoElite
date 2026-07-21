@@ -13,7 +13,7 @@ import Loading from "../../../components/Loading/Loading";
 import Message from "../../../components/Message/Message";
 import fetchData from "../../../utils/fetchData";
 import { useNavigate } from "react-router-dom";
-import RedacaoModal from "../../../components/RedacaoModal/RedacaoModal";
+import CorrecaoModal from "../../../components/CorrecaoModal/CorrecaoModal";
 import DeleteModal from "../../../components/DeleteModal/DeleteModal";
 import useUseful from "../../../utils/useUseful";
 const baseURL = import.meta.env.VITE_API_BASE_URL
@@ -23,6 +23,7 @@ const Novaredacao = () => {
 
 
   const [tema, setTema] = useState("");
+  const [propostas, setPropostas] = useState([]);
   const [formMessage, setFormMessage] = useState(null);
   const [fileBlob, setFileBlob] = useState(null);
   const [redacao, setRedacao] = useState([])
@@ -98,11 +99,13 @@ const Novaredacao = () => {
       return;
     }
 
-    if (!fileBlob || !tema.trim()) {
-      setFormMessage({
-        type: "error",
-        text: "Preencha o tema e envie um arquivo válido."
-      });
+    if (!tema.trim()) {
+      alert("Por favor, selecione o tema da redação.");
+      return;
+    }
+
+    if (!fileBlob) {
+      alert("Por favor, faça o upload do arquivo da redação.");
       return;
     }
 
@@ -207,10 +210,8 @@ const Novaredacao = () => {
       !cooldownRef.current &&
       !submissionInProgressRef.current &&
       !isSubmitting &&
-      !cooldown &&
-      fileBlob &&
-      tema.trim();
-  }, [isSubmitting, cooldown, fileBlob, tema]);
+      !cooldown;
+  }, [isSubmitting, cooldown]);
 
   // Função com debounce e controle rigoroso
   const handleSubmitWithDebounce = useCallback(async (event) => {
@@ -253,7 +254,6 @@ const Novaredacao = () => {
   const currentredacaos = redacao.slice(indexOfFirstItem, indexOfLastItem)
 
   const [usuario, setUsuario] = useState([]);
-  const [isMobile, setIsMobile] = useState(false);
   // Estado para o modal de redação
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedRedacao, setSelectedRedacao] = useState(null);
@@ -332,30 +332,14 @@ const Novaredacao = () => {
         const { getRedacoesUser } = fetchData();
         const redacoesData = await getRedacoesUser(alunoId);
         if (redacoesData) {
-          // Buscar as correções para cada redação
-          const options = await Promise.all(
-            redacoesData.map(async item => {
-              let correcao = null;
-              try {
-                // Verificar se a redação já tem correção
-                const correcaoResponse = await axios.get(`${baseURL}/correcoes/redacao/${item.id}`);
-                if (correcaoResponse.data && correcaoResponse.data.data) {
-                  correcao = correcaoResponse.data.data;
-                }
-              } catch (error) {
-                // Sem correção disponível
-                console.log("Redação sem correção:", item.id);
-              }
-              return {
-                id: item.id,
-                titulo: item.titulo,
-                status: item.status,
-                data: item.data,
-                usuarioId: item.usuarioId,
-                correcao: correcao
-              };
-            })
-          ).then(result => result.sort((a, b) => new Date(b.data) - new Date(a.data))); // Ordena por data decrescente
+          const options = redacoesData.map(item => ({
+            id: item.id,
+            titulo: item.titulo,
+            status: item.status,
+            data: item.data,
+            usuarioId: item.usuarioId,
+            correcao: item.correcao
+          })).sort((a, b) => new Date(b.data) - new Date(a.data));
           setRedacao(options);
         } else {
           console.error('Nenhuma redação encontrada');
@@ -370,17 +354,24 @@ const Novaredacao = () => {
   }, [formMessage]) // Atualizar quando enviar uma nova redação
   useEffect(() => {
     const getData = async () => {
-      const { getAlunoById } = fetchData()
+      const { getAlunoById, getPropostas } = fetchData()
       const alunoId = getAlunoId();
       const response = await getAlunoById(alunoId)
       setUsuario(response)
+
+      try {
+        const responsePropostas = await getPropostas();
+        setPropostas(responsePropostas);
+      } catch (e) {
+        console.error("Erro ao buscar propostas", e);
+      }
     }
     getData()
   }, [])
 
   // Função para abrir o modal com a redação selecionada
   const handleRedacaoClick = (redacao) => {
-    setSelectedRedacao(redacao);
+    setSelectedRedacao({ ...redacao, usuario: usuario });
     setModalOpen(true);
   };
 
@@ -415,27 +406,14 @@ const Novaredacao = () => {
       const { getRedacoesUser } = fetchData();
       const redacoesData = await getRedacoesUser(alunoId);
       if (redacoesData) {
-        const options = await Promise.all(
-          redacoesData.map(async item => {
-            let correcao = null;
-            try {
-              const correcaoResponse = await axios.get(`${baseURL}/correcoes/redacao/${item.id}`);
-              if (correcaoResponse.data && correcaoResponse.data.data) {
-                correcao = correcaoResponse.data.data;
-              }
-            } catch (error) {
-              console.log("Redação sem correção:", item.id);
-            }
-            return {
-              id: item.id,
-              titulo: item.titulo,
-              status: item.status,
-              data: item.data,
-              usuarioId: item.usuarioId,
-              correcao: correcao
-            };
-          })
-        ).then(result => result.sort((a, b) => new Date(b.data) - new Date(a.data)));
+        const options = redacoesData.map(item => ({
+          id: item.id,
+          titulo: item.titulo,
+          status: item.status,
+          data: item.data,
+          usuarioId: item.usuarioId,
+          correcao: item.correcao
+        })).sort((a, b) => new Date(b.data) - new Date(a.data));
         setRedacao(options);
       }
 
@@ -457,231 +435,178 @@ const Novaredacao = () => {
     setRedacaoToDelete(null);
   };
 
-  // Função para verificar se a tela é mobile
-  const checkIfMobile = useCallback(() => {
-    setIsMobile(window.innerWidth <= 768);
-  }, []);
 
-  // Adicionar listener para redimensionamento da janela
-  useEffect(() => {
-    checkIfMobile();
-    window.addEventListener('resize', checkIfMobile);
-    return () => window.removeEventListener('resize', checkIfMobile);
-  }, [checkIfMobile]);
 
   return (
     <div className={styles.container}>
-      {!isMobile ? (
-        // Layout desktop original
-        <>
-          <Title title="Nova Redação" />
-          <div className={styles.main_content}>
-            <div className={styles.bg_left}>              {redacao.length === 0 ? <div className={styles.loading}><Loading /></div> :
-              <>
-                <p className={styles.form_title}>Redações enviadas</p>
-                <div className={styles.redacao_container}>
-                  {currentredacaos.map((redacao) => (
-                    <div key={redacao.id} className={styles.card_wrapper}>
-                      <InfoCard
-                        img="https://static.vecteezy.com/system/resources/previews/028/049/250/non_2x/terms-icon-design-vector.jpg"
-                        title={redacao.titulo}
-                        subtitle={formatarData(redacao.data)}
-                        link="#"
-                        button={true}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleDeleteRedacao(redacao);
-                        }}
-                        infoCardOnClick={(e) => {
-                          e.preventDefault();
-                          handleRedacaoClick(redacao);
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
-                <div className={styles.pagination}>
-                  <Pagination
-                    currentPage={currentPage}
-                    totalItems={redacao.length}
-                    itemsPerPage={itemsPerPage}
-                    setCurrentPage={setCurrentPage}
-                  />
-                </div>
-              </>
-            }
+      <Title title="Nova Redação" />
+      <div className={styles.main_content}>
+        <div className={styles.bg_left}>
+          <div className={styles.section_header}>
+            <div className={styles.icon_yellow_large}>
+              <i className="fa-solid fa-cloud-arrow-up"></i>
             </div>
-            <div className={styles.bg_right}>
-              <p className={styles.form_title}>Upload Da Nova Redação</p>
-              <Input
-                type="text"
-                placeholder="Tema da nova redação"
-                color="#1A1A1A"
+            <div>
+              <h3 className={styles.section_title}>ENVIAR <span>NOVA REDAÇÃO</span></h3>
+              <p className={styles.section_subtitle}>Faça o upload do seu arquivo em PDF, JPG ou PNG</p>
+            </div>
+          </div>
+
+          <div className={styles.upload_container}>
+            <div className={styles.select_container}>
+              <select
+                className={styles.tema_select}
                 value={tema}
                 onChange={(e) => setTema(e.target.value)}
               >
-                <i className="fa-solid fa-pen"></i>
-              </Input>
-              <div className={styles.upload_container}>
-                {/* Substituir a área de upload original pelo novo estilo */}
-                <div {...getRootProps()} className={styles.desktop_upload_area}>
-                  <input {...getInputProps()} />
-                  <svg className={styles.desktop_upload_icon} viewBox="0 0 309 197">
-                    <path
-                      d="M69.369 196.821C31.0715 196.821 0 168.484 0 133.557C0 105.967 19.3655 82.5065 46.3423 73.8517C46.2942 72.6655 46.246 71.4793 46.246 70.2931C46.246 31.4562 80.7378 0 123.323 0C151.889 0 176.795 14.1465 190.138 35.2344C197.461 30.7532 206.325 28.1172 215.815 28.1172C241.346 28.1172 262.061 47.0085 262.061 70.2931C262.061 75.653 260.953 80.7492 258.978 85.494C287.111 90.6781 308.307 113.392 308.307 140.586C308.307 171.647 280.703 196.821 246.645 196.821H69.369ZM107.426 101.486C102.897 105.615 102.897 112.293 107.426 116.379C111.954 120.465 119.276 120.509 123.756 116.379L142.544 99.2451L142.592 158.16C142.592 164.003 147.746 168.703 154.153 168.703C160.56 168.703 165.715 164.003 165.715 158.16V99.2451L184.502 116.379C189.03 120.509 196.353 120.509 200.833 116.379C205.313 112.249 205.361 105.571 200.833 101.486L162.295 66.3391C157.766 62.2094 150.444 62.2094 145.964 66.3391L107.426 101.486Z"
-                      fill="#474747"
-                    />
-                  </svg>
-                  <p className={styles.desktop_upload_text}>
-                    Clique para selecionar um arquivo
-                  </p>
-                  <p className={styles.desktop_upload_text}>
-                    (PDF, JPG ou PNG)
-                  </p>
-                </div>
+                <option value="">Selecione o tema da redação</option>
+                {propostas && propostas.map((prop) => {
+                  const dataFinal = prop.data_final || prop.dataFinal;
+                  const isExpired = dataFinal ? new Date(dataFinal) < new Date() : false;
 
-                {/* Exibir arquivo selecionado com estilo igual ao mobile */}
-                {fileBlob && (
-                  <div className={styles.desktop_file_selected}>
-                    <i className={`fa-solid fa-file-pdf ${styles.desktop_file_icon}`}></i>
-                    <span className={styles.desktop_file_name}>{fileName}</span>
-                    <i
-                      className={`fa-solid fa-times ${styles.desktop_file_remove}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setFilesName("Nenhum arquivo enviado");
-                        setFileBlob(null);
-                      }}
-                    ></i>
-                  </div>
-                )}
+                  return (
+                    <option
+                      key={prop.id}
+                      value={prop.tema || prop.titulo}
+                      disabled={isExpired}
+                    >
+                      {prop.tema || prop.titulo} {isExpired ? '(Prazo encerrado)' : ''}
+                    </option>
+                  )
+                })}
+              </select>
+            </div>
 
-                <div className={styles.info_container}>
-                  <Message
-                    text={formMessage ? formMessage.text : ""}
-                    type={formMessage ? formMessage.type : ""}
-                  />
-                </div>
-
-                <div className={styles.submit_button}>
-                  <button
-                    className={`${styles.desktop_button} ${(isSubmitting || cooldown) ? styles.disabled : ''}`}
-                    onClick={handleSubmitWithDebounce}
-                    disabled={!fileBlob || !tema.trim() || isSubmitting || cooldown}
-                  >
-                    {isSubmitting ? (
-                      <>
-                        Enviando...
-                        <i className={`fa-solid fa-spinner fa-spin ${styles.desktop_button_icon}`}></i>
-                      </>
-                    ) : cooldown ? (
-                      <>
-                        Aguarde...
-                        <i className={`fa-solid fa-clock ${styles.desktop_button_icon}`}></i>
-                      </>
-                    ) : (
-                      <>
-                        Enviar redação
-                        <i className={`fa-solid fa-paper-plane ${styles.desktop_button_icon}`}></i>
-                      </>
-                    )}
-                  </button>
-                </div>
+            <div {...getRootProps()} className={styles.desktop_upload_area}>
+              <input {...getInputProps()} />
+              <div className={styles.upload_icon_wrapper}>
+                <i className="fa-solid fa-cloud-arrow-up"></i>
+              </div>
+              <p className={styles.desktop_upload_title}>
+                <span>ARRASTE E SOLTE SEU ARQUIVO AQUI</span><br />
+                ou clique para selecionar
+              </p>
+              <div className={styles.accepted_formats}>
+                Formatos aceitos: PDF, JPG ou PNG
               </div>
             </div>
-          </div>
-        </>
-      ) : (
-        // Nova interface mobile com o componente Title
-        <div className={styles.mobile_container}>
-          {/* Substituindo o header customizado pelo componente Title */}
-          <Title title="Nova Redação" />
 
-          <div className={styles.mobile_content}>
-            <div className={styles.mobile_form}>
-              <h2 className={styles.mobile_form_title}>Envie sua redação</h2>
-
-              <div className={styles.mobile_input_container}>
-                <Input
-                  type="text"
-                  placeholder="Qual o tema da redação?"
-                  color="#1A1A1A"
-                  value={tema}
-                  onChange={(e) => setTema(e.target.value)}
-                >
-                  <i className="fa-solid fa-pen"></i>
-                </Input>
+            {fileBlob && (
+              <div className={styles.desktop_file_selected}>
+                <i className={`fa-solid fa-file-pdf ${styles.desktop_file_icon}`}></i>
+                <span className={styles.desktop_file_name}>{fileName}</span>
+                <i
+                  className={`fa-solid fa-times ${styles.desktop_file_remove}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setFilesName("Nenhum arquivo enviado");
+                    setFileBlob(null);
+                  }}
+                ></i>
               </div>
+            )}
 
-              <div {...getRootProps()} className={styles.mobile_upload_area}>
-                <input {...getInputProps()} />
-                <svg className={styles.mobile_upload_icon} viewBox="0 0 309 197">
-                  <path
-                    d="M69.369 196.821C31.0715 196.821 0 168.484 0 133.557C0 105.967 19.3655 82.5065 46.3423 73.8517C46.2942 72.6655 46.246 71.4793 46.246 70.2931C46.246 31.4562 80.7378 0 123.323 0C151.889 0 176.795 14.1465 190.138 35.2344C197.461 30.7532 206.325 28.1172 215.815 28.1172C241.346 28.1172 262.061 47.0085 262.061 70.2931C262.061 75.653 260.953 80.7492 258.978 85.494C287.111 90.6781 308.307 113.392 308.307 140.586C308.307 171.647 280.703 196.821 246.645 196.821H69.369ZM107.426 101.486C102.897 105.615 102.897 112.293 107.426 116.379C111.954 120.465 119.276 120.509 123.756 116.379L142.544 99.2451L142.592 158.16C142.592 164.003 147.746 168.703 154.153 168.703C160.56 168.703 165.715 164.003 165.715 158.16V99.2451L184.502 116.379C189.03 120.509 196.353 120.509 200.833 116.379C205.313 112.249 205.361 105.571 200.833 101.486L162.295 66.3391C157.766 62.2094 150.444 62.2094 145.964 66.3391L107.426 101.486Z"
-                    fill="#474747"
-                  />
-                </svg>
-                <p className={styles.mobile_upload_text}>
-                  Toque para selecionar um arquivo
-                </p>
-                <p className={styles.mobile_upload_text}>
-                  (PDF, JPG ou PNG)
-                </p>
+            <div className={styles.info_container}>
+              <Message
+                text={formMessage ? formMessage.text : ""}
+                type={formMessage ? formMessage.type : ""}
+              />
+            </div>
+
+            <div className={styles.important_warning}>
+              <i className="fa-solid fa-circle-info"></i>
+              <div>
+                <strong>IMPORTANTE</strong>
+                <p>Verifique se seu arquivo está legível e completo antes do envio.<br />Após o envio, não será possível realizar alterações.</p>
               </div>
+            </div>
 
-              {fileBlob && (
-                <div className={styles.mobile_file_selected}>
-                  <i className={`fa-solid fa-file-pdf ${styles.mobile_file_icon}`}></i>
-                  <span className={styles.mobile_file_name}>{fileName}</span>
-                  <i
-                    className={`fa-solid fa-times ${styles.mobile_file_remove}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setFilesName("Nenhum arquivo enviado");
-                      setFileBlob(null);
-                    }}
-                  ></i>
-                </div>
-              )}
-
-              <div className={styles.mobile_message_container}>
-                {formMessage && (
-                  <div className={formMessage.type === "success" ? styles.mobile_success : styles.mobile_error}>
-                    <i className={`fa-solid ${formMessage.type === "success" ? "fa-check-circle" : "fa-exclamation-circle"} ${styles.mobile_message_icon}`}></i>
-                    <span className={styles.mobile_message_text}>{formMessage.text}</span>
-                  </div>
+            <div className={styles.submit_button}>
+              <button
+                className={`${styles.desktop_button_full} ${(!fileBlob || !tema.trim() || isSubmitting || cooldown) ? styles.disabled : ''}`}
+                onClick={handleSubmitWithDebounce}
+                disabled={isSubmitting || cooldown}
+              >
+                {isSubmitting ? (
+                  <>
+                    Enviando...
+                    <i className={`fa-solid fa-spinner fa-spin ${styles.desktop_button_icon}`}></i>
+                  </>
+                ) : cooldown ? (
+                  <>
+                    Aguarde...
+                    <i className={`fa-solid fa-clock ${styles.desktop_button_icon}`}></i>
+                  </>
+                ) : (
+                  <>
+                    <i className={`fa-solid fa-paper-plane`} style={{ marginRight: '8px' }}></i>
+                    ENVIAR REDAÇÃO
+                  </>
                 )}
-              </div>
-
-              <div className={styles.mobile_submit_button}>
-                <button
-                  className={`${styles.mobile_button} ${(isSubmitting || cooldown) ? styles.disabled : ''}`}
-                  onClick={handleSubmitWithDebounce}
-                  disabled={!fileBlob || !tema.trim() || isSubmitting || cooldown}
-                >
-                  {isSubmitting ? (
-                    <>
-                      Enviando...
-                      <i className={`fa-solid fa-spinner fa-spin ${styles.mobile_button_icon}`}></i>
-                    </>
-                  ) : cooldown ? (
-                    <>
-                      Aguarde...
-                      <i className={`fa-solid fa-clock ${styles.mobile_button_icon}`}></i>
-                    </>
-                  ) : (
-                    <>
-                      Enviar redação
-                      <i className={`fa-solid fa-paper-plane ${styles.mobile_button_icon}`}></i>
-                    </>
-                  )}
-                </button>
-              </div>
+              </button>
             </div>
           </div>
         </div>
-      )}
+
+        <div className={styles.bg_right}>
+          <div className={styles.section_header}>
+            <div className={styles.icon_yellow_outline}>
+              <i className="fa-regular fa-file-lines"></i>
+            </div>
+            <div>
+              <h3 className={styles.section_title}>REDAÇÕES <span>ENVIADAS</span></h3>
+              <p className={styles.section_subtitle}>Acompanhe todas as suas redações enviadas</p>
+            </div>
+          </div>
+
+          {redacao.length === 0 ? <div className={styles.loading}><Loading /></div> :
+            <>
+              <div className={styles.redacao_container}>
+                {currentredacaos.map((redacao, index) => (
+                  <div key={redacao.id} className={styles.card_wrapper}>
+                    <div className={styles.sent_card} onClick={(e) => {
+                      e.preventDefault();
+                      handleRedacaoClick(redacao);
+                    }}>
+                      <div className={styles.sent_card_left}>
+                        <div className={styles.sent_icon_box}>
+                          <i className="fa-solid fa-file-pdf"></i>
+                          <span>PDF</span>
+                        </div>
+                        <div className={styles.sent_info}>
+                          {index === 0 && currentPage === 1 && (
+                            <span className={styles.most_recent}>MAIS RECENTE</span>
+                          )}
+                          <h4>{redacao.titulo}</h4>
+                          <p><i className="fa-regular fa-calendar"></i> {formatarData(redacao.data)}</p>
+                        </div>
+                      </div>
+                      <div className={styles.sent_card_right}>
+                        <span className={styles.status_enviado}>ENVIADO <i className="fa-solid fa-check"></i></span>
+                        <button className={styles.btn_options} onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleDeleteRedacao(redacao);
+                        }}>
+                          <i className="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className={styles.pagination}>
+                <Pagination
+                  currentPage={currentPage}
+                  totalItems={redacao.length}
+                  itemsPerPage={itemsPerPage}
+                  setCurrentPage={setCurrentPage}
+                />
+              </div>
+            </>
+          }
+        </div>
+      </div>
 
       {/* Modal para confirmação de delete */}
       <DeleteModal
@@ -691,16 +616,14 @@ const Novaredacao = () => {
         cancelOnClick={cancelDeleteRedacao}
       />
 
-      {/* Modal para visualização da redação */}
-      <RedacaoModal
-        redacao={selectedRedacao}
-        isOpen={modalOpen}
-        onClose={closeModal}
-        activeTab="minhas"
-        brasilFormatData={formatarData}
+      {/* Modal para visualização da redação/correção */}
+      <CorrecaoModal
+        modalData={selectedRedacao}
+        modalIsClicked={modalOpen}
+        setModalIsClicked={setModalOpen}
       />
     </div>
   );
-}
+};
 
 export default Novaredacao;
