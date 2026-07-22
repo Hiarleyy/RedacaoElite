@@ -156,6 +156,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
+  min-width: 0;
 }
 
 .cursoIcon {
@@ -178,6 +179,7 @@
   gap: 4px;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .cursoTitle {
