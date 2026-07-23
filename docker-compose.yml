@@ -1,22 +1,4 @@
 services:
-  traefik:
-    image: traefik:latest
-    container_name: plataforma-redacao-proxy
-    command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--providers.docker.network=plataforma-redacao-web"
-      - "--entrypoints.web.address=:80"
-    ports:
-      - "80:80"
-      - "8080:8080"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    networks:
-      - web
-    restart: unless-stopped
-
   db:
     image: bitnamilegacy/postgresql:17.6.0-debian-12-r4
     container_name: plataforma-redacao-db
@@ -32,7 +14,7 @@ services:
       - internal
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "postgres", "-d", "BDPlataformaRedacao" ]
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "BDPlataformaRedacao"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -48,8 +30,7 @@ services:
       - HOST=0.0.0.0
       - JWT_SENHA=senha-super-secreta
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     volumes:
       - ./Plataforma-Redacao/src/uploads:/app/src/uploads
     networks:
@@ -60,7 +41,7 @@ services:
       - "traefik.docker.network=plataforma-redacao-web"
 
       # API
-      - "traefik.http.routers.backend-api.rule=Host(`localhost`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.backend-api.rule=Host(`redacaoelite.com`) && PathPrefix(`/api`)"
       - "traefik.http.routers.backend-api.entrypoints=web"
       - "traefik.http.routers.backend-api.priority=100"
       - "traefik.http.routers.backend-api.service=backend-service"
@@ -68,7 +49,7 @@ services:
       - "traefik.http.middlewares.backend-stripprefix.stripprefix.prefixes=/api"
 
       # Uploads
-      - "traefik.http.routers.backend-uploads.rule=Host(`localhost`) && PathPrefix(`/uploads`)"
+      - "traefik.http.routers.backend-uploads.rule=Host(`redacaoelite.com`) && PathPrefix(`/uploads`)"
       - "traefik.http.routers.backend-uploads.entrypoints=web"
       - "traefik.http.routers.backend-uploads.priority=100"
       - "traefik.http.routers.backend-uploads.service=backend-service"
@@ -91,7 +72,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=plataforma-redacao-web"
-      - "traefik.http.routers.frontend.rule=Host(`localhost`)"
+      - "traefik.http.routers.frontend.rule=Host(`redacaoelite.com`)"
       - "traefik.http.routers.frontend.entrypoints=web"
       - "traefik.http.routers.frontend.priority=10"
       - "traefik.http.services.frontend.loadbalancer.server.port=80"
@@ -121,7 +102,7 @@ volumes:
 networks:
   web:
     name: plataforma-redacao-web
-    driver: bridge
+    external: true
 
   internal:
     name: plataforma-redacao-internal
