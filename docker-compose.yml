@@ -100,4 +100,5 @@ networks:
 
   internal:
     name: plataforma-redacao-internal
-    driver: bridge
+    driver: overlay
+    attachable: true
