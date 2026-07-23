@@ -1,13 +1,12 @@
 services:
   db:
     image: bitnamilegacy/postgresql:17.6.0-debian-12-r4
-    container_name: plataforma-redacao-db
-    ports:
-      - "5433:5432"
     environment:
       - POSTGRESQL_USERNAME=postgres
       - POSTGRESQL_PASSWORD=docker
       - POSTGRESQL_DATABASE=BDPlataformaRedacao
+    ports:
+      - "5433:5432"
     volumes:
       - postgres_data:/bitnami/postgresql
     networks:
@@ -15,13 +14,12 @@ services:
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres", "-d", "BDPlataformaRedacao"]
-      interval: 5s
+      interval: 10s
       timeout: 5s
       retries: 5
 
   backend:
     image: hiarley/redacaoelite-backend:latest
-    container_name: plataforma-redacao-backend
     environment:
       - DATABASE_URL=postgresql://postgres:docker@db:5432/BDPlataformaRedacao?schema=public
       - HTTP_PORT=3000
@@ -30,7 +28,7 @@ services:
     depends_on:
       - db
     volumes:
-      - ./Plataforma-Redacao/src/uploads:/app/src/uploads
+      - uploads_data:/app/src/uploads
     networks:
       - web
       - internal
@@ -38,7 +36,7 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=plataforma-redacao-web"
 
-      # API
+      # API (/api -> backend:3000 com strip /api)
       - "traefik.http.routers.backend-api.rule=Host(`redacaoelite.com`) && PathPrefix(`/api`)"
       - "traefik.http.routers.backend-api.entrypoints=web"
       - "traefik.http.routers.backend-api.priority=100"
@@ -46,7 +44,7 @@ services:
       - "traefik.http.routers.backend-api.middlewares=backend-stripprefix"
       - "traefik.http.middlewares.backend-stripprefix.stripprefix.prefixes=/api"
 
-      # Uploads
+      # Uploads direto
       - "traefik.http.routers.backend-uploads.rule=Host(`redacaoelite.com`) && PathPrefix(`/uploads`)"
       - "traefik.http.routers.backend-uploads.entrypoints=web"
       - "traefik.http.routers.backend-uploads.priority=100"
@@ -58,7 +56,6 @@ services:
 
   frontend:
     image: hiarley/redacaoelite-frontend:latest
-    container_name: plataforma-redacao-frontend
     depends_on:
       - backend
     networks:
@@ -74,14 +71,13 @@ services:
 
   minio:
     image: minio/minio:latest
-    container_name: plataforma-redacao-minio
     command: server /data --console-address ":9001"
-    ports:
-      - "9000:9000"
-      - "9001:9001"
     environment:
       - MINIO_ROOT_USER=minioadmin
       - MINIO_ROOT_PASSWORD=minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
     volumes:
       - minio_data:/data
     networks:
@@ -92,6 +88,7 @@ services:
 volumes:
   postgres_data:
   minio_data:
+  uploads_data:
 
 networks:
   web:
