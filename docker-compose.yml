@@ -20,9 +20,7 @@ services:
       retries: 5
 
   backend:
-    build:
-      context: ./Plataforma-Redacao
-      dockerfile: Dockerfile
+    image: hiarley/redacaoelite-backend:latest
     container_name: plataforma-redacao-backend
     environment:
       - DATABASE_URL=postgresql://postgres:docker@db:5432/BDPlataformaRedacao?schema=public
@@ -59,11 +57,7 @@ services:
     restart: unless-stopped
 
   frontend:
-    build:
-      context: ./Plataforma-Redacao-front
-      dockerfile: Dockerfile
-      args:
-        - VITE_API_BASE_URL=/api
+    image: hiarley/redacaoelite-frontend:latest
     container_name: plataforma-redacao-frontend
     depends_on:
       - backend
