@@ -41,7 +41,7 @@ services:
       - "traefik.http.routers.backend-api.rule=Host(`redacaoelite.com`) && PathPrefix(`/api`)"
       - "traefik.http.routers.backend-api.entrypoints=websecure"
       - "traefik.http.routers.backend-api.tls=true"
-      - "traefik.http.routers.backend-api.tls.certresolver=le"
+      - "traefik.http.routers.backend-api.tls.certresolver=letsencryptresolver"
       - "traefik.http.routers.backend-api.priority=100"
       - "traefik.http.routers.backend-api.middlewares=backend-stripprefix"
       - "traefik.http.middlewares.backend-stripprefix.stripprefix.prefixes=/api"
@@ -51,7 +51,7 @@ services:
       - "traefik.http.routers.backend-uploads.rule=Host(`redacaoelite.com`) && PathPrefix(`/uploads`)"
       - "traefik.http.routers.backend-uploads.entrypoints=websecure"
       - "traefik.http.routers.backend-uploads.tls=true"
-      - "traefik.http.routers.backend-uploads.tls.certresolver=le"
+      - "traefik.http.routers.backend-uploads.tls.certresolver=letsencryptresolver"
       - "traefik.http.routers.backend-uploads.priority=100"
       - "traefik.http.routers.backend-uploads.service=backend-service"
 
@@ -66,7 +66,7 @@ services:
         - "traefik.http.routers.backend-api.rule=Host(`redacaoelite.com`) && PathPrefix(`/api`)"
         - "traefik.http.routers.backend-api.entrypoints=websecure"
         - "traefik.http.routers.backend-api.tls=true"
-        - "traefik.http.routers.backend-api.tls.certresolver=le"
+        - "traefik.http.routers.backend-api.tls.certresolver=letsencryptresolver"
         - "traefik.http.routers.backend-api.priority=100"
         - "traefik.http.routers.backend-api.middlewares=backend-stripprefix"
         - "traefik.http.middlewares.backend-stripprefix.stripprefix.prefixes=/api"
@@ -76,7 +76,7 @@ services:
         - "traefik.http.routers.backend-uploads.rule=Host(`redacaoelite.com`) && PathPrefix(`/uploads`)"
         - "traefik.http.routers.backend-uploads.entrypoints=websecure"
         - "traefik.http.routers.backend-uploads.tls=true"
-        - "traefik.http.routers.backend-uploads.tls.certresolver=le"
+        - "traefik.http.routers.backend-uploads.tls.certresolver=letsencryptresolver"
         - "traefik.http.routers.backend-uploads.priority=100"
         - "traefik.http.routers.backend-uploads.service=backend-service"
 
@@ -100,7 +100,7 @@ services:
       - "traefik.http.routers.frontend.rule=Host(`redacaoelite.com`)"
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls=true"
-      - "traefik.http.routers.frontend.tls.certresolver=le"
+      - "traefik.http.routers.frontend.tls.certresolver=letsencryptresolver"
       - "traefik.http.routers.frontend.priority=10"
       - "traefik.http.services.frontend.loadbalancer.server.port=80"
     deploy:
@@ -117,7 +117,7 @@ services:
         - "traefik.http.routers.frontend.rule=Host(`redacaoelite.com`)"
         - "traefik.http.routers.frontend.entrypoints=websecure"
         - "traefik.http.routers.frontend.tls=true"
-        - "traefik.http.routers.frontend.tls.certresolver=le"
+        - "traefik.http.routers.frontend.tls.certresolver=letsencryptresolver"
         - "traefik.http.routers.frontend.priority=10"
         - "traefik.http.services.frontend.loadbalancer.server.port=80"
 

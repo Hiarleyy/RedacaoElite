@@ -230,22 +230,22 @@ const fetchData = () => {
   }
 
   const getTiposEvento = async () => {
-    const response = await axios.get(`${baseURL}/tipoEvento`, { headers: getHeaders() })
+    const response = await axios.get(`${baseURL}/tiposevento`, { headers: getHeaders() })
     return response.data.data
   }
 
   const createTipoEvento = async (data) => {
-    const response = await axios.post(`${baseURL}/tipoEvento`, data, { headers: getHeaders() })
+    const response = await axios.post(`${baseURL}/tiposevento`, data, { headers: getHeaders() })
     return response.data.data
   }
 
   const updateTipoEvento = async (id, data) => {
-    const response = await axios.put(`${baseURL}/tipoEvento/${id}`, data, { headers: getHeaders() })
+    const response = await axios.put(`${baseURL}/tiposevento/${id}`, data, { headers: getHeaders() })
     return response.data.data
   }
 
   const deleteTipoEvento = async (id) => {
-    const response = await axios.delete(`${baseURL}/tipoEvento/${id}`, { headers: getHeaders() })
+    const response = await axios.delete(`${baseURL}/tiposevento/${id}`, { headers: getHeaders() })
     return response.data
   }
 
