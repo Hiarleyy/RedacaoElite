@@ -33,6 +33,29 @@ services:
       - internal
     depends_on:
       - db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=plataforma-redacao-web"
+
+      # API -> backend:3000 (remove /api)
+      - "traefik.http.routers.backend-api.rule=Host(`redacaoelite.com`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.backend-api.entrypoints=websecure"
+      - "traefik.http.routers.backend-api.tls=true"
+      - "traefik.http.routers.backend-api.tls.certresolver=le"
+      - "traefik.http.routers.backend-api.priority=100"
+      - "traefik.http.routers.backend-api.middlewares=backend-stripprefix"
+      - "traefik.http.middlewares.backend-stripprefix.stripprefix.prefixes=/api"
+      - "traefik.http.routers.backend-api.service=backend-service"
+
+      # Uploads
+      - "traefik.http.routers.backend-uploads.rule=Host(`redacaoelite.com`) && PathPrefix(`/uploads`)"
+      - "traefik.http.routers.backend-uploads.entrypoints=websecure"
+      - "traefik.http.routers.backend-uploads.tls=true"
+      - "traefik.http.routers.backend-uploads.tls.certresolver=le"
+      - "traefik.http.routers.backend-uploads.priority=100"
+      - "traefik.http.routers.backend-uploads.service=backend-service"
+
+      - "traefik.http.services.backend-service.loadbalancer.server.port=3000"
     deploy:
       replicas: 1
       labels:
@@ -65,11 +88,32 @@ services:
       - web
     depends_on:
       - backend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=plataforma-redacao-web"
+      # Redirecionamento HTTP -> HTTPS (porta 80 -> 443) e suporte para ACME HTTP-01 challenge
+      - "traefik.http.routers.frontend-http.rule=Host(`redacaoelite.com`)"
+      - "traefik.http.routers.frontend-http.entrypoints=web"
+      - "traefik.http.routers.frontend-http.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      # Rota principal HTTPS (porta 443)
+      - "traefik.http.routers.frontend.rule=Host(`redacaoelite.com`)"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls=true"
+      - "traefik.http.routers.frontend.tls.certresolver=le"
+      - "traefik.http.routers.frontend.priority=10"
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
     deploy:
       replicas: 1
       labels:
         - "traefik.enable=true"
         - "traefik.docker.network=plataforma-redacao-web"
+        # Redirecionamento HTTP -> HTTPS (porta 80 -> 443) e suporte para ACME HTTP-01 challenge
+        - "traefik.http.routers.frontend-http.rule=Host(`redacaoelite.com`)"
+        - "traefik.http.routers.frontend-http.entrypoints=web"
+        - "traefik.http.routers.frontend-http.middlewares=redirect-to-https"
+        - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+        # Rota principal HTTPS (porta 443)
         - "traefik.http.routers.frontend.rule=Host(`redacaoelite.com`)"
         - "traefik.http.routers.frontend.entrypoints=websecure"
         - "traefik.http.routers.frontend.tls=true"
