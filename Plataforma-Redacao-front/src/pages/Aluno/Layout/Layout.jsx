@@ -168,6 +168,12 @@ const AlunoLayout = () => {
         <aside className={styles.header_mobile}>
           <img src={logo} />
 
+          {/* Overlay backdrop */}
+          <div
+            className={`${isClicked ? styles.overlay_active : styles.overlay_hidden}`}
+            onClick={() => setIsClicked(false)}
+          />
+
           <nav className={`${isClicked ? styles.active : styles.inactive}`}>
             <div className={styles.mobile_menu_logo}>
               <img src={logo} alt="logo" />

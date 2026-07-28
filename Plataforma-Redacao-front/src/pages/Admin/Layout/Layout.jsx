@@ -2,7 +2,7 @@ import styles from "./styles.module.css"
 import { Outlet } from "react-router-dom"
 import Header from "../../../components/Header/Header"
 import Button from "../../../components/Button/Button"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate, useLocation } from "react-router-dom"
 import logo from "../../../images/logo02.png"
 import { useState, useEffect } from "react"
 import fetchData from "../../../utils/fetchData"
@@ -30,6 +30,16 @@ const links = [
 const AdminLayout = () => {
   const [isClicked, setIsClicked] = useState(false)
   const [modalIsClicked, setModalIsClicked] = useState(false)
+  const location = useLocation()
+
+  const isActive = (path) => {
+    const segments = location.pathname.split("/").filter(Boolean)
+    const lastSegment = segments[segments.length - 1] || ""
+    if (path === "") {
+      return segments.length <= 1 || lastSegment === segments[0]
+    }
+    return lastSegment === path || location.pathname.endsWith("/" + path)
+  }
 
   const menuBtnClick = () => setIsClicked(prev => !prev)
   const navigate = useNavigate()
@@ -78,15 +88,38 @@ const AdminLayout = () => {
       <aside className={styles.header_mobile}>
         <img src={logo} />
 
+        {/* Overlay backdrop */}
+        <div
+          className={`${isClicked ? styles.overlay_active : styles.overlay_hidden}`}
+          onClick={() => setIsClicked(false)}
+        />
+
         <nav className={`${isClicked ? styles.active : styles.inactive}`}>
+          <div className={styles.mobile_menu_logo}>
+            <img src={logo} alt="logo" />
+          </div>
+
           {links.map((link, index) => (
-            <Link key={index} to={link.path} className={styles.link_box} onClick={() => setIsClicked(false)}>
+            <Link
+              key={index}
+              to={link.path}
+              className={`${styles.link_box} ${isActive(link.path) ? styles.link_active : ""}`}
+              onClick={() => setIsClicked(false)}
+              style={{ "--item-index": index }}
+            >
               <div className={styles.link}>
                 <i className={link.icon}></i>
                 <p>{link.name}</p>
               </div>
             </Link>
           ))}
+
+          <Link className={styles.link_box} style={{ "--item-index": links.length }}>
+            <div className={styles.link}>
+              <i className="fa-brands fa-whatsapp"></i>
+              <p>Fale com o suporte</p>
+            </div>
+          </Link>
         </nav>
 
         <div className={styles.menu_btn} onClick={menuBtnClick}>
