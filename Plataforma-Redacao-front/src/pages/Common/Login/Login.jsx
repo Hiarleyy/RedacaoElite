@@ -5,7 +5,7 @@ import Button from "../../../components/Button/Button"
 import Message from "../../../components/Message/Message"
 const baseURL = import.meta.env.VITE_API_BASE_URL
 import { useNavigate } from "react-router-dom"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import axios from "axios"
 
 const Login = () => {
@@ -13,7 +13,42 @@ const Login = () => {
   const [password, setPassword] = useState("")
   const [formMessage, setFormMessage] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [deferredPrompt, setDeferredPrompt] = useState(null)
+  const [showInstallModal, setShowInstallModal] = useState(false)
+  const [redirectPath, setRedirectPath] = useState("")
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault()
+      setDeferredPrompt(e)
+    }
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt)
+    return () => window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt)
+  }, [])
+
+  const isIos = () => {
+    const userAgent = window.navigator.userAgent.toLowerCase()
+    return /iphone|ipad|ipod/.test(userAgent)
+  }
+
+  const isInStandaloneMode = () => ('standalone' in window.navigator) && window.navigator.standalone
+
+  const handleInstall = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt()
+      const { outcome } = await deferredPrompt.userChoice
+      setDeferredPrompt(null)
+      if (outcome === "accepted") {
+        console.log("User accepted the install prompt")
+      }
+    }
+    navigate(redirectPath)
+  }
+
+  const handleSkip = () => {
+    navigate(redirectPath)
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -31,7 +66,12 @@ const Login = () => {
       const userRole = response.data.data.role
       const path = userRole === "ADMIN" ? "/admin" : "/aluno"
 
-      navigate(path)
+      if (deferredPrompt || (isIos() && !isInStandaloneMode())) {
+        setRedirectPath(path)
+        setShowInstallModal(true)
+      } else {
+        navigate(path)
+      }
     } catch (error) {
       setFormMessage({ 
         type: "error", 
@@ -44,6 +84,58 @@ const Login = () => {
 
   return (
     <div className={styles.container}>
+      {showInstallModal && (
+        <div className={styles.modal_container}>
+          <div className={styles.modal}>
+            <h2>Instale nosso Aplicativo</h2>
+            {deferredPrompt ? (
+              <>
+                <p>Instale o Redação Elite na sua tela inicial para uma melhor experiência e acesso rápido!</p>
+                <div className={styles.modal_buttons}>
+                  <Button 
+                    text_size="16px" 
+                    text_color="#1A1A1A" 
+                    padding_sz="12px 20px" 
+                    bg_color="#DA9E00"
+                    onClick={handleInstall}
+                  >
+                    Instalar Aplicativo
+                  </Button>
+                  <Button 
+                    text_size="16px" 
+                    text_color="#E0E0E0" 
+                    padding_sz="12px 20px" 
+                    bg_color="#333333"
+                    onClick={handleSkip}
+                  >
+                    Agora Não
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p>Para instalar o Redação Elite no seu dispositivo iOS:</p>
+                <ol className={styles.ios_instructions}>
+                  <li>Toque no botão <strong>Compartilhar</strong> (quadrado com seta para cima) na barra inferior do Safari.</li>
+                  <li>Role para baixo e selecione <strong>"Adicionar à Tela de Início"</strong>.</li>
+                </ol>
+                <div className={styles.modal_buttons}>
+                  <Button 
+                    text_size="16px" 
+                    text_color="#1A1A1A" 
+                    padding_sz="12px 20px" 
+                    bg_color="#DA9E00"
+                    onClick={handleSkip}
+                  >
+                    Continuar para o app
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className={styles.bg_left}>
         <img src={logo} alt="logo" />
 

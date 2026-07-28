@@ -89,6 +89,70 @@
   margin-bottom: 20px;
 }
 
+/* Modal de Instalação PWA */
+.modal_container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2000;
+  background-color: #1a1a1ade;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background-color: #242424;
+  width: 90%;
+  max-width: 400px;
+  height: fit-content;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.modal h2 {
+  color: #DA9E00;
+  margin: 0;
+  font-size: 22px;
+}
+
+.modal p {
+  color: #E0E0E0;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.ios_instructions {
+  text-align: left;
+  margin: 15px 0;
+  color: #ccc;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.ios_instructions li {
+  margin-bottom: 8px;
+}
+
+.ios_instructions strong {
+  color: #E0E0E0;
+}
+
+.modal_buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
