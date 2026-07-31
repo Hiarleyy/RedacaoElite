@@ -38,7 +38,7 @@ services:
       - "traefik.docker.network=plataforma-redacao-web"
 
       # API -> backend:3000 (remove /api)
-      - "traefik.http.routers.backend-api.rule=Host(`redacaoelite.com`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.backend-api.rule=(Host(`redacaoelite.com`) || Host(`www.redacaoelite.com`)) && PathPrefix(`/api`)"
       - "traefik.http.routers.backend-api.entrypoints=websecure"
       - "traefik.http.routers.backend-api.tls=true"
       - "traefik.http.routers.backend-api.tls.certresolver=letsencryptresolver"
@@ -48,7 +48,7 @@ services:
       - "traefik.http.routers.backend-api.service=backend-service"
 
       # Uploads
-      - "traefik.http.routers.backend-uploads.rule=Host(`redacaoelite.com`) && PathPrefix(`/uploads`)"
+      - "traefik.http.routers.backend-uploads.rule=(Host(`redacaoelite.com`) || Host(`www.redacaoelite.com`)) && PathPrefix(`/uploads`)"
       - "traefik.http.routers.backend-uploads.entrypoints=websecure"
       - "traefik.http.routers.backend-uploads.tls=true"
       - "traefik.http.routers.backend-uploads.tls.certresolver=letsencryptresolver"
@@ -63,7 +63,7 @@ services:
         - "traefik.docker.network=plataforma-redacao-web"
 
         # API -> backend:3000 (remove /api)
-        - "traefik.http.routers.backend-api.rule=Host(`redacaoelite.com`) && PathPrefix(`/api`)"
+        - "traefik.http.routers.backend-api.rule=(Host(`redacaoelite.com`) || Host(`www.redacaoelite.com`)) && PathPrefix(`/api`)"
         - "traefik.http.routers.backend-api.entrypoints=websecure"
         - "traefik.http.routers.backend-api.tls=true"
         - "traefik.http.routers.backend-api.tls.certresolver=letsencryptresolver"
@@ -73,7 +73,7 @@ services:
         - "traefik.http.routers.backend-api.service=backend-service"
 
         # Uploads
-        - "traefik.http.routers.backend-uploads.rule=Host(`redacaoelite.com`) && PathPrefix(`/uploads`)"
+        - "traefik.http.routers.backend-uploads.rule=(Host(`redacaoelite.com`) || Host(`www.redacaoelite.com`)) && PathPrefix(`/uploads`)"
         - "traefik.http.routers.backend-uploads.entrypoints=websecure"
         - "traefik.http.routers.backend-uploads.tls=true"
         - "traefik.http.routers.backend-uploads.tls.certresolver=letsencryptresolver"
@@ -92,16 +92,20 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=plataforma-redacao-web"
       # Redirecionamento HTTP -> HTTPS (porta 80 -> 443) e suporte para ACME HTTP-01 challenge
-      - "traefik.http.routers.frontend-http.rule=Host(`redacaoelite.com`)"
+      - "traefik.http.routers.frontend-http.rule=Host(`redacaoelite.com`) || Host(`www.redacaoelite.com`)"
       - "traefik.http.routers.frontend-http.entrypoints=web"
       - "traefik.http.routers.frontend-http.middlewares=redirect-to-https"
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
       # Rota principal HTTPS (porta 443)
-      - "traefik.http.routers.frontend.rule=Host(`redacaoelite.com`)"
+      - "traefik.http.routers.frontend.rule=Host(`redacaoelite.com`) || Host(`www.redacaoelite.com`)"
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls=true"
       - "traefik.http.routers.frontend.tls.certresolver=letsencryptresolver"
       - "traefik.http.routers.frontend.priority=10"
+      - "traefik.http.routers.frontend.middlewares=security-headers"
+      - "traefik.http.middlewares.security-headers.headers.stsSeconds=31536000"
+      - "traefik.http.middlewares.security-headers.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.security-headers.headers.stsPreload=true"
       - "traefik.http.services.frontend.loadbalancer.server.port=80"
     deploy:
       replicas: 1
@@ -109,16 +113,20 @@ services:
         - "traefik.enable=true"
         - "traefik.docker.network=plataforma-redacao-web"
         # Redirecionamento HTTP -> HTTPS (porta 80 -> 443) e suporte para ACME HTTP-01 challenge
-        - "traefik.http.routers.frontend-http.rule=Host(`redacaoelite.com`)"
+        - "traefik.http.routers.frontend-http.rule=Host(`redacaoelite.com`) || Host(`www.redacaoelite.com`)"
         - "traefik.http.routers.frontend-http.entrypoints=web"
         - "traefik.http.routers.frontend-http.middlewares=redirect-to-https"
         - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
         # Rota principal HTTPS (porta 443)
-        - "traefik.http.routers.frontend.rule=Host(`redacaoelite.com`)"
+        - "traefik.http.routers.frontend.rule=Host(`redacaoelite.com`) || Host(`www.redacaoelite.com`)"
         - "traefik.http.routers.frontend.entrypoints=websecure"
         - "traefik.http.routers.frontend.tls=true"
         - "traefik.http.routers.frontend.tls.certresolver=letsencryptresolver"
         - "traefik.http.routers.frontend.priority=10"
+        - "traefik.http.routers.frontend.middlewares=security-headers"
+        - "traefik.http.middlewares.security-headers.headers.stsSeconds=31536000"
+        - "traefik.http.middlewares.security-headers.headers.stsIncludeSubdomains=true"
+        - "traefik.http.middlewares.security-headers.headers.stsPreload=true"
         - "traefik.http.services.frontend.loadbalancer.server.port=80"
 
   minio:

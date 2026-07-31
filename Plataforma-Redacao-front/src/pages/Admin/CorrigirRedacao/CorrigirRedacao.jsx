@@ -17,6 +17,7 @@ import { PDFDocument } from "pdf-lib";
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 const CorrigirRedacao = () => {
+  const { downloadRedacaoById } = fetchData();
   const { redacao_id } = useParams();
   const [redacao, setRedacao] = useState([]);
   const { brasilFormatData, getHeaders } = useUseful();
@@ -196,16 +197,15 @@ const CorrigirRedacao = () => {
                 text_size="16px"
               />
 
-              <Link to={`${baseURL}/redacoes/download/${redacao_id}`}>
-                <Button
+              <Button
                   text_size="20px"
                   text_color="#E0E0E0"
                   padding_sz="10px"
                   bg_color="#DA9E00"
+                  onClick={() => downloadRedacaoById(redacao_id)}
                 >
                   <i className="fa-solid fa-download"></i> BAIXAR ESSA REDAÇÃO
                 </Button>
-              </Link>
             </>
           )}
         </div>

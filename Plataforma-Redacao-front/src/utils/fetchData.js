@@ -285,6 +285,23 @@ const fetchData = () => {
     return response.data.data
   }
 
+  const downloadRedacaoById = async (id) => {
+    const response = await fetch(`${baseURL}/redacoes/download/${id}`, {
+      method: "GET",
+      headers: getHeaders(),
+    })
+    if (!response.ok) throw new Error("Erro ao baixar redação")
+    const blob = await response.blob()
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = `redacao_${id}.pdf`
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    window.URL.revokeObjectURL(url)
+  }
+
   return {
     getTurmas,
     getTurmaById,
@@ -331,7 +348,8 @@ const fetchData = () => {
     createArtigo,
     updateArtigo,
     deleteArtigo,
-    getPropostaById
+    getPropostaById,
+    downloadRedacaoById
   }
 }
 

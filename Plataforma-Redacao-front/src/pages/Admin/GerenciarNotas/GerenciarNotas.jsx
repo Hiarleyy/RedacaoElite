@@ -13,6 +13,7 @@ import axios from "axios";
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 const GerenciarNotas = () => {
+  const { downloadRedacaoById } = fetchData();
   const [redacao, setRedacao] = useState([]);
   const { aluno_id } = useParams();
   const [isLoadingData, setIsLoadingData] = useState(false);
@@ -174,16 +175,15 @@ const GerenciarNotas = () => {
                 text_size="16px"
               />
 
-              <Link to={`http://localhost:3000/redacoes/download/${aluno_id}`}>
-                <Button
+              <Button
                   text_size="20px"
                   text_color="#E0E0E0"
                   padding_sz="10px"
                   bg_color="#DA9E00"
+                  onClick={() => downloadRedacaoById(aluno_id)}
                 >
-                  <i class="fa-solid fa-download"></i> BAIXAR ESSA REDAÇÃO
+                  <i className="fa-solid fa-download"></i> BAIXAR ESSA REDAÇÃO
                 </Button>
-              </Link>
             </>
           )}
         </div>

@@ -57,7 +57,7 @@ const RedacaoModal = ({ redacao, isOpen, onClose, activeTab, brasilFormatData })
           </div>
           {redacao.correcao && (
             <div className={styles.Button}>
-              <Link to={`${baseURL}/correcoes/download/${redacao.correcao?.id}`}>
+              <a href={`${baseURL}/correcoes/download/${redacao.correcao?.id}`} target="_blank" rel="noopener noreferrer">
                 <Button 
                   text_size="15px" 
                   text_color="#E0E0E0" 
@@ -66,7 +66,7 @@ const RedacaoModal = ({ redacao, isOpen, onClose, activeTab, brasilFormatData })
                 >
                   <i className="fa-solid fa-download"></i> BAIXAR ESSA REDAÇÃO
                 </Button>
-              </Link>
+              </a>
             </div>
           )}
         </div>
