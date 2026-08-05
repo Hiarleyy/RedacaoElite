@@ -647,21 +647,36 @@
 
 @media (max-width: 600px) {
   .content_wrapper {
-    padding: 16px 14px 48px;
+    padding: 12px 12px 40px;
+  }
+
+  /* Filtros: cada linha vira coluna */
+  .filtros_card {
+    padding: 16px 14px;
+    gap: 12px;
   }
 
   .filtros_row {
     flex-direction: column;
     align-items: stretch;
-    gap: 12px;
+    gap: 10px;
   }
 
+  /* Todos os grupos de filtro ocupam 100% */
   .filtro_group {
-    width: 50%;
+    width: 100%;
+    min-width: 0;
+    flex: unset;
   }
 
+  /* Esconde label vazia usada só em desktop */
   .desktop_only_label {
     display: none;
+  }
+
+  /* Range de datas: inputs lado a lado ocupando o espaço todo */
+  .date_range {
+    gap: 6px;
   }
 
   .date_range > .input_icon_wrap {
@@ -669,6 +684,24 @@
     min-width: 0;
   }
 
+  /* Botão de download ocupa largura total */
+  .btn_download_all {
+    width: 100%;
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+
+  .btn_download_title {
+    font-size: 14px;
+  }
+
+  /* Botão limpar filtros */
+  .btn_limpar {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Cards mais compactos */
   .card {
     padding: 12px 14px;
     gap: 10px;
@@ -676,20 +709,46 @@
 
   .card_titulo {
     font-size: 13px;
+    white-space: normal;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .card_aluno {
     font-size: 11px;
   }
 
+  .card_tempo,
+  .badge_corrigida {
+    font-size: 10px;
+    padding: 3px 7px;
+  }
+
+  /* Paginação */
   .paginacao {
     flex-direction: column;
     align-items: center;
-    gap: 12px;
-    padding: 16px 8px;
+    gap: 10px;
+    padding: 14px 8px;
   }
 
   .paginacao_info {
     text-align: center;
+  }
+
+  /* Painéis */
+  .painel_header {
+    padding: 14px 16px 12px;
+  }
+
+  .painel_body {
+    padding: 12px 14px;
+  }
+
+  .painel_title {
+    font-size: 15px;
   }
 }

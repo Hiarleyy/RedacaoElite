@@ -4,16 +4,17 @@ import styles from "./styles.module.css"
 const baseURL = import.meta.env.VITE_API_BASE_URL
 
 /**
- * Modal para baixar redações corrigidas em .zip
+ * Modal para baixar redações (corrigidas ou pendentes) em .zip
  * com seleção de turma e tema vindos do banco de dados.
  *
  * Props:
- *  - isOpen   (bool)        : controla visibilidade
- *  - onClose  (fn)          : fecha o modal
- *  - turmas   (array)       : lista de turmas { id, nome }
- *  - temas    (array)       : lista de temas únicos (strings)
+ *  - isOpen     (bool)        : controla visibilidade
+ *  - onClose    (fn)          : fecha o modal
+ *  - turmas     (array)       : lista de turmas { id, nome }
+ *  - temas      (array)       : lista de temas únicos (strings)
+ *  - corrigidas (bool)        : true = corrigidas (padrão), false = não corrigidas/pendentes
  */
-const DownloadZipModal = ({ isOpen, onClose, turmas = [], temas = [] }) => {
+const DownloadZipModal = ({ isOpen, onClose, turmas = [], temas = [], corrigidas = true }) => {
   const [turmaSelecionada, setTurmaSelecionada] = useState("")
   const [temaSelecionado, setTemaSelecionado] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -51,6 +52,8 @@ const DownloadZipModal = ({ isOpen, onClose, turmas = [], temas = [] }) => {
       const params = new URLSearchParams()
       if (turmaSelecionada) params.append("turmaId", turmaSelecionada)
       if (temaSelecionado)  params.append("titulo", temaSelecionado)
+      // Envia o tipo para o backend: true = corrigidas, false = pendentes
+      params.append("corrigidas", corrigidas ? "true" : "false")
       const qs = params.toString() ? `?${params.toString()}` : ""
 
       const response = await fetch(`${baseURL}/redacoes/download-zip${qs}`, {
@@ -71,7 +74,8 @@ const DownloadZipModal = ({ isOpen, onClose, turmas = [], temas = [] }) => {
       // Nome do arquivo com filtros aplicados
       const turmaLabel = turmas.find((t) => t.id === turmaSelecionada)?.nome || "todas-turmas"
       const temaLabel  = temaSelecionado || "todos-temas"
-      link.download = `redacoes_${turmaLabel}_${temaLabel}`
+      const tipoLabel  = corrigidas ? "corrigidas" : "pendentes"
+      link.download = `redacoes_${tipoLabel}_${turmaLabel}_${temaLabel}`
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .replace(/[^\w.-]/g, "_")
@@ -104,7 +108,8 @@ const DownloadZipModal = ({ isOpen, onClose, turmas = [], temas = [] }) => {
           <div>
             <h2 className={styles.modal_title}>Baixar redações</h2>
             <p className={styles.modal_subtitle}>
-              Selecione os filtros para compactar as redações corrigidas em um arquivo <strong>.zip</strong>
+              Selecione os filtros para compactar as redações{" "}
+              <strong>{corrigidas ? "corrigidas" : "não corrigidas"}</strong> em um arquivo <strong>.zip</strong>
             </p>
           </div>
           <button className={styles.btn_close} onClick={onClose} title="Fechar">
@@ -163,8 +168,8 @@ const DownloadZipModal = ({ isOpen, onClose, turmas = [], temas = [] }) => {
             <i className="fa-solid fa-circle-info" />
             <span>
               {!turmaSelecionada && !temaSelecionado
-                ? "Todas as redações corrigidas serão incluídas."
-                : `Serão incluídas redações corrigidas${turmaSelecionada
+                ? `Todas as redações ${corrigidas ? "corrigidas" : "não corrigidas"} serão incluídas.`
+                : `Serão incluídas redações ${corrigidas ? "corrigidas" : "não corrigidas"}${turmaSelecionada
                     ? ` da turma "${turmas.find((t) => t.id === turmaSelecionada)?.nome}"`
                     : ""
                   }${temaSelecionado ? ` com o tema "${temaSelecionado}"` : ""}.`}

@@ -171,6 +171,12 @@ const Correcao = () => {
 
   // Modal de download ZIP
   const [downloadModalOpen, setDownloadModalOpen] = useState(false)
+  const [downloadTipo, setDownloadTipo] = useState(true) // true = corrigidas, false = pendentes
+
+  const abrirDownload = (corrigidas) => {
+    setDownloadTipo(corrigidas)
+    setDownloadModalOpen(true)
+  }
 
   // Temas vindos das propostas cadastradas (campo `tema`), ordenados alfabeticamente
   const temas = useMemo(() => {
@@ -253,213 +259,215 @@ const Correcao = () => {
         onClose={() => setDownloadModalOpen(false)}
         turmas={turmas}
         temas={temas}
+        corrigidas={downloadTipo}
       />
       <Title title="Correção" />
 
       <div className={styles.content_wrapper}>
         {/* ── Filtros Avançados ── */}
         <div className={styles.filtros_card}>
-        <div className={styles.filtros_header}>
-          <i className="fa-solid fa-filter" />
-          <span>Filtros avançados</span>
-        </div>
-
-        <div className={styles.filtros_row}>
-          <div className={styles.filtro_group} style={{ flex: 2 }}>
-            <label className={styles.filtro_label}>Busca por tema ou aluno</label>
-            <div className={styles.input_icon_wrap}>
-              <input
-                className={styles.filtro_input}
-                type="text"
-                placeholder="Digite o nome do tema ou aluno..."
-                value={busca}
-                onChange={(e) => { setBusca(e.target.value); setPagePen(1); setPageCorr(1) }}
-              />
-              <i className="fa-solid fa-magnifying-glass" />
-            </div>
+          <div className={styles.filtros_header}>
+            <i className="fa-solid fa-filter" />
+            <span>Filtros avançados</span>
           </div>
 
-          <div className={styles.filtro_group}>
-            <label className={styles.filtro_label}>Período de publicação</label>
-            <div className={styles.date_range}>
+          <div className={styles.filtros_row}>
+            <div className={styles.filtro_group} style={{ flex: 2 }}>
+              <label className={styles.filtro_label}>Busca por tema ou aluno</label>
               <div className={styles.input_icon_wrap}>
                 <input
                   className={styles.filtro_input}
-                  type="date"
-                  value={dataFiltroInicio}
-                  onChange={(e) => { setDataFiltroInicio(e.target.value); setPagePen(1); setPageCorr(1) }}
+                  type="text"
+                  placeholder="Digite o nome do tema ou aluno..."
+                  value={busca}
+                  onChange={(e) => { setBusca(e.target.value); setPagePen(1); setPageCorr(1) }}
                 />
+                <i className="fa-solid fa-magnifying-glass" />
               </div>
-              <span className={styles.date_sep}>até</span>
-              <div className={styles.input_icon_wrap}>
-                <input
-                  className={styles.filtro_input}
-                  type="date"
-                  value={dataFiltroFim}
-                  onChange={(e) => { setDataFiltroFim(e.target.value); setPagePen(1); setPageCorr(1) }}
-                />
+            </div>
+
+            <div className={styles.filtro_group}>
+              <label className={styles.filtro_label}>Período de publicação</label>
+              <div className={styles.date_range}>
+                <div className={styles.input_icon_wrap}>
+                  <input
+                    className={styles.filtro_input}
+                    type="date"
+                    value={dataFiltroInicio}
+                    onChange={(e) => { setDataFiltroInicio(e.target.value); setPagePen(1); setPageCorr(1) }}
+                  />
+                </div>
+                <span className={styles.date_sep}>até</span>
+                <div className={styles.input_icon_wrap}>
+                  <input
+                    className={styles.filtro_input}
+                    type="date"
+                    value={dataFiltroFim}
+                    onChange={(e) => { setDataFiltroFim(e.target.value); setPagePen(1); setPageCorr(1) }}
+                  />
+                </div>
               </div>
+            </div>
+
+            <div className={styles.filtro_group}>
+              <label className={styles.filtro_label}>Situação</label>
+              <select
+                className={styles.filtro_select}
+                value={situacao}
+                onChange={(e) => setSituacao(e.target.value)}
+              >
+                <option value="todas">Todas</option>
+                <option value="pendente">Pendentes</option>
+                <option value="corrigida">Corrigidas</option>
+              </select>
             </div>
           </div>
 
-          <div className={styles.filtro_group}>
-            <label className={styles.filtro_label}>Situação</label>
-            <select
-              className={styles.filtro_select}
-              value={situacao}
-              onChange={(e) => setSituacao(e.target.value)}
-            >
-              <option value="todas">Todas</option>
-              <option value="pendente">Pendentes</option>
-              <option value="corrigida">Corrigidas</option>
-            </select>
+          <div className={styles.filtros_row}>
+            <div className={styles.filtro_group}>
+              <label className={styles.filtro_label}>Turma</label>
+              <select
+                className={styles.filtro_select}
+                value={turmaFiltro}
+                onChange={(e) => { setTurmaFiltro(e.target.value); setPagePen(1); setPageCorr(1) }}
+              >
+                <option value="">Todas as turmas</option>
+                {turmas.map((t) => (
+                  <option key={t.id} value={t.id}>{t.nome}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className={styles.filtro_group} style={{ justifyContent: "flex-end" }}>
+              <label className={`${styles.filtro_label} ${styles.desktop_only_label}`}>&nbsp;</label>
+              <button className={styles.btn_limpar} onClick={limparFiltros}>
+                <i className="fa-solid fa-rotate-left" /> Limpar filtros
+              </button>
+            </div>
+
+            <div className={styles.filtro_group} style={{ flexShrink: 0 }}>
+              <label className={`${styles.filtro_label} ${styles.desktop_only_label}`}>&nbsp;</label>
+              <button
+                className={styles.btn_download_all}
+                onClick={() => abrirDownload(false)}
+                disabled={isLoading}
+                title="Baixar redações não corrigidas (.zip)"
+              >
+                <i className="fa-solid fa-file-zipper" />
+                <div>
+                  <span className={styles.btn_download_title}>Baixar não corrigidas (.zip)</span>
+                </div>
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className={styles.filtros_row}>
-          <div className={styles.filtro_group}>
-            <label className={styles.filtro_label}>Turma</label>
-            <select
-              className={styles.filtro_select}
-              value={turmaFiltro}
-              onChange={(e) => { setTurmaFiltro(e.target.value); setPagePen(1); setPageCorr(1) }}
-            >
-              <option value="">Todas as turmas</option>
-              {turmas.map((t) => (
-                <option key={t.id} value={t.id}>{t.nome}</option>
-              ))}
-            </select>
-          </div>
+        {/* ── Painéis ── */}
+        <div className={styles.paineis}>
 
-          <div className={styles.filtro_group} style={{ justifyContent: "flex-end" }}>
-            <label className={`${styles.filtro_label} ${styles.desktop_only_label}`}>&nbsp;</label>
-            <button className={styles.btn_limpar} onClick={limparFiltros}>
-              <i className="fa-solid fa-rotate-left" /> Limpar filtros
-            </button>
-          </div>
-
-          <div className={styles.filtro_group} style={{ flexShrink: 0 }}>
-            <label className={`${styles.filtro_label} ${styles.desktop_only_label}`}>&nbsp;</label>
-            <button
-              className={styles.btn_download_all}
-              onClick={() => setDownloadModalOpen(true)}
-              disabled={isLoading}
-            >
-              <i className="fa-solid fa-file-zipper" />
-              <div>
-                <span className={styles.btn_download_title}>Baixar redações (.zip)</span>
+          {/* Pendentes */}
+          {(situacao === "todas" || situacao === "pendente") && (
+            <div className={`${styles.painel} ${styles.painel_pendente}`}>
+              <div className={styles.painel_header}>
+                <div className={styles.painel_title_row}>
+                  <i className="fa-regular fa-clock" style={{ color: "#f59e0b" }} />
+                  <h2 className={styles.painel_title}>Redações Pendentes</h2>
+                  <span className={styles.badge_count_pen}>{pendentesFiltradas.length}</span>
+                </div>
+                <p className={styles.painel_subtitle}>Redações aguardando correção</p>
               </div>
-            </button>
-          </div>
+
+              <div className={styles.painel_body}>
+                {isLoading ? (
+                  <div className={styles.loading_state}>
+                    <i className="fa-solid fa-spinner fa-spin" />
+                    <span>Carregando...</span>
+                  </div>
+                ) : pendentesFiltradas.length === 0 ? (
+                  <div className={styles.empty_state}>
+                    <i className="fa-regular fa-folder-open" />
+                    <span>Nenhuma redação pendente encontrada.</span>
+                  </div>
+                ) : (
+                  <div className={styles.cards_list}>
+                    {penPaginadas.map((r) => (
+                      <CardPendente
+                        key={r.id}
+                        redacao={r}
+                        onClick={() => navigate(`/admin/correcao/${r.id}`)}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {pendentesFiltradas.length > 0 && (
+                <Pagination
+                  current={pagePen}
+                  total={pendentesFiltradas.length}
+                  perPage={ITEMS_PER_PAGE}
+                  onChange={(p) => setPagePen(p)}
+                />
+              )}
+            </div>
+          )}
+
+          {/* Corrigidas */}
+          {(situacao === "todas" || situacao === "corrigida") && (
+            <div className={`${styles.painel} ${styles.painel_corrigida}`}>
+              <div className={styles.painel_header}>
+                <div className={styles.painel_title_row}>
+                  <i className="fa-solid fa-circle-check" style={{ color: "#22c55e" }} />
+                  <h2 className={styles.painel_title}>Redações Corrigidas</h2>
+                  <span className={styles.badge_count_corr}>{corrigidasFiltradas.length}</span>
+                </div>
+                <p className={styles.painel_subtitle}>Redações já corrigidas e publicadas</p>
+              </div>
+
+              <div className={styles.painel_body}>
+                {isLoading ? (
+                  <div className={styles.loading_state}>
+                    <i className="fa-solid fa-spinner fa-spin" />
+                    <span>Carregando...</span>
+                  </div>
+                ) : corrigidasFiltradas.length === 0 ? (
+                  <div className={styles.empty_state}>
+                    <i className="fa-regular fa-folder-open" />
+                    <span>Nenhuma redação corrigida encontrada.</span>
+                  </div>
+                ) : (
+                  <div className={styles.cards_list}>
+                    {corrPaginadas.map((r) => (
+                      <CardCorrigida
+                        key={r.id}
+                        redacao={r}
+                        onView={(redacao) => {
+                          setModalData(redacao)
+                          setModalOpen(true)
+                        }}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {corrigidasFiltradas.length > 0 && (
+                <Pagination
+                  current={pageCorr}
+                  total={corrigidasFiltradas.length}
+                  perPage={ITEMS_PER_PAGE}
+                  onChange={(p) => setPageCorr(p)}
+                />
+              )}
+            </div>
+          )}
         </div>
-      </div>
 
-      {/* ── Painéis ── */}
-      <div className={styles.paineis}>
-
-        {/* Pendentes */}
-        {(situacao === "todas" || situacao === "pendente") && (
-          <div className={`${styles.painel} ${styles.painel_pendente}`}>
-            <div className={styles.painel_header}>
-              <div className={styles.painel_title_row}>
-                <i className="fa-regular fa-clock" style={{ color: "#f59e0b" }} />
-                <h2 className={styles.painel_title}>Redações Pendentes</h2>
-                <span className={styles.badge_count_pen}>{pendentesFiltradas.length}</span>
-              </div>
-              <p className={styles.painel_subtitle}>Redações aguardando correção</p>
-            </div>
-
-            <div className={styles.painel_body}>
-              {isLoading ? (
-                <div className={styles.loading_state}>
-                  <i className="fa-solid fa-spinner fa-spin" />
-                  <span>Carregando...</span>
-                </div>
-              ) : pendentesFiltradas.length === 0 ? (
-                <div className={styles.empty_state}>
-                  <i className="fa-regular fa-folder-open" />
-                  <span>Nenhuma redação pendente encontrada.</span>
-                </div>
-              ) : (
-                <div className={styles.cards_list}>
-                  {penPaginadas.map((r) => (
-                    <CardPendente
-                      key={r.id}
-                      redacao={r}
-                      onClick={() => navigate(`/admin/correcao/${r.id}`)}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {pendentesFiltradas.length > 0 && (
-              <Pagination
-                current={pagePen}
-                total={pendentesFiltradas.length}
-                perPage={ITEMS_PER_PAGE}
-                onChange={(p) => setPagePen(p)}
-              />
-            )}
-          </div>
-        )}
-
-        {/* Corrigidas */}
-        {(situacao === "todas" || situacao === "corrigida") && (
-          <div className={`${styles.painel} ${styles.painel_corrigida}`}>
-            <div className={styles.painel_header}>
-              <div className={styles.painel_title_row}>
-                <i className="fa-solid fa-circle-check" style={{ color: "#22c55e" }} />
-                <h2 className={styles.painel_title}>Redações Corrigidas</h2>
-                <span className={styles.badge_count_corr}>{corrigidasFiltradas.length}</span>
-              </div>
-              <p className={styles.painel_subtitle}>Redações já corrigidas e publicadas</p>
-            </div>
-
-            <div className={styles.painel_body}>
-              {isLoading ? (
-                <div className={styles.loading_state}>
-                  <i className="fa-solid fa-spinner fa-spin" />
-                  <span>Carregando...</span>
-                </div>
-              ) : corrigidasFiltradas.length === 0 ? (
-                <div className={styles.empty_state}>
-                  <i className="fa-regular fa-folder-open" />
-                  <span>Nenhuma redação corrigida encontrada.</span>
-                </div>
-              ) : (
-                <div className={styles.cards_list}>
-                  {corrPaginadas.map((r) => (
-                    <CardCorrigida
-                      key={r.id}
-                      redacao={r}
-                      onView={(redacao) => {
-                        setModalData(redacao)
-                        setModalOpen(true)
-                      }}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {corrigidasFiltradas.length > 0 && (
-              <Pagination
-                current={pageCorr}
-                total={corrigidasFiltradas.length}
-                perPage={ITEMS_PER_PAGE}
-                onChange={(p) => setPageCorr(p)}
-              />
-            )}
-          </div>
-        )}
-      </div>
-
-      <p className={styles.rodape_nota}>
-        <i className="fa-solid fa-circle-info" />
-        O download reúne todas as redações corrigidas do tema filtrado e as compacta em um arquivo .zip
-        <i className="fa-solid fa-circle-info" />
-      </p>
+        <p className={styles.rodape_nota}>
+          <i className="fa-solid fa-circle-info" />
+          O download reúne as redações do tipo e tema filtrado e as compacta em um arquivo .zip
+          <i className="fa-solid fa-circle-info" />
+        </p>
       </div>
     </div>
   )

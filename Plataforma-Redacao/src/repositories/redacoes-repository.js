@@ -68,6 +68,7 @@ const redacoesRepository = {
     if (!usuarioId) {
       redacoes = await prisma.redacao.findMany({
         where: { status: "PENDENTE" },
+        orderBy: { data: "desc" },
         include: includeBody
       })
 
@@ -80,6 +81,7 @@ const redacoesRepository = {
 
     redacoes = await prisma.redacao.findMany({
       where: { usuarioId, status: "PENDENTE" },
+      orderBy: { data: "desc" },
       include: includeBody
     })
 

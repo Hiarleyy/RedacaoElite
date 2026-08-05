@@ -85,10 +85,15 @@ const redacoesController = {
   // GET /redacoes/download-zip
   downloadZip: async (req, res, next) => {
     try {
-      const { turmaId, busca, titulo } = req.query
+      const { turmaId, busca, titulo, corrigidas } = req.query
 
-      // Busca todas as redações corrigidas
-      const resultado = await redacoesModel.retornarRedacoes(false, true)
+      // Por padrão baixa corrigidas; passa corrigidas=false para pendentes
+      const apenasCorrigidas = corrigidas !== "false"
+
+      // Busca redações corrigidas ou pendentes conforme parâmetro
+      const resultado = apenasCorrigidas
+        ? await redacoesModel.retornarRedacoes(false, true)   // corrigidas
+        : await redacoesModel.retornarRedacoes(false, false, true) // pendentes
       let redacoes = resultado.redacoes || resultado
 
       // Filtro por turma
@@ -119,11 +124,12 @@ const redacoesController = {
       })
 
       if (redacoesComArquivo.length === 0) {
-        return res.status(404).json({ message: "Nenhuma redação corrigida encontrada para os filtros aplicados." })
+        return res.status(404).json({ message: "Nenhuma redação encontrada para os filtros aplicados." })
       }
 
       res.setHeader("Content-Type", "application/zip")
-      res.setHeader("Content-Disposition", `attachment; filename="redacoes_corrigidas.zip"`)
+      const zipNome = apenasCorrigidas ? "redacoes_corrigidas.zip" : "redacoes_pendentes.zip"
+      res.setHeader("Content-Disposition", `attachment; filename="${zipNome}"`)
 
       const archive = new ZipArchive({ zlib: { level: 6 } })
       archive.pipe(res)
