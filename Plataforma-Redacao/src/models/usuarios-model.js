@@ -24,8 +24,7 @@ const usuariosModel = {
     if (!usuario) throw new HttpError(404, "esse usuário não existe.")
     return usuario
   },
-
-  criarUsuario: async (data) => {
+   criarUsuario: async (data) => {
     // Vericando se o corpo da requisição respeita o formato de validação do zod
     const corpo = criarUsuarioSchema.safeParse(data)
     
